@@ -3,18 +3,22 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
+use app\modules\postal\Module as PostalModule;
+use yii\symfonymailer\Mailer;
+
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'pl-PL',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '',
+            'cookieValidationKey' => 'EmN68sPZPyvfSOh6YH00KkU3q_3fmFqd',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -27,10 +31,10 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
+            'class' => Mailer::class,
+            '$viewPath' => '@app/mail',
             // send all mails to a file by default.
-            'useFileTransport' => true,
+            '$useFileTransport' => true,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -42,15 +46,24 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'shipment-check-form' => 'postal/poczta-polska-shipment-check/shipment-check-form',
+                'create' => 'postal/poczta-polska-shipment/create',
             ],
         ],
-        */
+
     ],
+    'modules' => [
+        'postal' => [
+            'class' => PostalModule::class,
+        ]
+
+    ],
+
     'params' => $params,
 ];
 
@@ -60,15 +73,16 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '*'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '*'],
     ];
+
 }
 
 return $config;
