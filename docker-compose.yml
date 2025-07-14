@@ -9,12 +9,24 @@ services:
   db:
     image: mariadb:10.11
     restart: unless-stopped
-    volumes: 
+    volumes:
       - db_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
+      MARIADB_ROOT_PASSWORD: testrootpass
+      MARIADB_DATABASE: yii2basic
+      MARIADB_USER: root
+      MARIADB_PASSWORD:
+  test_db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    volumes:
+      - db_data_test:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: testrootpass
+      MARIADB_DATABASE: yii2basic_test
+      MARIADB_USER: root
+      MARIADB_PASSWORD:
 volumes:
   db_data:
+  db_data_test:
+
