@@ -1,0 +1,11 @@
+<?php
+
+namespace app\modules\postal\sender\Type;
+
+enum SposobPrzekazaniaPotwierdzeniaOdbioruPocztowaType: string {
+    case EKSPRES24 = 'EKSPRES24';
+    case PACZKA_EKSTRA_24 = 'PACZKA_EKSTRA_24';
+    case PACZKA_24 = 'PACZKA_24';
+    case PACZKA_48 = 'PACZKA_48';
+    case LIST_ZWYKLY_PRIORYTETOWY = 'LIST_ZWYKLY_PRIORYTETOWY';
+}
