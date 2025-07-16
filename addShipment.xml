@@ -1,0 +1,26 @@
+curl -X POST "https://e-nadawca.poczta-polska.pl/websrv/en.php" 
+-H "Content-Type: text/xml; charset=utf-8"
+-H "SOAPAction: http://e-nadawca.poczta-polska.pl/addShipment" 
+-H "Authorization: Basic bWFqc3RlcndAbzIucGw6UFBJc1RoZTE=" 
+-H "Accept: */*" -H "Accept-Encoding: gzip, deflate, br" 
+-d 
+<?xml version="1.0" encoding="utf-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://e-nadawca.poczta-polska.pl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <SOAP-ENV:Body>
+        <tns:addShipment>
+            <przesylki xsi:type="tns:PaczkaPocztowaType">
+                <adres>
+                    <nazwa>Jan Kowalski</nazwa>
+                    <numerDomu>10A</numerDomu>
+                    <miejscowosc>Warszawa</miejscowosc>
+                    <kodPocztowy>83334</kodPocztowy>
+                </adres>
+                <masa>500</masa>
+                <kategoria>EKONOMICZNA</kategoria>
+                <gabaryt>GABARYT_A</gabaryt>
+                <iloscPotwierdzenOdbioru>1</iloscPotwierdzenOdbioru>
+                <guid>4C93FB79819744D596F753F07A829553</guid>
+            </przesylki>
+        </tns:addShipment>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
