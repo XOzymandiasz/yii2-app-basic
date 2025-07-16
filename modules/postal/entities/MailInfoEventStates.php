@@ -8,7 +8,6 @@ class MailInfoEventStates extends Model
 {
     public string $code;
     public string $name;
-
     public final const STATE_AVISO = 'AW';
     public final const STATE_DELIVERED = 'DO';
     public final const STATE_IN_DELIVERY = 'DOR';
