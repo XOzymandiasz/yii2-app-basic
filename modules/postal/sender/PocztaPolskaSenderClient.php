@@ -2,11 +2,14 @@
 
 namespace app\modules\postal\sender;
 
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use Phpro\SoapClient\Caller\Caller;
 use app\modules\postal\sender\Type;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class PocztaPolskaSenderClient
 {
@@ -29,8 +32,20 @@ class PocztaPolskaSenderClient
     {
         $response = ($this->caller)('addShipment', $parameters);
 
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::mapResponse(
+            function (ResponseInterface $response) {
+                if (YII_ENV_TEST) {
+                    codecept_debug('Responsne Content BODY:!!');
+                    codecept_debug($response->getBody()->getContents());
+                }
+                return $response;
+            }
+        ));
+
         \Psl\Type\instance_of(\app\modules\postal\sender\Type\AddShipmentResponse::class)->assert($response);
         \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert($response);
+
 
         return $response;
     }

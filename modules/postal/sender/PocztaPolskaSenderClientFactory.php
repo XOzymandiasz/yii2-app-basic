@@ -3,11 +3,16 @@
 namespace app\modules\postal\sender;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Uri;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Http\Client\Common\Plugin\BaseUriPlugin;
 use Http\Message\Authentication\BasicAuth;
+use Phpro\SoapClient\Event\RequestEvent;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Soap\Psr18Transport\Psr18Transport;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
@@ -17,6 +22,7 @@ use Phpro\SoapClient\Caller\EngineCaller;
 use Soap\Encoding\EncoderRegistry;
 use Http\Client\Common\PluginClient;
 use yii\base\InvalidArgumentException;
+
 class PocztaPolskaSenderClientFactory
 {
 
@@ -51,7 +57,29 @@ class PocztaPolskaSenderClientFactory
         }
         $wsdl = static::getWsdl()[$type];
 
-        $guzzle = new Client();
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::mapResponse(
+            function (ResponseInterface $response) {
+                if (YII_ENV_TEST) {
+                    codecept_debug('Responsne Content BODY:!!');
+                    codecept_debug($response->getBody()->getContents());
+                }
+                return $response;
+            }
+        ));
+
+        $stack->push(Middleware::mapRequest(
+            function (RequestInterface $request) {
+                codecept_debug('stack PUSH');
+                codecept_debug($request->getHeaders());
+                codecept_debug($request->getBody()->getContents());
+                return $request;
+            }
+        ));
+
+        $guzzle = new Client([
+            'handler' => $stack
+        ]);
         $adapter = new GuzzleAdapter($guzzle);
 
         $plugins = [
@@ -74,8 +102,8 @@ class PocztaPolskaSenderClientFactory
                         ->addBackedEnumClassMapCollection(PocztaPolskaSenderClassmap::enums())
                 )
                 ->withTransport($transport)
-            ,
-            ''
+
+
         // If you want to enable WSDL caching:
         // ->withCache()
         // If you want to use Alternate HTTP settings:
@@ -87,6 +115,13 @@ class PocztaPolskaSenderClientFactory
         );
 
         $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addListener(
+            RequestEvent::class,
+            function (RequestEvent $event) {
+                codecept_debug('SOAP Request');
+                codecept_debug($event->getRequest());
+            });
+
         $caller = new EventDispatchingCaller(new EngineCaller($engine), $eventDispatcher);
 
         return new PocztaPolskaSenderClient($caller);
