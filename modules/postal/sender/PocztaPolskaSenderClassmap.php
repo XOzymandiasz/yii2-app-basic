@@ -39,7 +39,7 @@ class PocztaPolskaSenderClassmap
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'subPrzesylkaBiznesowaType', Type\SubPrzesylkaBiznesowaType::class),
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'subPrzesylkaBiznesowaPlusType', Type\SubPrzesylkaBiznesowaPlusType::class),
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'przesylkaBiznesowaPlusType', Type\PrzesylkaBiznesowaPlusType::class),
-            new ClassMap('http://e-adawca.poczta-polska.pl', 'pakietType', Type\PakietType::class),
+            new ClassMap('http://e-nadawca.poczta-polska.pl', 'pakietType', Type\PakietType::class),
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'opakowanieType', Type\OpakowanieType::class),
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'kierunekType', Type\KierunekType::class),
             new ClassMap('http://e-nadawca.poczta-polska.pl', 'uslugiType', Type\UslugiType::class),
