@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\models;
+namespace unit\postal\forms;
 
 use app\models\User;
 use app\modules\postal\models\Shipment;
@@ -15,7 +15,7 @@ use UnitTester;
  * @property UnitTester $tester
  */
 
-class ShipmentTest extends Unit
+class ShipmentFormTest extends Unit
 {
     private Shipment $model;
 

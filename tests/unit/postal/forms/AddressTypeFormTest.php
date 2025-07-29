@@ -1,8 +1,9 @@
 <?php
 
-namespace unit\postal\sender\forms;
+namespace unit\postal\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
+use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\sender\StructType\AdresType;
 use Codeception\Test\Unit;
 use UnitTester;
@@ -96,7 +97,7 @@ class AddressTypeFormTest extends Unit
 
     public function testSetModel(): void
     {
-        $adresType = (new AdresType())
+        $adresType = (new ShipmentAddress())
             ->setNazwa('Firma')
             ->setNazwa2('Dział testowy')
             ->setUlica('Ulica')
