@@ -2,7 +2,6 @@
 
 namespace app\modules\postal\models;
 
-use app\modules\postal\Module;
 use yii\db\ActiveRecord;
 
 /**
@@ -18,4 +17,5 @@ class ShipmentContent extends ActiveRecord
     {
         return '{{%shipment_content}}';
     }
+
 }

@@ -2,7 +2,6 @@
 
 namespace app\modules\postal\forms;
 
-use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use yii\base\Model;
@@ -44,7 +43,7 @@ class ContentTypeForm extends Model
 
     public function getModel(): ShipmentContent
     {
-        if ($this->shipmentContent) {
+        if (!$this->shipmentContent) {
             $this->shipmentContent = new ShipmentContent();
         }
         return $this->shipmentContent;
