@@ -11,6 +11,9 @@ class m250725_112007_init_shipment extends Migration
     public string $userForeignKeyColumn;
 
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function init(): void
     {
         parent::init();
