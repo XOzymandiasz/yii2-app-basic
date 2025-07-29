@@ -11,7 +11,7 @@ use yii\grid\GridView;
 /** @var app\models\PostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Module::t('poczta-polska', 'Postal Shipments');
+$this->title = Module::t('common', 'Postal Shipments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="postal-shipment-index">
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Create Postal Shipment'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create Postal Shipment'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

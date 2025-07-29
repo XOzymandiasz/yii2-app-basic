@@ -1,15 +1,14 @@
 <?php
 
-use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\PostSearch $model */
+/** @var app\models\ShipmentPostSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="postal-shipment-search">
+<div class="shipment-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -41,8 +40,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'api_data') ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Module::t('poczta-polska', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Module::t('poczta-polska', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton(Yii::t('common', 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Yii::t('common', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

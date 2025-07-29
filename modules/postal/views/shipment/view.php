@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /** @var app\modules\postal\models\Shipment $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Postal Shipments'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Module::t('poczta-polska', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Module::t('common', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Module::t('common', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Module::t('poczta-polska', 'Are you sure you want to delete this item?'),

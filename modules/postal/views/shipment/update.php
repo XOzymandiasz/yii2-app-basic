@@ -6,12 +6,12 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\modules\postal\models\Shipment $model */
 
-$this->title = Module::t('poczta-polska', 'Update Postal Shipment: {name}', [
+$this->title = Module::t('common', 'Update Postal Shipment: {name}', [
     'name' => $model->id,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Postal Shipments'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Module::t('poczta-polska', 'Update');
+$this->params['breadcrumbs'][] = Module::t('common', 'Update');
 ?>
 <div class="postal-shipment-update">
 
