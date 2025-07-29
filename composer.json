@@ -29,10 +29,10 @@
         "phpro/soap-client": "4.2.0",
         "guzzlehttp/psr7": "2.7.x-dev",
         "symfony/http-client": "8.0.x-dev",
-        "wsdl2phpgenerator/wsdl2phpgenerator": "^2.0",
         "php-http/guzzle7-adapter": "1.x-dev",
         "guzzlehttp/guzzle": "7.9",
-        "vlucas/phpdotenv": "^5.6@dev"
+        "vlucas/phpdotenv": "^5.6@dev",
+        "wsdl2phpgenerator/wsdl2phpgenerator": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -43,7 +43,8 @@
         "codeception/module-asserts": "^3.0 || ^1.1",
         "codeception/module-yii2": "^1.1",
         "codeception/module-filesystem": "^3.0 || ^2.0 || ^1.1",
-        "codeception/verify": "^3.0 || ^2.2"
+        "codeception/verify": "^3.0 || ^2.2",
+        "wsdltophp/packagegenerator": "dev-develop"
     },
     "config": {
         "allow-plugins": {
