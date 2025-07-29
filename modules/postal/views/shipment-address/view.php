@@ -1,26 +1,27 @@
 <?php
 
+use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\modules\postal\models\User $model */
+/** @var app\modules\postal\models\ShipmentAddress $model */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('poczta-polska', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Shipment Addresses'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="user-view">
+<div class="shipment-address-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('poczta-polska', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('poczta-polska', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Module::t('common', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Module::t('common', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('poczta-polska', 'Are you sure you want to delete this item?'),
+                'confirm' => Module::t('common', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
         ]) ?>
@@ -31,6 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
+            'street',
+            'house_number',
+            'apartment_number',
+            'postal_code',
+            'city',
+            'country',
         ],
     ]) ?>
 

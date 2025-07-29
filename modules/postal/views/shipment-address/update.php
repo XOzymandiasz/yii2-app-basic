@@ -1,18 +1,19 @@
 <?php
 
+use app\modules\postal\Module;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\modules\postal\models\User $model */
+/** @var app\modules\postal\models\ShipmentAddress $model */
 
-$this->title = Yii::t('poczta-polska', 'Update User: {name}', [
+$this->title = Module::t('common', 'Update Shipment Address: {name}', [
     'name' => $model->name,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('poczta-polska', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Shipment Addresses'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('poczta-polska', 'Update');
+$this->params['breadcrumbs'][] = Module::t('common', 'Update');
 ?>
-<div class="user-update">
+<div class="shipment-address-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

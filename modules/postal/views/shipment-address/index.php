@@ -1,24 +1,25 @@
 <?php
 
-use app\modules\postal\models\User;
+use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\PostSearch $searchModel */
+/** @var app\models\ShipmentAddressPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Yii::t('poczta-polska', 'Users');
+$this->title = Module::t('common', 'Shipment Addresses');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-index">
+<div class="shipment-address-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('poczta-polska', 'Create User'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create Shipment Address'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,9 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
+            'street',
+            'house_number',
+            'apartment_number',
+            //'postal_code',
+            //'city',
+            //'country',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, User $model, $key, $index, $column) {
+                'urlCreator' => function ($action, ShipmentAddress $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],
