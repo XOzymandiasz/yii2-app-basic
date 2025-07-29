@@ -6,6 +6,7 @@ use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\Module;
 use app\modules\postal\sender\StructType\AdresType;
 use yii\base\Model;
+use yii\db\Exception;
 
 /**
  *
@@ -104,9 +105,31 @@ class AddressTypeForm extends Model
             ->setNip($this->taxID);
     }
 
-    public function save()
+    /**
+     * @throws Exception
+     */
+    public function save(): bool
     {
         //@todo create ShipmentAddress
+        $model = $this->getModel();
+
+        $model->name = $this->name;
+        $model->street = $this->street;
+        $model->postal_code = $this->postalCode;
+        $model->house_number = $this->houseNumber;
+        $model->apartment_number = $this->apartmentNumber;
+        $model->city = $this->city;
+        $model->name2 = $this->name2;
+        $model->country = $this->country;
+        $model->phone = $this->phone;
+        $model->email = $this->email;
+        $model->mobile = $this->mobile;
+        $model->contact_person = $this->contactPerson;
+        $model->taxID = $this->taxID;
+
+        $this->shipmentAddress = $model;
+
+        return $model->save();
     }
 
     public function setModel(ShipmentAddress $model): void
