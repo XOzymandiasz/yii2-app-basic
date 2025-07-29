@@ -32,9 +32,9 @@ $config = [
         ],
         'mailer' => [
             'class' => Mailer::class,
-            '$viewPath' => '@app/mail',
+            'viewPath' => '@app/mail',
             // send all mails to a file by default.
-            '$useFileTransport' => true,
+            'useFileTransport' => true,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

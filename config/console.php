@@ -1,5 +1,7 @@
 <?php
 
+use app\modules\postal\Module as PostalModule;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -10,7 +12,7 @@ $config = [
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
     'components' => [
@@ -28,13 +30,19 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
-    /*
     'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
-        ],
+//        'fixture' => [ // Fixture generation command line.
+//            'class' => 'yii\faker\FixtureController',
+//        ],
+        'poczta-wsdl' => [
+            'class' => \app\modules\postal\commands\WSDLController::class
+        ]
     ],
-    */
+    'modules' => [
+        'postal' => [
+            'class' => PostalModule::class,
+        ],
+    ]
 ];
 
 if (YII_ENV_DEV) {
