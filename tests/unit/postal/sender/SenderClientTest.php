@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal;
+namespace unit\postal\sender;
 
 
 use app\modules\postal\sender\EnumType\GabarytType;
@@ -12,21 +12,21 @@ use app\modules\postal\sender\ServiceType\Create;
 use app\modules\postal\sender\ServiceType\Get;
 use app\modules\postal\sender\ServiceType\Hello;
 use app\modules\postal\sender\ServiceType\Send;
+use app\modules\postal\sender\StructType\AddShipment;
 use app\modules\postal\sender\StructType\AddShipmentResponse;
+use app\modules\postal\sender\StructType\AdresType;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\CreateEnvelopeBufor;
 use app\modules\postal\sender\StructType\EPOType;
 use app\modules\postal\sender\StructType\GetEnvelopeBuforList;
 use app\modules\postal\sender\StructType\GetEnvelopeList;
+use app\modules\postal\sender\StructType\GetGuid;
 use app\modules\postal\sender\StructType\GetOutboxBook;
 use app\modules\postal\sender\StructType\GetPrintForParcel;
 use app\modules\postal\sender\StructType\GetPrintForParcelResponse;
 use app\modules\postal\sender\StructType\GetProfilList;
 use app\modules\postal\sender\StructType\GetUrzedyNadania;
 use app\modules\postal\sender\StructType\Hello as HelloStruct;
-use app\modules\postal\sender\StructType\AddShipment;
-use app\modules\postal\sender\StructType\AdresType;
-use app\modules\postal\sender\StructType\GetGuid;
 use app\modules\postal\sender\StructType\ListWartosciowyKrajowyType;
 use app\modules\postal\sender\StructType\PaczkaPocztowaType;
 use app\modules\postal\sender\StructType\PotwierdzenieDoreczeniaType;
@@ -179,6 +179,7 @@ class SenderClientTest extends Unit
     public function testCorrectAddShipment(): void
     {
         $this->giveGuids(1);
+        codecept_debug($this->guids);
         $this->giveAddressType();
         $this->giveShipperType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
@@ -187,6 +188,7 @@ class SenderClientTest extends Unit
         $add = new Add($this->getDefaultOptions());
         $response = $add->addShipment(new AddShipment([$this->shipmentType], null));
 
+        codecept_debug($response);
 
         $this->tester->assertNotNull($response);
     }

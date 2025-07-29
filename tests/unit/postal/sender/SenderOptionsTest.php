@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal;
+namespace unit\postal\sender;
 
 use Codeception\Test\Unit;
 use UnitTester;
