@@ -7,9 +7,8 @@ use yii\base\Model;
 
 class ContentTypeForm extends Model
 {
-    public int $id;
-    public string $name;
-    public int $is_active;
+    public string $name = '';
+    public int $is_active = 0;
 
     public function rules(): array
     {

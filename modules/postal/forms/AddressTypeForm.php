@@ -9,6 +9,9 @@ use yii\base\Model;
 
 /**
  *
+ *
+ * @property-write AdresType $structModel
+ * @property ShipmentAddress $model
  */
 class AddressTypeForm extends Model
 {
@@ -106,12 +109,12 @@ class AddressTypeForm extends Model
         //@todo create ShipmentAddress
     }
 
-    public function setModel(ShipmentAddress $model)
+    public function setModel(ShipmentAddress $model): void
     {
         $this->shipmentAddress = $model;
         $this->name = $model->name;
         $this->street = $model->street;
-        $this->name = $model->name_2;
+        $this->name2 = $model->name2;
         $this->houseNumber = $model->house_number;
         $this->apartmentNumber = $model->apartment_number;
         $this->city = $model->city;
