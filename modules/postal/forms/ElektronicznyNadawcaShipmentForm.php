@@ -12,7 +12,7 @@ use PocztaPolskaCreateShipmentFactory;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
-class ShipmentForm extends Model
+class ElektronicznyNadawcaShipmentForm extends Model
 {
 
     //bufforId -> senderProfile
@@ -78,6 +78,13 @@ class ShipmentForm extends Model
         ];
     }
 
+    public function save()
+    {
+
+        //@todo create ActiveRecord: PostalShipment
+
+    }
+
 
     public function getBufforsNames(): array
     {
@@ -123,7 +130,7 @@ class ShipmentForm extends Model
     {
         return parent::validate($attributeNames, $clearErrors)
             && $this->getAddressForm()->validate($attributeNames, $clearErrors)
-            && $this->getShipperForm()->validate($attributeNames, $clearErrors);
+            && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
     }
 
 
@@ -131,7 +138,7 @@ class ShipmentForm extends Model
     {
         return parent::load($data, $formName)
             && $this->getAddressForm()->load($data, $formName)
-            && $this->getShipperForm()->load($data, $formName);
+            && $this->getShipperAddressForm()->load($data, $formName);
     }
 
     public static function getShipmentTypes(): array

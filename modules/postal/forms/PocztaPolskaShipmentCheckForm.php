@@ -1,6 +1,5 @@
 <?php
 
-namespace app\modules\postal\models;
 
 use app\modules\postal\components\ShipmentInterface;
 use app\modules\postal\components\ShipmentTrackerInterface;
