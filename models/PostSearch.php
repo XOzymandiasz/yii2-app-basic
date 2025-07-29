@@ -7,9 +7,9 @@ use yii\data\ActiveDataProvider;
 use app\modules\postal\models\Shipment;
 
 /**
- * ShipmentPostSearch represents the model behind the search form of `app\modules\postal\models\Shipment`.
+ * PostSearch represents the model behind the search form of `app\modules\postal\models\PostalShipment`.
  */
-class ShipmentPostSearch extends Shipment
+class PostSearch extends Shipment
 {
     /**
      * {@inheritdoc}
@@ -39,7 +39,7 @@ class ShipmentPostSearch extends Shipment
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $formName = null): ActiveDataProvider
     {
         $query = Shipment::find();
 

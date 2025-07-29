@@ -2,13 +2,24 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+
+use yii\db\ActiveRecord;
+
+/**
+ *
+ */
+class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+//    public $id;
+//    public $username;
+//    public $password;
+//    public $authKey;
+//    public $accessToken;
+
+    public static function tableName(): string
+    {
+        return '{{%user}}';
+    }
 
     private static $users = [
         '100' => [
@@ -33,21 +44,17 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne(['id' => $id]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?self
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne([
+            'access_token' => $token
+        ]);
     }
 
     /**
@@ -56,15 +63,18 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername($username)
+    public static function findByUsername(string $username): ?self
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne([
+            'name' => $username
+        ]);
+//        foreach (self::$users as $user) {
+//            if (strcasecmp($user['username'], $username) === 0) {
+//                return new static($user);
+//            }
+//        }
+//
+//        return null;
     }
 
     /**
@@ -101,4 +111,5 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     {
         return $this->password === $password;
     }
+
 }

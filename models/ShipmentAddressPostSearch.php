@@ -7,9 +7,9 @@ use yii\data\ActiveDataProvider;
 use app\modules\postal\models\ShipmentAddress;
 
 /**
- * PostSearchShipmentAddress represents the model behind the search form of `app\modules\postal\models\ShipmentAddress`.
+ * ShipmentAddressPostSearch represents the model behind the search form of `app\modules\postal\models\ShipmentAddress`.
  */
-class PostSearchShipmentAddress extends ShipmentAddress
+class ShipmentAddressPostSearch extends ShipmentAddress
 {
     /**
      * {@inheritdoc}
