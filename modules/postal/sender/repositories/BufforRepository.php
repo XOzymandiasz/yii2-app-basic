@@ -7,6 +7,8 @@ use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\ServiceType\BufforService;
 use Yii;
 use yii\base\Component;
+use yii\db\Connection;
+use yii\di\Instance;
 
 class BufforRepository extends Component
 {
@@ -14,6 +16,7 @@ class BufforRepository extends Component
     private ?BufforService $service = null;
 
     private PocztaPolskaSenderOptions $senderOptions;
+
 
     public function __construct(PocztaPolskaSenderOptions $senderOptions, array $config = [])
     {
