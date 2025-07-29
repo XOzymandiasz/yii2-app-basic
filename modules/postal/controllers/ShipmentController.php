@@ -2,12 +2,20 @@
 
 namespace app\modules\postal\controllers;
 
+use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\models\PostSearch;
+use app\modules\postal\models\ShipmentDirectionInterface;
+use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
+use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\sender\ServiceType\Get;
+use app\modules\postal\sender\StructType\GetGuid;
 use Throwable;
+use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,7 +24,7 @@ use yii\web\Response;
 /**
  * @property Module $module
  */
-class PostalShipmentController extends Controller
+class ShipmentController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,6 +40,21 @@ class PostalShipmentController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]
+                    ],
+                    'denyCallback' => function () {
+                        Yii::$app->session->setFlash('warning', Module::t('poczta-polska', 'You must be logged in to view this page.'));
+                        return Yii::$app->response->redirect(['/postal/poczta-polska-shipment-check/shipment/index']);
+                    }
+                ]
             ]
         );
     }
@@ -63,22 +86,36 @@ class PostalShipmentController extends Controller
         ]);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function actionCreate(): Response|string //create form to adpater for ActiveRecord // content_id,
-    {
-        $model = new Shipment();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+    public function actionCreateOut()
+    {
+        $model = new ShipmentForm();
+        $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_OUT);
+        $model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
+        $model->creator_id = Yii::$app->user->id;
+        if ($model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('create', [
             'model' => $model,
+            'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
+        ]);
+    }
+
+    public function actionCreateIn()
+    {
+        $model = new ShipmentForm();
+        $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
+        $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
+        $model->receive_id = $this->getDefaultReceiveId();
+        $model->creator_id = Yii::$app->user->id;
+        $model->finish_at = date(DATE_ATOM);
+        if ($model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->render('create', [
+            'model' => $model,
+            'direction' => ShipmentDirectionInterface::DIRECTION_IN,
         ]);
     }
 
@@ -89,7 +126,8 @@ class PostalShipmentController extends Controller
      */
     public function actionUpdate(int $id): Response|string
     {
-        $model = $this->findModel($id);
+        $model = new ShipmentForm();
+        $model->setModel($this->findModel($id));
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -117,7 +155,7 @@ class PostalShipmentController extends Controller
      */
     protected function findModel(int $id): ?Shipment
     {
-        if (($model = Shipment::findOne(['id' => $id, 'provider' => Shipment::PROVIDER_POCZTA_POLSKA])) !== null) {
+        if (($model = Shipment::findOne(['id' => $id, 'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA])) !== null) {
             return $model;
         }
 
