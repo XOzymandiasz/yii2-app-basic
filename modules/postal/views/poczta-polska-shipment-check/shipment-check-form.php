@@ -1,7 +1,6 @@
 <?php
 
 use app\modules\postal\entities\Mail;
-use app\modules\postal\models\PocztaPolskaShipmentCheckForm;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\web\View;
