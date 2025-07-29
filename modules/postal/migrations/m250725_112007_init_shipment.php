@@ -52,6 +52,7 @@ class m250725_112007_init_shipment extends Migration
             'mobile' => $this->string(11)->null(),
             'contact_person' => $this->string(11)->null(),
             'email' => $this->string()->null(),
+            'taxID' => $this->string(15)->null(),
         ]);
 
         $this->createTable('{{%shipment}}', [

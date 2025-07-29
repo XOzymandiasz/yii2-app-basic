@@ -69,7 +69,7 @@ class AddressTypeForm extends Model
         ];
     }
 
-    public function setStructModel(AdresType $model): void
+    public function fillFromAdres(AdresType $model): void
     {
         $this->name = $model->getNazwa();
         $this->name2 = $model->getNazwa2();
@@ -86,7 +86,7 @@ class AddressTypeForm extends Model
         $this->taxID = $model->getNip();
     }
 
-    public function createModel(): AdresType
+    public function toAdresType(): AdresType
     {
         return (new AdresType())
             ->setNazwa($this->name)
@@ -114,11 +114,17 @@ class AddressTypeForm extends Model
         $this->shipmentAddress = $model;
         $this->name = $model->name;
         $this->street = $model->street;
-        $this->name2 = $model->name2;
+        $this->postalCode = $model->postal_code;
         $this->houseNumber = $model->house_number;
         $this->apartmentNumber = $model->apartment_number;
         $this->city = $model->city;
-
+        $this->name2 = $model->name2;
+        $this->country = $model->country;
+        $this->phone = $model->phone;
+        $this->email = $model->email;
+        $this->mobile = $model->mobile;
+        $this->contactPerson = $model->contact_person;
+        $this->taxID = $model->taxID;
     }
 
     public function getModel(): ShipmentAddress

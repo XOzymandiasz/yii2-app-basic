@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
  * @property string|null $mobile
  * @property string|null $contact_person
  * @property string|null $email
+ * @property string|null $taxID
  *
  *
  * @property ShipmentAddressLink[] $shipmentAddressLinks
@@ -43,8 +44,9 @@ class ShipmentAddress extends ActiveRecord
         return [
             [['street', 'apartment_number', 'name2', 'phone', 'mobile', 'contact_person', 'email'], 'default', 'value' => null],
             [['country'], 'default', 'value' => 'PL'],
-            [['name', 'house_number', 'postal_code', 'city'], 'required'],
+            [['name', 'house_number', 'postal_code', 'city', 'taxID'], 'required'],
             [['name', 'street', 'city'], 'string', 'max' => 255],
+            [['taxID'], 'string', 'max' => 15],
             [['phone', 'mobile', 'contact_person'], 'string', 'max' => 11],
             [['house_number', 'apartment_number', 'postal_code'], 'string', 'max' => 10],
             [['country'], 'string', 'max' => 2],
@@ -69,6 +71,7 @@ class ShipmentAddress extends ActiveRecord
             'email' => Module::t('postal', 'Email'),
             'name2' => Module::t('postal', 'Alternative Name'),
             'city_id' => Module::t('postal', 'City ID'),
+            'taxID' => Module::t('postal', 'Tax ID'),
         ];
     }
 
