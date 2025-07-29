@@ -3,7 +3,7 @@
 namespace app\modules\postal\components;
 
 use app\modules\postal\entities\Mail;
-use app\modules\postal\models\PocztaPolskaShipment;
+use app\modules\postal\models\Shipment;
 use Yii;
 use yii\base\Component;
 
@@ -53,7 +53,7 @@ class PocztaPolskaTracker extends Component implements ShipmentTrackerInterface
     }
 
 
-    public function updateModel(PocztaPolskaShipment $model): void
+    public function updateModel(Shipment $model): void
     {
         $data = $this->getMailData($model->shipment);
         if (!empty($data)) {
