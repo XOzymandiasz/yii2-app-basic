@@ -7,10 +7,17 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module as BaseModule;
 
+/**
+ *
+ * @property-read PocztaPolskaTracker $pocztaPolskaTracker
+ */
 class Module extends BaseModule
 {
 
-    public function init()
+    public string $userTable = '{{%user}}';
+    public string $userPrimaryKeyColumn = '{{id}}';
+
+    public function init(): void
     {
         parent::init();
         Yii::setAlias('@edzima/postal', __DIR__);
@@ -18,20 +25,20 @@ class Module extends BaseModule
         static::registerTranslations();
     }
 
-    public static function registerTranslations(): void {
+    public static function registerTranslations(): void
+    {
         Yii::$app->i18n->translations['edzima/postal/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
             'basePath' => '@edzima/postal/messages',
             'fileMap' => [
                 'edzima/postal/poczta-polska' => 'poczta-polska.php',
+                'edzima/postal/common' => 'common.php',
+                'edzima/postal/postal' => 'postal.php',
             ],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function t($category, $message, $params = [], $language = null): string
     {
         return Yii::t('edzima/postal/' . $category, $message, $params, $language);
