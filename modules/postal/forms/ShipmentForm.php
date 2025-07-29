@@ -2,14 +2,23 @@
 
 namespace app\modules\postal\forms;
 
+use app\models\User;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\models\ShipmentDirectionInterface;
+use app\modules\postal\models\ShipmentProviderInterface;
+use app\modules\postal\Module;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
-class ShipmentForm extends Model
+/**
+ *
+ * @property-read string $directionName
+ * @property-read string $providerName
+ * @property-read string $contentName
+ */
+class ShipmentForm extends Model implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
     public const SCENARIO_DIRECTION_IN = ShipmentDirectionInterface::DIRECTION_IN;
     public const SCENARIO_DIRECTION_OUT = ShipmentDirectionInterface::DIRECTION_OUT;
@@ -17,31 +26,53 @@ class ShipmentForm extends Model
 
     public string $number = '';
     public string $direction = '';
+    public string $provider = '';
+    public int $content_id = 0;
+    public int $creator_id = 0;
+    public string $created_at = '';
+    public string $updated_at = '';
+    public string $guid = '';
+    public ?string $finished_at = null;
+    public ?string $shipment_at = null;
+    public ?string $api_data = null;
 
     private ?Shipment $model = null;
 
     public function rules(): array
     {
         return [
-            [['finish_at', 'number', 'direction'], 'required'],
-            ['!direction', 'in', 'range' => array_keys(static::getDirectionNames())],
+            [['finished_at', 'shipment_at', 'api_data'], 'default', 'value' => null],
+            [['direction', 'number', 'provider', 'content_id', 'creator_id', 'created_at', 'updated_at', 'guid'], 'required'],
+            [['content_id', 'creator_id'], 'integer'],
+            [['shipper_id','sender_id', 'created_at', 'updated_at', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
+            ['!direction', 'in', 'range' => array_keys(static::getDirectionsNames())],
             [['finish_at'], 'required', 'on' => self::SCENARIO_DIRECTION_IN],
+            [['direction'], 'string', 'max' => 3],
+            [['number'], 'string', 'max' => 40],
+            [['provider'], 'string', 'max' => 6],
+            [['guid'], 'string', 'max' => 32],
+            [['content_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShipmentContent::class, 'targetAttribute' => ['content_id' => 'id']],
+            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
         ];
     }
 
-    public static function getDirectionNames(): array
+    public function attributeLabels(): array
     {
-        return Shipment::getDirectionsNames();
+        return [
+            'id' => Module::t('poczta-polska', 'ID'),
+            'direction' => Module::t('poczta-polska', 'Direction'),
+            'number' => Module::t('poczta-polska', 'Number'),
+            'provider' => Module::t('poczta-polska', 'Provider'),
+            'content_id' => Module::t('poczta-polska', 'Content ID'),
+            'creator_id' => Module::t('poczta-polska', 'Creator ID'),
+            'created_at' => Module::t('poczta-polska', 'Created At'),
+            'updated_at' => Module::t('poczta-polska', 'Updated At'),
+            'guid' => Module::t('poczta-polska', 'Guid'),
+            'finished_at' => Module::t('poczta-polska', 'Finished At'),
+            'shipment_at' => Module::t('poczta-polska', 'Shipment At'),
+            'api_data' => Module::t('poczta-polska', 'Api Data'),
+        ];
     }
-
-    public static function getAddressesNames(): array
-    {
-        return ShipmentAddress::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->column();
-    }
-
 
     public function getModel(): Shipment
     {
@@ -61,6 +92,19 @@ class ShipmentForm extends Model
         $this->direction = $model->direction;
     }
 
+    public static function getAddressesNames(): array
+    {
+        return ShipmentAddress::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->column();
+    }
+
+    public function getContentName(): string
+    {
+        return static::getContentNames()[$this->content_id];
+    }
+
     public static function getContentNames(): array
     {
         return
@@ -69,6 +113,46 @@ class ShipmentForm extends Model
                 'id',
                 'name'
             );
+    }
+
+    public function getProvider(): string
+    {
+        return $this->provider;
+    }
+
+    public function getProviderName(): string
+    {
+        return static::getProvidersNames()[$this->provider];
+    }
+
+    public static function getProvidersNames(): array
+    {
+        return [
+            static::PROVIDER_POCZTA_POLSKA => Module::t('postal', 'Poczta Polska'),
+            static::PROVIDER_POCZTEX_2021 => Module::t('postal', 'Pocztex2021'),
+            static::PROVIDER_DHL => Module::t('postal', 'DHL'),
+            static::PROVIDER_DPD => Module::t('postal', 'DPD'),
+            static::PROVIDER_GLS => Module::t('postal', 'GLS'),
+            static::PROVIDER_INPOST => Module::t('postal', 'Inpost'),
+        ];
+    }
+
+    public function getDirection(): string
+    {
+        return $this->direction;
+    }
+
+    public function getDirectionName(): string
+    {
+        return static::getDirectionsNames()[$this->direction];
+    }
+
+    public static function getDirectionsNames(): array
+    {
+        return [
+            static::DIRECTION_OUT => Module::t('postal', 'Out'),
+            static::DIRECTION_IN => Module::t('postal', 'In'),
+        ];
     }
 
 
