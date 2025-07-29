@@ -2,7 +2,10 @@
 
 namespace app\modules\postal\models;
 
+use app\modules\postal\Module;
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "shipment_address_link".
@@ -14,22 +17,16 @@ use Yii;
  * @property ShipmentAddress $address
  * @property Shipment $shipment
  */
-class ShipmentAddressLinkContent extends \yii\db\ActiveRecord
+class ShipmentAddressLink extends ActiveRecord
 {
 
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
-        return 'shipment_address_link';
+        return '{{%shipment_address_link}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['address_id', 'shipment_id', 'type'], 'required'],
@@ -41,34 +38,23 @@ class ShipmentAddressLinkContent extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
-            'address_id' => Yii::t('app', 'Address ID'),
-            'shipment_id' => Yii::t('app', 'Shipment ID'),
-            'type' => Yii::t('app', 'Type'),
+            'address_id' => Module::t('postal', 'Address ID'),
+            'shipment_id' => Module::t('postal', 'Shipment ID'),
+            'type' => Module::t('postal', 'Type'),
         ];
     }
 
-    /**
-     * Gets query for [[Address]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAddress()
+
+    public function getAddress(): ActiveQuery
     {
         return $this->hasOne(ShipmentAddress::class, ['id' => 'address_id']);
     }
 
-    /**
-     * Gets query for [[Shipment]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getShipment()
+
+    public function getShipment(): ActiveQuery
     {
         return $this->hasOne(Shipment::class, ['id' => 'shipment_id']);
     }

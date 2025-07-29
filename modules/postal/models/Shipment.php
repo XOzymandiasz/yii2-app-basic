@@ -2,6 +2,7 @@
 
 namespace app\modules\postal\models;
 
+use app\models\User;
 use app\modules\postal\Module;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
@@ -29,10 +30,15 @@ use yii\db\ActiveRecord;
  * @property ShipmentAddress[] $addresses
  * @property ShipmentContent $content
  * @property User $creator
+ * @property-read string $directionName
+ * @property-read string $contentName
+ * @property-read string $providerName
  * @property ShipmentAddressLink[] $shipmentAddressLinks
  */
-class PostalShipment extends ActiveRecord implements ShipmentDirectionInterface
+class Shipment extends ActiveRecord implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
+    public ?int $shipper_id = null;
+    public ?int $sender_id = null;
 
     public function behaviors(): array
     {
@@ -46,24 +52,18 @@ class PostalShipment extends ActiveRecord implements ShipmentDirectionInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName(): string
     {
-        return '{{%postal_shipment}}';
+        return '{{%shipment}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules(): array
     {
         return [
             [['finished_at', 'shipment_at', 'api_data'], 'default', 'value' => null],
             [['direction', 'number', 'provider', 'content_id', 'creator_id', 'created_at', 'updated_at', 'guid'], 'required'],
             [['content_id', 'creator_id'], 'integer'],
-            [['created_at', 'updated_at', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
+            [['shipper_id','sender_id', 'created_at', 'updated_at', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
             [['direction'], 'string', 'max' => 3],
             [['number'], 'string', 'max' => 40],
             [['provider'], 'string', 'max' => 6],
@@ -73,9 +73,6 @@ class PostalShipment extends ActiveRecord implements ShipmentDirectionInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels(): array
     {
         return [
@@ -102,14 +99,35 @@ class PostalShipment extends ActiveRecord implements ShipmentDirectionInterface
         return $this->hasMany(ShipmentAddress::class, ['id' => 'address_id'])->viaTable('shipment_address_link', ['shipment_id' => 'id']);
     }
 
-    public function getContent(): ActiveQuery
+    public static function getAddressesNames(): array
     {
-        return $this->hasOne(ShipmentContent::class, ['id' => 'content_id']);
+        return ShipmentAddress::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->column();
     }
 
     public function getCreator(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'creator_id']);
+    }
+
+    public function getContent(): ActiveQuery
+    {
+        return $this->hasOne(ShipmentContent::class, ['id' => 'content_id']);
+    }
+
+    public function getContentName(): string
+    {
+        return static::getContentNames()[$this->content_id];
+    }
+
+    public static function getContentNames(): array
+    {
+        return ShipmentContent::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->column();
     }
 
     public function getShipmentAddressLinks(): ActiveQuery
@@ -118,30 +136,44 @@ class PostalShipment extends ActiveRecord implements ShipmentDirectionInterface
     }
 
 
-    public static function getProviderList(): array
+    public function getProvider(): string
     {
-//        return [
-//            self::DIRECTION_IN => Module::t('poczta-polska', 'Poczta Polska'),
-//            self::DIRECTION_OUT => Module::t('poczta-polska', 'Pocztex2021'),
-//        ];
+        return $this->provider;
+    }
+
+    public function getProviderName(): string
+    {
+        return static::getProvidersNames()[$this->provider];
+    }
+
+    public static function getProvidersNames(): array
+    {
+        return [
+            static::PROVIDER_POCZTA_POLSKA => Module::t('postal', 'Poczta Polska'),
+            static::PROVIDER_POCZTEX_2021 => Module::t('postal', 'Pocztex2021'),
+            static::PROVIDER_DHL => Module::t('postal', 'DHL'),
+            static::PROVIDER_DPD => Module::t('postal', 'DPD'),
+            static::PROVIDER_GLS => Module::t('postal', 'GLS'),
+            static::PROVIDER_INPOST => Module::t('postal', 'Inpost'),
+        ];
     }
 
 
     public function getDirection(): string
     {
-        return $this->provider;
+        return $this->direction;
     }
 
     public function getDirectionName(): string
     {
-        return static::getDirectionsNames()[$this->provider];
+        return static::getDirectionsNames()[$this->direction];
     }
 
     public static function getDirectionsNames(): array
     {
         return [
-            static::DIRECTION_OUT => Module::t('common', 'Out'),
-            static::DIRECTION_IN => Module::t('common', 'In'),
+            static::DIRECTION_OUT => Module::t('postal', 'Out'),
+            static::DIRECTION_IN => Module::t('postal', 'In'),
         ];
     }
 }
