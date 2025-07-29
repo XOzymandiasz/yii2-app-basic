@@ -8,11 +8,12 @@ use app\modules\postal\components\exceptions\InvalidAuthException;
 use app\modules\postal\components\exceptions\PasswordChangeRequiredException;
 use app\modules\postal\components\exceptions\UnavailableServiceException;
 use app\modules\postal\components\PocztaPolskaTrackerClient;
+use UnitTester;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 
 /**
- * @property \UnitTester $tester
+ * @property UnitTester $tester
  */
 class PocztaPolskaTrackerClientTest extends \Codeception\Test\Unit
 {
@@ -80,8 +81,6 @@ class PocztaPolskaTrackerClientTest extends \Codeception\Test\Unit
         });
 
     }
-
-
 
     public function testCheckMailexForValidNumber()
     {
