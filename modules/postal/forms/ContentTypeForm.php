@@ -2,13 +2,20 @@
 
 namespace app\modules\postal\forms;
 
+use app\modules\postal\models\Shipment;
+use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use yii\base\Model;
 
+/**
+ *
+ * @property-read ShipmentContent $model
+ */
 class ContentTypeForm extends Model
 {
     public string $name = '';
     public int $is_active = 0;
+    public ?ShipmentContent $shipmentContent = null;
 
     public function rules(): array
     {
@@ -28,4 +35,20 @@ class ContentTypeForm extends Model
             'is_active' => Module::t('postal', 'Is Active'),
         ];
     }
+
+    public function setModel(ShipmentContent $model): void
+    {
+        $this->name = $model->name;
+        $this->is_active = $model->is_active;
+    }
+
+    public function getModel(): ShipmentContent
+    {
+        if ($this->shipmentContent) {
+            $this->shipmentContent = new ShipmentContent();
+        }
+        return $this->shipmentContent;
+    }
+
+
 }
