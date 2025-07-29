@@ -2,11 +2,16 @@
 
 namespace app\modules\postal\forms;
 
+use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\Module;
 use app\modules\postal\sender\StructType\ProfilType;
 use \app\modules\postal\sender\StructType\AdresType;
 
-class ShipperTypeForm extends AddressTypeForm
+/**
+ *
+ * @property-write AdresType|ShipmentAddress $model
+ */
+class ShipperAddressTypeForm extends AddressTypeForm
 {
     public ?int $idProfil = null;
     public ?int $shortName = null;
@@ -32,7 +37,7 @@ class ShipperTypeForm extends AddressTypeForm
         ]);
     }
 
-    public function setModel(AdresType $model): void
+    public function setModel(AdresType|ShipmentAddress $model): void
     {
         parent::setModel($model);
 
