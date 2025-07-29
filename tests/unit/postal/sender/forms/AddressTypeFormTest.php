@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal;
+namespace unit\postal\sender\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\sender\StructType\AdresType;
@@ -35,6 +35,14 @@ class AddressTypeFormTest extends Unit
         $this->model->name = "Jan Kowalski";
 
         $this->tester->assertFalse($this->model->validate());
+
+        $errorStreet = $this->model->getFirstError('street');
+        $errorCity = $this->model->getFirstError('city');
+        $errorPostalCode = $this->model->getFirstError('postalCode');
+
+        $this->tester->assertSame('Street cannot be blank.', $errorStreet);
+        $this->tester->assertSame('City cannot be blank.', $errorCity);
+        $this->tester->assertSame('Postal Code cannot be blank.', $errorPostalCode);
     }
 
     public function testValidationStringTooLong(): void

@@ -16,10 +16,14 @@ use UnitTester;
 class ElektronicznyNadawcaShipmentFormTest extends Unit
 {
     protected ElektronicznyNadawcaShipmentForm $model;
+    protected AddressTypeForm $addressType;
+    protected ShipperAddressTypeForm $shipperType;
 
     protected function _before(): void
     {
         $this->model = new ElektronicznyNadawcaShipmentForm();
+        $this->addressType = new AddressTypeForm();
+        $this->shipperType = new ShipperAddressTypeForm();
     }
 
     public function testRequiredFieldsValidation(): void
@@ -27,9 +31,6 @@ class ElektronicznyNadawcaShipmentFormTest extends Unit
         $this->model->shipmentType = '';
         $this->model->category = '';
         $this->model->guid = '';
-
-        $this->model->setAddressForm(new AddressTypeForm());
-        $this->model->setShipperAddressForm(new ShipperAddressTypeForm());
 
         $this->assertFalse($this->model->validate());
         $this->assertSame(
@@ -52,10 +53,7 @@ class ElektronicznyNadawcaShipmentFormTest extends Unit
         $this->model->shipmentType = ShipmentType::VALUE_PRZESYLKA_POLECONA_KRAJOWA;
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
         $this->model->guid = '12345678901234567890123456789012';
-        $this->model->shipmentNumber = 'abc123'; // invalid: not only digits and too short
-
-        $this->model->setAddressForm(new AddressTypeForm());
-        $this->model->setShipperAddressForm(new ShipperAddressTypeForm());
+        $this->model->shipmentNumber = 'abc123';
 
         $this->assertFalse($this->model->validate());
         $this->assertSame(
@@ -69,12 +67,21 @@ class ElektronicznyNadawcaShipmentFormTest extends Unit
         $this->model->shipmentType = ShipmentType::VALUE_PRZESYLKA_POLECONA_KRAJOWA;
         $this->model->category = KategoriaType::VALUE_EKONOMICZNA;
         $this->model->guid = '12345678901234567890123456789012';
-        $this->model->shipmentNumber = '1234567890';
-        codecept_debug($this->model->validate());
-        codecept_debug($this->model->getErrors());
+        $this->model->shipmentNumber = '12345678980';
+
+        $this->addressType->name = "Jan Kowalski";
+        $this->addressType->street = "Dmowskiego";
+        $this->addressType->postalCode = "83314";
+        $this->addressType->city = "Warszawa";
+
+        $this->shipperType->name = "Jan Kowalski";
+        $this->shipperType->street = "Dmowskiego";
+        $this->shipperType->postalCode = "83314";
+        $this->shipperType->city = "Warszawa";
 
 
-        //$this->assertTrue($this->model->validate());
+
+        $this->assertTrue($this->model->validate());
 
     }
 
