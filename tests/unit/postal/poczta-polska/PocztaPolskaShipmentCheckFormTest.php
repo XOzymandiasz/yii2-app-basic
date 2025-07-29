@@ -1,11 +1,8 @@
 <?php
 
-namespace tests\unit\postal;
 
 use app\modules\postal\components\ShipmentInterface;
 use Codeception\Test\Unit;
-use PocztaPolskaShipmentCheckForm;
-use UnitTester;
 
 /**
  * @property UnitTester $tester

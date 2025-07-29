@@ -1,6 +1,5 @@
 <?php
 
-namespace tests\unit\postal;
 
 use app\modules\postal\components\exceptions\BaseException;
 use app\modules\postal\components\PocztaPolskaTracker;
@@ -10,8 +9,6 @@ use app\modules\postal\entities\MailInfo;
 use app\modules\postal\entities\MailInfoEvent;
 use app\modules\postal\entities\MailInfoEventOffice;
 use app\modules\postal\entities\MailInfoEventStates;
-use app\modules\postal\Module;
-use Yii;
 
 
 /**
