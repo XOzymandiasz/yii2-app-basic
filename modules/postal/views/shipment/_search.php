@@ -1,17 +1,15 @@
 <?php
 
-use app\models\PostSearch;
 use app\modules\postal\Module;
 use yii\helpers\Html;
-use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/** @var View $this */
-/** @var PostSearch $model */
-/** @var ActiveForm $form */
+/** @var yii\web\View $this */
+/** @var app\models\PostSearch $model */
+/** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="poczta-polska-shipment-search">
+<div class="postal-shipment-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -20,13 +18,23 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
+    <?= $form->field($model, 'direction') ?>
+
     <?= $form->field($model, 'number') ?>
 
-    <?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, 'provider') ?>
 
-    <?= $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, 'content_id') ?>
 
-    <?= $form->field($model, 'finished_at') ?>
+    <?php // echo $form->field($model, 'creator_id') ?>
+
+    <?php // echo $form->field($model, 'created_at') ?>
+
+    <?php // echo $form->field($model, 'updated_at') ?>
+
+    <?php // echo $form->field($model, 'guid') ?>
+
+    <?php // echo $form->field($model, 'finished_at') ?>
 
     <?php // echo $form->field($model, 'shipment_at') ?>
 

@@ -2,21 +2,22 @@
 
 namespace app\modules\postal\controllers;
 
-use app\modules\postal\models\PocztaPolskaShipment;
+use app\modules\postal\models\Shipment;
+use app\models\PostSearch;
 use app\modules\postal\Module;
+use Throwable;
 use yii\db\Exception;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\PostSearch;
+use yii\web\Response;
 
 /**
  * @property Module $module
  */
-class PocztaPolskaShipmentController extends Controller
+class PostalShipmentController extends Controller
 {
-
     /**
      * @inheritDoc
      */
@@ -35,11 +36,11 @@ class PocztaPolskaShipmentController extends Controller
         );
     }
 
-    /**
-     * Lists all PocztaPolskaShipment models.
-     *
-     * @return string
-     */
+    public function actionAddShipment(): void
+    {
+        $model = new Shipment();
+    }
+
     public function actionIndex(): string
     {
         $searchModel = new PostSearch();
@@ -53,37 +54,21 @@ class PocztaPolskaShipmentController extends Controller
 
 
     /**
-     * Displays a single PocztaPolskaShipment model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException
      */
     public function actionView(int $id): string
     {
-        $model = $this->findModel($id);
-        if (!empty($model->api_data)) {
-
-        }
         return $this->render('view', [
-            'model' => $model,
+            'model' => $this->findModel($id),
         ]);
     }
 
-
-    public function actionUpdateInfoFromTracker(int $id)
-    {
-
-    }
-
     /**
-     * Creates a new PocztaPolskaShipment model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|Response
      * @throws Exception
      */
-    public function actionCreate(): Response|string
+    public function actionCreate(): Response|string //create form to adpater for ActiveRecord // content_id,
     {
-        $model = new PocztaPolskaShipment();
+        $model = new Shipment();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -92,11 +77,11 @@ class PocztaPolskaShipmentController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * @throws Exception
@@ -105,19 +90,19 @@ class PocztaPolskaShipmentController extends Controller
     public function actionUpdate(int $id): Response|string
     {
         $model = $this->findModel($id);
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
+
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing PocztaPolskaShipment model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return Response
+     * @throws StaleObjectException
+     * @throws Throwable
      * @throws NotFoundHttpException
      */
     public function actionDelete(int $id): Response
@@ -128,19 +113,14 @@ class PocztaPolskaShipmentController extends Controller
     }
 
     /**
-     * Finds the PocztaPolskaShipment model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return PocztaPolskaShipment the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException
      */
-    protected function findModel(int $id): PocztaPolskaShipment
+    protected function findModel(int $id): ?Shipment
     {
-        if (($model = PocztaPolskaShipment::findOne(['id' => $id])) !== null) {
+        if (($model = Shipment::findOne(['id' => $id, 'provider' => Shipment::PROVIDER_POCZTA_POLSKA])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException(Module::t('poczta-polska', 'The requested page does not exist.'));
     }
-
 }
