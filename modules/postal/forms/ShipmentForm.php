@@ -10,6 +10,7 @@ use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
 use yii\base\Model;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -59,19 +60,44 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public function attributeLabels(): array
     {
         return [
-            'id' => Module::t('poczta-polska', 'ID'),
-            'direction' => Module::t('poczta-polska', 'Direction'),
-            'number' => Module::t('poczta-polska', 'Number'),
-            'provider' => Module::t('poczta-polska', 'Provider'),
-            'content_id' => Module::t('poczta-polska', 'Content ID'),
-            'creator_id' => Module::t('poczta-polska', 'Creator ID'),
-            'created_at' => Module::t('poczta-polska', 'Created At'),
-            'updated_at' => Module::t('poczta-polska', 'Updated At'),
-            'guid' => Module::t('poczta-polska', 'Guid'),
-            'finished_at' => Module::t('poczta-polska', 'Finished At'),
-            'shipment_at' => Module::t('poczta-polska', 'Shipment At'),
-            'api_data' => Module::t('poczta-polska', 'Api Data'),
+            'id' => Module::t('postal', 'ID'),
+            'direction' => Module::t('postal', 'Direction'),
+            'number' => Module::t('postal', 'Number'),
+            'provider' => Module::t('postal', 'Provider'),
+            'content_id' => Module::t('postal', 'Content ID'),
+            'creator_id' => Module::t('postal', 'Creator ID'),
+            'created_at' => Module::t('postal', 'Created At'),
+            'updated_at' => Module::t('postal', 'Updated At'),
+            'guid' => Module::t('postal', 'Guid'),
+            'finished_at' => Module::t('postal', 'Finished At'),
+            'shipment_at' => Module::t('postal', 'Shipment At'),
+            'api_data' => Module::t('postal', 'Api Data'),
         ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function save(): bool
+    {
+        $model = $this->getModel();
+
+        $model->number = $this->number;
+        $model->guid = $this->guid;
+        $model->finished_at = $this->finished_at;
+        $model->provider = $this->provider;
+        $model->direction = $this->direction;
+        $model->content_id = $this->content_id;
+        $model->creator_id = $this->creator_id;
+        $model->created_at = $this->created_at;
+        $model->updated_at = $this->updated_at;
+        $model->shipment_at = $this->shipment_at;
+        $model->api_data = $this->api_data;
+
+        $this->setModel($model);
+
+        return $this->model->save();
+
     }
 
     public function getModel(): Shipment
@@ -85,11 +111,18 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public function setModel(Shipment $model): void
     {
         $this->model = $model;
+
         $this->number = $model->number;
         $this->guid = $model->guid;
         $this->finished_at = $model->finished_at;
         $this->provider = $model->provider;
         $this->direction = $model->direction;
+        $this->content_id = $model->content_id;
+        $this->creator_id = $model->creator_id;
+        $this->created_at = $model->created_at;
+        $this->updated_at = $model->updated_at;
+        $this->shipment_at = $model->shipment_at;
+        $this->api_data = $model->api_data;
     }
 
     public static function getAddressesNames(): array
