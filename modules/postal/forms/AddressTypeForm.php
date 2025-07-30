@@ -31,7 +31,7 @@ class AddressTypeForm extends Model
     public ?string $contactPerson = null;
     public ?string $taxID = null;
     public ?string $country = self::DEFAULT_COUNTRY;
-    private ?ShipmentAddress $shipmentAddress = null;
+    private ?ShipmentAddress $model = null;
 
     public function rules(): array
     {
@@ -70,7 +70,7 @@ class AddressTypeForm extends Model
         ];
     }
 
-    public function fillFromAdres(AdresType $model): void
+    public function setAdresType(AdresType $model): void
     {
         $this->name = $model->getNazwa();
         $this->name2 = $model->getNazwa2();
@@ -87,7 +87,7 @@ class AddressTypeForm extends Model
         $this->taxID = $model->getNip();
     }
 
-    public function toAdresType(): AdresType
+    public function getAdresType(): AdresType
     {
         return (new AdresType())
             ->setNazwa($this->name)
@@ -127,14 +127,14 @@ class AddressTypeForm extends Model
         $model->contact_person = $this->contactPerson;
         $model->taxID = $this->taxID;
 
-        $this->shipmentAddress = $model;
+        $this->setModel($model);
 
         return $model->save();
     }
 
     public function setModel(ShipmentAddress $model): void
     {
-        $this->shipmentAddress = $model;
+        $this->model = $model;
         $this->name = $model->name;
         $this->street = $model->street;
         $this->postalCode = $model->postal_code;
@@ -152,9 +152,9 @@ class AddressTypeForm extends Model
 
     public function getModel(): ShipmentAddress
     {
-        if ($this->shipmentAddress) {
-            $this->shipmentAddress = new ShipmentAddress();
+        if ($this->model === null) {
+            $this->model = new ShipmentAddress();
         }
-        return $this->shipmentAddress;
+        return $this->model;
     }
 }
