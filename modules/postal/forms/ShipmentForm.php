@@ -25,8 +25,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public string $provider = '';
     public int $content_id = 0;
     public int $creator_id = 0;
-    public string $created_at = '';
-    public string $updated_at = '';
     public string $guid = '';
     public ?string $finished_at = null;
     public ?string $shipment_at = null;
@@ -40,15 +38,14 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public function rules(): array
     {
         return [
-            [['finished_at', 'shipment_at', 'api_data'], 'default', 'value' => null],
-            [['direction', 'number', 'provider', 'content_id', 'creator_id', 'created_at', 'updated_at', 'guid'], 'required'],
-            [['content_id', 'creator_id'], 'integer'],
-            [['shipper_id','sender_id', 'created_at', 'updated_at', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
-            ['!direction', 'in', 'range' => array_keys(static::getDirectionsNames())],
+            [['direction', 'number', 'provider', 'content_id', 'guid'], 'required'],
+            [['content_id', 'shipper_id', 'sender_id'], 'integer'],
+            [['finished_at', 'shipment_at', 'api_data'], 'safe'],
+            [['finished_at', 'shipment_at', 'api_data', 'guid'], 'default', 'value' => null],
+            [['!direction'], 'in', 'range' => array_keys(static::getDirectionsNames())],
+            [['provider'], 'in', 'range' => array_keys(static::getProvidersNames())],
             [['finish_at'], 'required', 'on' => self::SCENARIO_DIRECTION_IN],
-            [['direction'], 'string', 'max' => 3],
             [['number'], 'string', 'max' => 40],
-            [['provider'], 'string', 'max' => 6],
             [['guid'], 'string', 'max' => 32],
             [['content_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShipmentContent::class, 'targetAttribute' => ['content_id' => 'id']],
             [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
@@ -117,18 +114,17 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $this->direction = $model->direction;
         $this->content_id = $model->content_id;
         $this->creator_id = $model->creator_id;
-        $this->created_at = $model->created_at;
-        $this->updated_at = $model->updated_at;
         $this->shipment_at = $model->shipment_at;
         $this->api_data = $model->api_data;
     }
 
     public static function getAddressesNames(): array
     {
-        return ShipmentAddress::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->column();
+        $models = ShipmentAddress::find()->all();
+
+        return array_map(function ($model) {
+            return $model->getFullInfo();
+        }, $models);
     }
 
     public function getContentName(): string
@@ -148,34 +144,27 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
     public function getProvider(): string
     {
-        return $this->provider;
+        return $this->model ? $this->model->getProvider() : '';
     }
 
     public function getProviderName(): string
     {
-        return static::getProvidersNames()[$this->provider];
+        return $this->model ? $this->model->getProviderName() : '';
     }
 
     public static function getProvidersNames(): array
     {
-        return [
-            static::PROVIDER_POCZTA_POLSKA => Module::t('postal', 'Poczta Polska'),
-            static::PROVIDER_POCZTEX_2021 => Module::t('postal', 'Pocztex2021'),
-            static::PROVIDER_DHL => Module::t('postal', 'DHL'),
-            static::PROVIDER_DPD => Module::t('postal', 'DPD'),
-            static::PROVIDER_GLS => Module::t('postal', 'GLS'),
-            static::PROVIDER_INPOST => Module::t('postal', 'Inpost'),
-        ];
+        return Shipment::getProvidersNames();
     }
 
     public function getDirection(): string
     {
-        return $this->direction;
+        return $this->model ? $this->model->getDirection() : '';
     }
 
     public function getDirectionName(): string
     {
-        return static::getDirectionsNames()[$this->direction];
+        return $this->model ? $this->model->getDirectionName() : '';
     }
 
     public static function getDirectionsNames(): array
