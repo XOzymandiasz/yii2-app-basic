@@ -7,10 +7,7 @@ use app\modules\postal\Module;
 use app\modules\postal\sender\StructType\ProfilType;
 use \app\modules\postal\sender\StructType\AdresType;
 
-/**
- *
- * @property-write AdresType|ShipmentAddress $model
- */
+
 class ShipperAddressTypeForm extends AddressTypeForm
 {
     public ?int $idProfil = null;

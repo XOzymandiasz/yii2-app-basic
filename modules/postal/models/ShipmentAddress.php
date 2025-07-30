@@ -3,7 +3,6 @@
 namespace app\modules\postal\models;
 
 use app\modules\postal\Module;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -20,7 +19,7 @@ use yii\db\ActiveRecord;
  * @property string $city
  * @property int|null $city_id
  * @property string $country
- * @property string|null $name2
+ * @property string|null $name_2
  * @property string|null $phone
  * @property string|null $mobile
  * @property string|null $contact_person

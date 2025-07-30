@@ -29,6 +29,9 @@ class m250725_112007_init_shipment extends Migration
         $this->userForeignKeyColumn = $module->userPrimaryKeyColumn;
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public function safeUp(): void
     {
         $this->createTable('{{%shipment_content}}', [
@@ -47,7 +50,7 @@ class m250725_112007_init_shipment extends Migration
             'city' => $this->string()->notNull(),
             'city_id' => $this->integer()->null(),
             'country' => $this->char(2)->notNull()->defaultValue('PL'),
-            'name2' => $this->string()->null(),
+            'name_2' => $this->string()->null(),
             'phone' => $this->string(11)->null(),
             'mobile' => $this->string(11)->null(),
             'contact_person' => $this->string(11)->null(),
@@ -119,7 +122,6 @@ class m250725_112007_init_shipment extends Migration
             'id',
             'CASCADE'
         );
-
     }
 
     public function safeDown(): void
