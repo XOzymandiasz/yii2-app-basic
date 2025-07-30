@@ -4,6 +4,7 @@ use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /** @var yii\web\View $this */
 /** @var ShipmentForm $model */
@@ -22,25 +23,43 @@ use yii\widgets\ActiveForm;
     //        ['prompt' => Module::t('poczta-polska', 'Choose direction')])
     //    ?>
 
-    <?= $form->field($model, 'provider')->dropDownList(
-        $model::getProvidersNames(),
-        ['prompt' => Module::t('poczta-polska', 'Choose provider')])
-    ?>
+    <?= $form->field($model, 'provider')->widget(Select2::class, [
+        'data' => $model::getProvidersNames(),
+        'options' => ['placeholder' => Module::t('postal', 'Choose provider')],
+        'pluginOptions' => [
+            'allowClear' => true,
+        ],
+    ]) ?>
 
-    <?= $form->field($model, 'content_id')->dropDownList(
-        $model::getContentNames(),
-        ['prompt' => Module::t('poczta-polska', 'Choose content')])
-    ?>
+    <!--    --><?php //= $form->field($model, 'direction')->dropDownList(
+    //        $model::getDirectionsNames(),
+    //        ['prompt' => Module::t('poczta-polska', 'Choose direction')])
+    //    ?>
 
-    <?= $form->field($model, 'receiver_id')->dropDownList(
-        $model::getAddressesNames(),
-        ['prompt' => Module::t('poczta-polska', 'Choose shipper')])
-        ->hint(Html::a(
-            Module::t('postal', 'Create Address'), [
-                'shipment-address/create'
-            ]
-        ))
-    ?>
+    <?= $form->field($model, 'content_id')->widget(Select2::class, [
+        'data' => $model->getContentNames(),
+        'options' => ['placeholder' => Module::t('postal', 'Choose content')],
+        'pluginOptions' => [
+            'allowClear' => true,
+        ],
+    ]) ?>
+
+    <!--    --><?php //= $form->field($model, 'direction')->dropDownList(
+    //        $model::getDirectionsNames(),
+    //        ['prompt' => Module::t('poczta-polska', 'Choose direction')])
+    //    ?>
+
+    <?= $form->field($model, 'receiverAddress')->widget(Select2::class, [
+        'data' => $model::getAddressesNames(),
+        'options' => ['placeholder' => Module::t('postal', 'Choose Sender')],
+        'pluginOptions' => [
+            'allowClear' => true,
+        ],
+    ])->hint(Html::a(
+        Module::t('postal', 'Create Address'), [
+            'shipment-address/create'
+        ]
+    )) ?>
 
 <!--    --><?php //= $this->render('_addressForm', [
 //        'form' => $form,
@@ -48,15 +67,17 @@ use yii\widgets\ActiveForm;
 //        'id' => 'address-receiver-form'
 //    ]) ?>
 
-    <?= $form->field($model, 'sender_id')->dropDownList(
-        $model::getAddressesNames(),
-        ['prompt' => Module::t('poczta-polska', 'Choose sender')])
-        ->hint(Html::a(
-            Module::t('postal', 'Create Address'), [
-                'shipment-address/create'
-            ]
-        ))
-    ?>
+    <?= $form->field($model, 'senderAddress')->widget(Select2::class, [
+        'data' => $model::getAddressesNames(),
+        'options' => ['placeholder' => Module::t('postal', 'Choose Receiver')],
+        'pluginOptions' => [
+            'allowClear' => true,
+        ],
+    ])->hint(Html::a(
+        Module::t('postal', 'Create Address'), [
+            'shipment-address/create'
+        ]
+    )) ?>
 
 <!--    --><?php //= $this->render('_addressForm', [
 //        'form' => $form,
