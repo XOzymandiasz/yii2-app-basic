@@ -2,14 +2,12 @@
 
 namespace unit\postal\forms;
 
-use app\models\User;
+use _support\UnitModelTrait;
+use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
-use app\modules\postal\models\ShipmentAddressLink;
-use app\modules\postal\models\ShipmentContent;
-use app\modules\postal\models\ShipmentDirectionInterface;
-use app\modules\postal\models\ShipmentProviderInterface;
 use Codeception\Test\Unit;
 use UnitTester;
+use yii\base\Model;
 
 /**
  * @property UnitTester $tester
@@ -17,11 +15,12 @@ use UnitTester;
 
 class ShipmentFormTest extends Unit
 {
-    private Shipment $model;
+    use UnitModelTrait;
+    private ShipmentForm $model;
 
     protected function _before(): void
     {
-        $this->model = new Shipment();
+        $this->model = new ShipmentForm();
     }
 
     public function testValidationRequiredFields(): void
@@ -35,48 +34,74 @@ class ShipmentFormTest extends Unit
         $this->model->updated_at = date('Y-m-d H:i:s');
         $this->model->guid = '12345678901234567890123456789012';
 
-        $this->tester->assertTrue($this->model->validate());
+        $this->thenSuccessValidate(['direction','number','provider','content_id','creator_id','created_at','updated_at',
+                                    'guid']);
     }
 
     public function testValidationMissingRequiredFields(): void
     {
-        $this->tester->assertFalse($this->model->validate());
+        $this->thenUnsuccessValidate(['direction','number','provider','content_id','creator_id','created_at',
+            'updated_at', 'guid'],false);
 
-        $this->tester->assertSame('Direction cannot be blank.',
-            $this->model->getFirstError('direction'));
-        $this->tester->assertSame('Number cannot be blank.',
-            $this->model->getFirstError('number'));
-        $this->tester->assertSame('Provider cannot be blank.',
-            $this->model->getFirstError('provider'));
-        $this->tester->assertSame('Content ID cannot be blank.',
-            $this->model->getFirstError('content_id'));
-        $this->tester->assertSame('Creator ID cannot be blank.',
-            $this->model->getFirstError('creator_id'));
-        $this->tester->assertSame('Created At cannot be blank.',
-            $this->model->getFirstError('created_at'));
-        $this->tester->assertSame('Updated At cannot be blank.',
-            $this->model->getFirstError('updated_at'));
-        $this->tester->assertSame('Guid cannot be blank.',
-            $this->model->getFirstError('guid'));
+        $this->thenSeeError('Direction cannot be blank.','direction');
+        $this->thenSeeError('Number cannot be blank.','number');
+        $this->thenSeeError('Provider cannot be blank.','provider');
+        $this->thenSeeError('Content ID is invalid.','content_id');
+        $this->thenSeeError('Creator ID is invalid.','creator_id');
+        $this->thenSeeError('Created At cannot be blank.','created_at');
+        $this->thenSeeError('Updated At cannot be blank.','updated_at');
+        $this->thenSeeError('Guid cannot be blank.','guid');
+
     }
 
     public function testValidationFieldLengths(): void
     {
-        $this->model->direction = 'LONG';
         $this->model->number = str_repeat('A', 41);
         $this->model->provider = str_repeat('B', 7);
         $this->model->guid = str_repeat('C', 33);
         $this->model->created_at = date('Y-m-d H:i:s');
         $this->model->updated_at = date('Y-m-d H:i:s');
 
-        $this->tester->assertFalse($this->model->validate());
+        $this->thenUnsuccessValidate(['number','provider','created_at', 'updated_at', 'guid']);
 
-        $this->tester->assertStringContainsString('at most 3 characters', $this->model->getFirstError('direction'));
-        $this->tester->assertStringContainsString('at most 40 characters', $this->model->getFirstError('number'));
-        $this->tester->assertStringContainsString('at most 6 characters', $this->model->getFirstError('provider'));
-        $this->tester->assertStringContainsString('at most 32 characters', $this->model->getFirstError('guid'));
+        $this->thenSeeError('Number should contain at most 40 characters.','number');
+        $this->thenSeeError('Provider should contain at most 6 characters.','provider');
+        $this->thenSeeError('Guid should contain at most 32 characters.','guid');
     }
 
+    public function testSetModel()
+    {
+        $shipment = new Shipment();
+        $shipment->number = 'ABC123';
+        $shipment->guid = 'guid-001';
+        $shipment->finished_at = '2024-01-01 12:00:00';
+        $shipment->provider = 'DPD';
+        $shipment->direction = ShipmentForm::SCENARIO_DIRECTION_OUT;
+        $shipment->content_id = 42;
+        $shipment->creator_id = 5;
+        $shipment->created_at = '2024-01-01 10:00:00';
+        $shipment->updated_at = '2024-01-02 10:00:00';
+        $shipment->shipment_at = '2024-01-03 15:00:00';
+        $shipment->api_data = '{"key":"value"}';
 
+        $form = new ShipmentForm();
+        $form->setModel($shipment);
 
+        $this->tester->assertSame($shipment->number, $form->number);
+        $this->tester->assertSame($shipment->guid, $form->guid);
+        $this->tester->assertSame($shipment->finished_at, $form->finished_at);
+        $this->tester->assertSame($shipment->provider, $form->provider);
+        $this->tester->assertSame($shipment->direction, $form->direction);
+        $this->tester->assertSame($shipment->content_id, $form->content_id);
+        $this->tester->assertSame($shipment->creator_id, $form->creator_id);
+        $this->tester->assertSame($shipment->created_at, $form->created_at);
+        $this->tester->assertSame($shipment->updated_at, $form->updated_at);
+        $this->tester->assertSame($shipment->shipment_at, $form->shipment_at);
+        $this->tester->assertSame($shipment->api_data, $form->api_data);
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 }
