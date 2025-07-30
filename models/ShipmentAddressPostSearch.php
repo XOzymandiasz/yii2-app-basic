@@ -14,7 +14,7 @@ class ShipmentAddressPostSearch extends ShipmentAddress
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id'], 'integer'],
@@ -25,7 +25,7 @@ class ShipmentAddressPostSearch extends ShipmentAddress
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,7 +39,7 @@ class ShipmentAddressPostSearch extends ShipmentAddress
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search(array $params, string $formName = null): ActiveDataProvider
     {
         $query = ShipmentAddress::find();
 
@@ -68,7 +68,12 @@ class ShipmentAddressPostSearch extends ShipmentAddress
             ->andFilterWhere(['like', 'apartment_number', $this->apartment_number])
             ->andFilterWhere(['like', 'postal_code', $this->postal_code])
             ->andFilterWhere(['like', 'city', $this->city])
-            ->andFilterWhere(['like', 'country', $this->country]);
+            ->andFilterWhere(['like', 'country', $this->country])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'mobile', $this->mobile])
+            ->andFilterWhere(['like', 'contact_person', $this->contact_person])
+            ->andFilterWhere(['like', 'email', $this->email]);
+
 
         return $dataProvider;
     }
