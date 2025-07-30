@@ -13,18 +13,13 @@ use yii\base\Model;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
-/**
- *
- * @property-read string $directionName
- * @property-read string $providerName
- * @property-read string $contentName
- */
+
 class ShipmentForm extends Model implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
     public const SCENARIO_DIRECTION_IN = ShipmentDirectionInterface::DIRECTION_IN;
     public const SCENARIO_DIRECTION_OUT = ShipmentDirectionInterface::DIRECTION_OUT;
 
-
+    public int $id;
     public string $number = '';
     public string $direction = '';
     public string $provider = '';
@@ -36,6 +31,9 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public ?string $finished_at = null;
     public ?string $shipment_at = null;
     public ?string $api_data = null;
+
+    public ?int $receiver_id = null;
+    public ?int $sender_id = null;
 
     private ?Shipment $model = null;
 
