@@ -28,7 +28,7 @@ class ContentTypeFormTest extends Unit
         $this->model->name = 'Wezwanie';
         $this->model->is_active = 1;
 
-        $this->thenSuccessValidate();
+        $this->thenSuccessValidate(['name']);
     }
 
     public function testValidationWithoutRequiredFields(): void
@@ -72,7 +72,7 @@ class ContentTypeFormTest extends Unit
         $this->assertInstanceOf(ShipmentContent::class, $shipmentModel);
     }
 
-    public function testGetModelWithoutSetting(): void
+    public function testGetModelWithoutSetModel(): void
     {
         $shipmentModel = $this->model->getModel();
 
