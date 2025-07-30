@@ -15,7 +15,7 @@ use yii\base\Model;
  * @property UnitTester $tester
  */
 
-class AddressTypeFormTest extends Unit
+class AddressFormTest extends Unit
 {
     use UnitModelTrait;
 
