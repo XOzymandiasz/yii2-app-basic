@@ -2,11 +2,14 @@
 
 namespace unit\postal\forms;
 
+use _support\UnitModelTrait;
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\sender\StructType\AdresType;
 use Codeception\Test\Unit;
 use UnitTester;
+use Yii;
+use yii\base\Model;
 
 /**
  * @property UnitTester $tester
@@ -14,6 +17,8 @@ use UnitTester;
 
 class AddressTypeFormTest extends Unit
 {
+    use UnitModelTrait;
+
     protected AddressTypeForm $model;
 
     protected function _before(): void
@@ -28,22 +33,17 @@ class AddressTypeFormTest extends Unit
         $this->model->postalCode = "83314";
         $this->model->city = "Warszawa";
 
-        $this->tester->assertTrue($this->model->validate());
+        $this->thenSuccessValidate(['name','street','postalCode','city']);
     }
 
     public function testMissingValidationRequiredFields(): void
     {
-        $this->model->name = "Jan Kowalski";
+        $this->thenUnsuccessValidate(['name','street','postalCode','city']);
 
-        $this->tester->assertFalse($this->model->validate());
-
-        $errorStreet = $this->model->getFirstError('street');
-        $errorCity = $this->model->getFirstError('city');
-        $errorPostalCode = $this->model->getFirstError('postalCode');
-
-        $this->tester->assertSame('Street cannot be blank.', $errorStreet);
-        $this->tester->assertSame('City cannot be blank.', $errorCity);
-        $this->tester->assertSame('Postal Code cannot be blank.', $errorPostalCode);
+        $this->thenSeeError('Name cannot be blank.', 'name');
+        $this->thenSeeError('Street cannot be blank.', 'street');
+        $this->thenSeeError('City cannot be blank.', 'city');
+        $this->thenSeeError('Postal Code cannot be blank.', 'postalCode');
     }
 
     public function testValidationStringTooLong(): void
@@ -54,17 +54,12 @@ class AddressTypeFormTest extends Unit
         $this->model->postalCode = str_repeat('1',20);
 
 
-        $this->tester->assertFalse($this->model->validate());
+        $this->thenUnsuccessValidate(['name','street','postalCode','city']);
 
-        $errorName = $this->model->getFirstError('name');
-        $errorStreet = $this->model->getFirstError('street');
-        $errorCity = $this->model->getFirstError('city');
-        $errorPostalCode = $this->model->getFirstError('postalCode');
-
-        $this->tester->assertSame('Name should contain at most 60 characters.', $errorName);
-        $this->tester->assertSame('Street should contain at most 255 characters.', $errorStreet);
-        $this->tester->assertSame('City should contain at most 63 characters.', $errorCity);
-        $this->tester->assertSame('Postal Code should contain at most 10 characters.', $errorPostalCode);
+        $this->thenSeeError('Name should contain at most 60 characters.', 'name');
+        $this->thenSeeError('Street should contain at most 255 characters.', 'street');
+        $this->thenSeeError('City should contain at most 63 characters.', 'city');
+        $this->thenSeeError('Postal Code should contain at most 10 characters.', 'postalCode');
     }
 
     public function testValidationEmailTooShort(): void
@@ -75,11 +70,10 @@ class AddressTypeFormTest extends Unit
         $this->model->city = "Miasto";
         $this->model->email = "x@x";
 
+        $this->thenUnsuccessValidate(['name','street','postalCode','city', 'email']);
 
-        $this->tester->assertFalse($this->model->validate());
-        $error = $this->model->getFirstError('email');
-        $this->tester->assertSame('Email should contain at least 6 characters.', $error);
-    }
+        $this->thenSeeError('Email should contain at least 6 characters.', 'email');
+     }
 
     public function testValidationInvalidPostalCode(): void
     {
@@ -88,86 +82,91 @@ class AddressTypeFormTest extends Unit
         $this->model->postalCode = "11-111";
         $this->model->city = "Miasto";
 
-        $this->tester->assertFalse($this->model->validate());
 
-        $error = $this->model->getFirstError('postalCode');
-        $this->tester->assertSame('Postal code must contain only digits.', $error);
+        $this->thenUnsuccessValidate(['name','street','postalCode','city']);
+
+        $this->thenSeeError('Postal code must contain only digits.', 'postalCode');
     }
 
 
     public function testSetModel(): void
     {
-        $adresType = (new ShipmentAddress())
-            ->setNazwa('Firma')
-            ->setNazwa2('Dział testowy')
-            ->setUlica('Ulica')
-            ->setNumerDomu('12A')
-            ->setNumerLokalu('4')
-            ->setMiejscowosc('Miasto')
-            ->setKodPocztowy('11111')
-            ->setKraj('Polska')
-            ->setTelefon('123456789')
-            ->setEmail('firma@example.com')
-            ->setMobile('987654321')
-            ->setOsobaKontaktowa('Jan Kowalski')
-            ->setNip('1234567890');
+        $adresType = new ShipmentAddress();
+        $adresType->name = "Jan Kowalski";
+        $adresType->street = "Dmowskiego";
+        $adresType->postal_code = "83314";
+        $adresType->city = "Warszawa";
+        $adresType->country = "PL";
+        $adresType->house_number = "1";
+        $adresType->apartment_number = "1";
+        $adresType->name2 = "Jan Kochanowski";
+        $adresType->email = "firma@example.com";
+        $adresType->phone = '123456789';
+        $adresType->mobile = '987654321';
+        $adresType->contact_person = '333333333';
+        $adresType->taxID = '1234567890';
 
         $this->model->setModel($adresType);
 
-        $this->tester->assertSame('Firma', $this->model->name);
-        $this->tester->assertSame('Dział testowy', $this->model->name2);
-        $this->tester->assertSame('Ulica', $this->model->street);
-        $this->tester->assertSame('12A', $this->model->houseNumber);
-        $this->tester->assertSame('4', $this->model->apartmentNumber);
-        $this->tester->assertSame('Miasto', $this->model->city);
-        $this->tester->assertSame('11111', $this->model->postalCode);
-        $this->tester->assertSame('Polska', $this->model->country);
+        $this->thenSuccessValidate(['name','street','postalCode','city',
+            'country', 'house_number', 'mobile', 'contact_person', 'taxID']);
+
+        $this->tester->assertSame('Jan Kowalski', $this->model->name);
+        $this->tester->assertSame('Jan Kochanowski', $this->model->name2);
+        $this->tester->assertSame('Dmowskiego', $this->model->street);
+        $this->tester->assertSame('1', $this->model->houseNumber);
+        $this->tester->assertSame('1', $this->model->apartmentNumber);
+        $this->tester->assertSame('Warszawa', $this->model->city);
+        $this->tester->assertSame('83314', $this->model->postalCode);
+        $this->tester->assertSame('PL', $this->model->country);
         $this->tester->assertSame('123456789', $this->model->phone);
         $this->tester->assertSame('firma@example.com', $this->model->email);
         $this->tester->assertSame('987654321', $this->model->mobile);
-        $this->tester->assertSame('Jan Kowalski', $this->model->contactPerson);
+        $this->tester->assertSame('333333333', $this->model->contactPerson);
         $this->tester->assertSame('1234567890', $this->model->taxID);
     }
 
-    public function testCreateModel(): void
+    public function testGetModel(): void
     {
-        $this->model->name = "Firma";
-        $this->model->street = "Ulica";
-        $this->model->houseNumber = "12A";
-        $this->model->apartmentNumber = "4";
-        $this->model->postalCode = "11111";
-        $this->model->city = "Miasto";
-        $this->model->country = "Polska";
-        $this->model->phone = "123456789";
-        $this->model->email = "firma@example.com";
-        $this->model->mobile = "987654321";
-        $this->model->contactPerson = "Jan Kowalski";
-        $this->model->taxID = "1234567890";
+        $shipmentModel = new ShipmentAddress();
+        $shipmentModel->name = "Firma";
+        $shipmentModel->street = "Ulica";
+        $shipmentModel->house_number = "12A";
+        $shipmentModel->apartment_number = "4";
+        $shipmentModel->postal_code = "11111";
+        $shipmentModel->city = "Miasto";
+        $shipmentModel->country = "Polska";
+        $shipmentModel->phone = "123456789";
+        $shipmentModel->email = "firma@example.com";
+        $shipmentModel->mobile = "987654321";
+        $shipmentModel->contact_person = "Jan Kowalski";
+        $shipmentModel->taxID = "1234567890";
 
+        $this->model->setModel($shipmentModel);
 
-        $addressType = $this->model->createModel();
+        $gotShipmentType = $this->model->getModel();
 
-        $this->tester->assertInstanceOf(AdresType::class, $addressType);
-        $this->tester->assertSame('Firma', $addressType->getNazwa());
-        $this->tester->assertSame('Ulica', $addressType->getUlica());
-        $this->tester->assertSame('12A', $addressType->getNumerDomu());
-        $this->tester->assertSame('4', $addressType->getNumerLokalu());
-        $this->tester->assertSame('Miasto', $addressType->getMiejscowosc());
-        $this->tester->assertSame('11111', $addressType->getKodPocztowy());
-        $this->tester->assertSame('Polska', $addressType->getKraj());
-        $this->tester->assertSame('123456789', $addressType->getTelefon());
-        $this->tester->assertSame('firma@example.com', $addressType->getEmail());
-        $this->tester->assertSame('987654321', $addressType->getMobile());
-        $this->tester->assertSame('Jan Kowalski', $addressType->getOsobaKontaktowa());
-        $this->tester->assertSame('1234567890', $addressType->getNip());
+        $this->tester->assertInstanceOf(ShipmentAddress::class, $gotShipmentType);
+        $this->tester->assertSame('Firma', $gotShipmentType->name);
+        $this->tester->assertSame('Ulica', $gotShipmentType->street);
+        $this->tester->assertSame('12A', $gotShipmentType->house_number);
+        $this->tester->assertSame('4', $gotShipmentType->apartment_number);
+        $this->tester->assertSame('Miasto', $gotShipmentType->city);
+        $this->tester->assertSame('11111', $gotShipmentType->postal_code);
+        $this->tester->assertSame('Polska', $gotShipmentType->country);
+        $this->tester->assertSame('123456789', $gotShipmentType->phone);
+        $this->tester->assertSame('firma@example.com', $gotShipmentType->email);
+        $this->tester->assertSame('987654321', $gotShipmentType->mobile);
+        $this->tester->assertSame('Jan Kowalski', $gotShipmentType->contact_person);
+        $this->tester->assertSame('1234567890', $gotShipmentType->taxID);
+
+        $this->thenSuccessValidate(['name','street','postalCode','city',
+            'country', 'house_number', 'mobile', 'contact_person', 'taxID']);
     }
 
 
-
-
-
-
-
-
-
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 }
