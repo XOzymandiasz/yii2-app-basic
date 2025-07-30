@@ -122,6 +122,11 @@ class m250725_112007_init_shipment extends Migration
             'id',
             'CASCADE'
         );
+
+        $this->insert($this->userTable, [
+            $this->userForeignKeyColumn => 1,
+            'name' => 'Admin',
+        ]);
     }
 
     public function safeDown(): void
