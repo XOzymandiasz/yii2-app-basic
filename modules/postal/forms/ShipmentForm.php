@@ -24,7 +24,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public string $provider = '';
     public ?int $content_id = null;
     public ?int $creator_id = null;
-    public string $guid = '';
+    public ?string $guid = null;
     public ?string $finished_at = null;
     public ?string $shipment_at = null;
     public ?string $api_data = null;
@@ -40,7 +40,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public function rules(): array
     {
         return [
-            [['direction', 'provider', 'content_id', 'guid', 'sender_id', 'receiver_id'], 'required'],
+            [['direction', 'provider', 'content_id', 'sender_id', 'receiver_id'], 'required'],
             ['number', 'string', 'on' => self::SCENARIO_DIRECTION_OUT],
             [['content_id', 'receiver_id', 'sender_id'], 'integer', 'enableClientValidation' => false,],
             [['finished_at', 'shipment_at', 'api_data'], 'safe'],
