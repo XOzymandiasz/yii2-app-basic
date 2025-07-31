@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\PostSearch $searchModel */
@@ -24,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -38,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'creator_id',
             //'created_at',
             //'updated_at',
-            //'guid',
+            'guid',
             //'finished_at',
             //'shipment_at',
             //'api_data',
