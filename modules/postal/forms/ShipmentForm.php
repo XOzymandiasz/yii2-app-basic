@@ -2,13 +2,13 @@
 
 namespace app\modules\postal\forms;
 
-use app\models\User;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -19,7 +19,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public const SCENARIO_DIRECTION_IN = ShipmentDirectionInterface::DIRECTION_IN;
     public const SCENARIO_DIRECTION_OUT = ShipmentDirectionInterface::DIRECTION_OUT;
 
-    public int $id;
     public string $number = '';
     public string $direction = '';
     public string $provider = '';
@@ -30,16 +29,13 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public ?string $shipment_at = null;
     public ?string $api_data = null;
 
-    public ?int $receiver_id = null;
-    public ?int $sender_id = null;
-
     private ?Shipment $model = null;
 
     public function rules(): array
     {
         return [
-            [['direction', 'number', 'provider', 'content_id', 'guid'], 'required'],
-            [['content_id', 'shipper_id', 'sender_id'], 'integer'],
+            [['direction', 'number', 'provider', 'content_id', 'guid', 'sender_id', 'receiver_id'], 'required'],
+            [['content_id', 'receiver_id', 'sender_id'], 'integer'],
             [['finished_at', 'shipment_at', 'api_data'], 'safe'],
             [['finished_at', 'shipment_at', 'api_data', 'guid'], 'default', 'value' => null],
             [['!direction'], 'in', 'range' => array_keys(static::getDirectionsNames())],
@@ -120,11 +116,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
     public static function getAddressesNames(): array
     {
-        $models = ShipmentAddress::find()->all();
-
-        return array_map(function ($model) {
-            return $model->getFullInfo();
-        }, $models);
+        return Shipment::getAddressesNames();
     }
 
     public function getContentName(): string
@@ -175,5 +167,29 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         ];
     }
 
+    public function getReceiverAddress(): ?ShipmentAddress
+    {
+        return $this->receiverAddress;
+    }
+
+    public function setReceiverAddress(?ShipmentAddress $receiverAddress): void
+    {
+        $this->receiverAddress = $receiverAddress;
+    }
+
+    public function getSenderAddress(): ?ShipmentAddress
+    {
+        return $this->senderAddress;
+    }
+
+    public function setSenderAddress(?ShipmentAddress $senderAddress): void
+    {
+        $this->senderAddress = $senderAddress;
+    }
+
+    public function getID(): int
+    {
+        return $this->model->id;
+    }
 
 }

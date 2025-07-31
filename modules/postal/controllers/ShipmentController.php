@@ -5,6 +5,7 @@ namespace app\modules\postal\controllers;
 use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\models\PostSearch;
+use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
@@ -45,13 +46,13 @@ class ShipmentController extends Controller
                     'only' => ['create', 'update', 'delete'],
                     'rules' => [
                         [
-                            'actions' => ['create', 'update', 'delete'],
+                            'actions' => ['create-out', 'create-in', 'update', 'delete'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
                     ],
                     'denyCallback' => function () {
-                        Yii::$app->session->setFlash('warning', Module::t('poczta-polska', 'You must be logged in to view this page.'));
+                        Yii::$app->session->setFlash('warning', Module::t('postal', 'You must be logged in to view this page.'));
                         return Yii::$app->response->redirect(['/postal/poczta-polska-shipment-check/shipment/index']);
                     }
                 ]
@@ -87,14 +88,21 @@ class ShipmentController extends Controller
     }
 
 
-    public function actionCreateOut()
+    /**
+     * @throws Exception
+     */
+    public function actionCreateOut(): Response|string
     {
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_OUT);
         $model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
-        $model->creator_id = Yii::$app->user->id;
-        if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model->creator_id = 1;
+        $model->guid = '21431314';
+        if ($model->load($this->request->post())) {
+            $model->setReceiverAddress(ShipmentAddress::findOne($model->receiver_id));
+            $model->setSenderAddress(ShipmentAddress::findOne($model->sender_id));
+            if($model->save())
+                return $this->redirect(['view', 'id' => $model->getID()]);
         }
         return $this->render('create', [
             'model' => $model,
@@ -102,16 +110,22 @@ class ShipmentController extends Controller
         ]);
     }
 
-    public function actionCreateIn()
+    /**
+     * @throws Exception
+     */
+    public function actionCreateIn(): Response|string
     {
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
         $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
-        $model->receive_id = $this->getDefaultReceiveId();
-        $model->creator_id = Yii::$app->user->id;
-        $model->finish_at = date(DATE_ATOM);
-        if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model->creator_id = 1;
+        $model->guid = '21431314';
+        $model->finished_at = date('Y-m-d H:i:s');
+        if ($model->load($this->request->post())) {
+            $model->setReceiverAddress(ShipmentAddress::findOne($model->receiver_id));
+            $model->setSenderAddress(ShipmentAddress::findOne($model->sender_id));
+            if($model->save())
+                return $this->redirect(['view', 'id' => $model->getID()]);
         }
         return $this->render('create', [
             'model' => $model,
@@ -130,7 +144,7 @@ class ShipmentController extends Controller
         $model->setModel($this->findModel($id));
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getID()]);
         }
 
         return $this->render('update', [
@@ -155,7 +169,7 @@ class ShipmentController extends Controller
      */
     protected function findModel(int $id): ?Shipment
     {
-        if (($model = Shipment::findOne(['id' => $id, 'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA])) !== null) {
+        if (($model = Shipment::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

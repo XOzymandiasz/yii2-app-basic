@@ -8,10 +8,9 @@ use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
- * //@todo check model and database name for geneneral shipments
- *
  * This is the model class for table "shipment".
  *
  * @property int $id
@@ -76,6 +75,15 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
     public function getShipmentAddressLinks(): ActiveQuery
     {
         return $this->hasMany(ShipmentAddressLink::class, ['shipment_id' => 'id']);
+    }
+
+    public static function getAddressesNames(): array
+    {
+        $models = ShipmentAddress::find()->all();
+
+        return ArrayHelper::map($models, 'id', function ($model) {
+            return $model->getFullInfo();
+        });
     }
 
     public function getDirection(): string

@@ -49,7 +49,7 @@ use kartik\select2\Select2;
     //        ['prompt' => Module::t('poczta-polska', 'Choose direction')])
     //    ?>
 
-    <?= $form->field($model, 'receiverAddress')->widget(Select2::class, [
+    <?= $form->field($model, 'receiver_id')->widget(Select2::class, [
         'data' => $model::getAddressesNames(),
         'options' => ['placeholder' => Module::t('postal', 'Choose Sender')],
         'pluginOptions' => [
@@ -67,7 +67,7 @@ use kartik\select2\Select2;
 //        'id' => 'address-receiver-form'
 //    ]) ?>
 
-    <?= $form->field($model, 'senderAddress')->widget(Select2::class, [
+    <?= $form->field($model, 'sender_id')->widget(Select2::class, [
         'data' => $model::getAddressesNames(),
         'options' => ['placeholder' => Module::t('postal', 'Choose Receiver')],
         'pluginOptions' => [
