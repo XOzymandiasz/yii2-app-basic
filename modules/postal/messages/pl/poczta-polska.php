@@ -144,5 +144,4 @@ return [
     'Create Postal Shipment' => 'Utwórz zamówienie pocztowe',
     'Pocztex2021' => 'Pocztex2021',
     'Fax' => 'Fax',
-    'Choose provider' => 'Wybierz dostawce'
 ];
