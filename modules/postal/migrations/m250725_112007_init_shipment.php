@@ -126,6 +126,7 @@ class m250725_112007_init_shipment extends Migration
         $this->insert($this->userTable, [
             $this->userForeignKeyColumn => 1,
             'name' => 'Admin',
+            'auth_key' => Yii::$app->security->generateRandomString(),
         ]);
     }
 
