@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_active')->textInput() ?>
+    <?= $form->field($model, 'is_active')->checkbox() ?>
 
     <div class="form-group">
         <?= Html::submitButton(Module::t('common', 'Save'), ['class' => 'btn btn-success']) ?>
