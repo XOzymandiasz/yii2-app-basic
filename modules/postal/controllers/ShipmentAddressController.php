@@ -2,11 +2,17 @@
 
 namespace app\modules\postal\controllers;
 
+use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\models\ShipmentAddress;
 use app\models\ShipmentAddressPostSearch;
+use app\modules\postal\Module;
+use Throwable;
+use yii\db\Exception;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * ShipmentAddressController implements the CRUD actions for ShipmentAddress model.
@@ -47,34 +53,27 @@ class ShipmentAddressController extends Controller
         ]);
     }
 
+
     /**
-     * Displays a single ShipmentAddress model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView(int $id): string
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Creates a new ShipmentAddress model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
-    public function actionCreate()
-    {
-        $model = new ShipmentAddress();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+    /**
+     * @throws Exception
+     */
+    public function actionCreate(): Response|string
+    {
+        $model = new AddressTypeForm();
+
+        if ($model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->getID()]);
         }
 
         return $this->render('create', [
@@ -83,13 +82,10 @@ class ShipmentAddressController extends Controller
     }
 
     /**
-     * Updates an existing ShipmentAddress model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws Exception
+     * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id): Response|string
     {
         $model = $this->findModel($id);
 
@@ -102,33 +98,29 @@ class ShipmentAddressController extends Controller
         ]);
     }
 
+
     /**
-     * Deletes an existing ShipmentAddress model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws StaleObjectException
+     * @throws Throwable
+     * @throws NotFoundHttpException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): Response
     {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
+
     /**
-     * Finds the ShipmentAddress model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return ShipmentAddress the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException
      */
-    protected function findModel($id)
+    protected function findModel($id): ?ShipmentAddress
     {
         if (($model = ShipmentAddress::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Module::t('postal', 'The requested page does not exist.'));
     }
 }

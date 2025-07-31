@@ -38,12 +38,29 @@ class ShipmentAddress extends ActiveRecord
         return '{{%shipment_address}}';
     }
 
+    public function getFullInfo():string
+    {
+        $content = [$this->name, $this->getFormatedPostalCode(), $this->city, $this->street, $this->house_number];
+
+        return implode(' ', $content);
+    }
+
+    public function getFullName(): string
+    {
+        $name = $this->name;
+        if (!empty($this->name_2)) {
+            $name .= ' ' . $this->name_2;
+        }
+        return $name;
+    }
+
     public function rules(): array
     {
         return [
-            [['street', 'apartment_number', 'name2', 'phone', 'mobile', 'contact_person', 'email'], 'default', 'value' => null],
+            [['street', 'apartment_number', 'name_2', 'phone', 'mobile', 'contact_person', 'email'],
+                'default', 'value' => null],
             [['country'], 'default', 'value' => 'PL'],
-            [['name', 'house_number', 'postal_code', 'city', 'taxID'], 'required'],
+            [['name', 'house_number', 'postal_code', 'city'], 'required'],
             [['name', 'street', 'city'], 'string', 'max' => 255],
             [['taxID'], 'string', 'max' => 15],
             [['phone', 'mobile', 'contact_person'], 'string', 'max' => 11],
@@ -66,9 +83,9 @@ class ShipmentAddress extends ActiveRecord
             'country' => Module::t('postal', 'Country'),
             'phone' => Module::t('postal', 'Phone'),
             'mobile' => Module::t('postal', 'Mobile'),
-            'contact_person' => Module::t('app', 'Contact Person'),
+            'contact_person' => Module::t('postal', 'Contact Person'),
             'email' => Module::t('postal', 'Email'),
-            'name2' => Module::t('postal', 'Alternative Name'),
+            'name_2' => Module::t('postal', 'Alternative Name'),
             'city_id' => Module::t('postal', 'City ID'),
             'taxID' => Module::t('postal', 'Tax ID'),
         ];
@@ -89,4 +106,8 @@ class ShipmentAddress extends ActiveRecord
         return $this->hasMany(Shipment::class, ['id' => 'shipment_id'])->viaTable('shipment_address_link', ['address_id' => 'id']);
     }
 
+    protected function getFormatedPostalCode(): string
+    {
+        return substr($this->postal_code, 0, 2) . '-' . substr($this->postal_code, 2);
+    }
 }

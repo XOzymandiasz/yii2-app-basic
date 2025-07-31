@@ -2,6 +2,7 @@
 
 namespace app\modules\postal\controllers;
 
+use app\modules\postal\forms\ContentTypeForm;
 use app\modules\postal\models\ShipmentContent;
 use app\models\ShipmentContentPostSearch;
 use Throwable;
@@ -51,16 +52,15 @@ class ShipmentContentController extends Controller
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionCreate(): Response|string
     {
-        $model = new ShipmentContent();
+        $model = new ContentTypeForm();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        if ($model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->getID()]);
         }
 
         return $this->render('create', [

@@ -5,6 +5,7 @@ namespace app\modules\postal\forms;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use yii\base\Model;
+use yii\db\Exception;
 
 /**
  *
@@ -14,7 +15,7 @@ class ContentTypeForm extends Model
 {
     public string $name = '';
     public int $is_active = 0;
-    public ?ShipmentContent $shipmentContent = null;
+    public ?ShipmentContent $model = null;
 
     public function rules(): array
     {
@@ -35,6 +36,23 @@ class ContentTypeForm extends Model
         ];
     }
 
+    /**
+     * @throws Exception
+     */
+    public function save(bool $validate = true): bool
+    {
+        if ($validate && !$this->validate()) {
+            return false;
+        }
+
+        $model = $this->getModel();
+
+        $model->name = $this->name;
+        $model->is_active = $this->is_active;
+
+        return $model->save(false);
+    }
+
     public function setModel(ShipmentContent $model): void
     {
         $this->name = $model->name;
@@ -43,11 +61,15 @@ class ContentTypeForm extends Model
 
     public function getModel(): ShipmentContent
     {
-        if (!$this->shipmentContent) {
-            $this->shipmentContent = new ShipmentContent();
+        if (!$this->model) {
+            $this->model = new ShipmentContent();
         }
-        return $this->shipmentContent;
+        return $this->model;
     }
 
+    public function getID(): int
+    {
+        return $this->model->id;
+    }
 
 }

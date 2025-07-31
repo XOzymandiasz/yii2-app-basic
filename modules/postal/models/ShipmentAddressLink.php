@@ -3,7 +3,6 @@
 namespace app\modules\postal\models;
 
 use app\modules\postal\Module;
-use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -59,4 +58,18 @@ class ShipmentAddressLink extends ActiveRecord
         return $this->hasOne(Shipment::class, ['id' => 'shipment_id']);
     }
 
+    public function getDirection(): string
+    {
+        return $this->type;
+    }
+
+    public function getDirectionName(): string
+    {
+        return static::getDirectionsNames()[$this->type];
+    }
+
+    public static function getDirectionsNames()
+    {
+        // TODO: Implement getDirectionsNames() method.
+    }
 }
