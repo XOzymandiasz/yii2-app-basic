@@ -9,7 +9,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\PostSearch $searchModel */
@@ -23,7 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('common', 'Create Postal Shipment'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create In Postal Shipment'), ['create-in'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create Out Postal Shipment'), ['create-out'], ['class' => 'btn btn-success']) ?>
+
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -93,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'shipment_at',
             //'api_data',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Shipment $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
