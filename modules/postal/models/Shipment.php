@@ -26,6 +26,8 @@ use yii\helpers\ArrayHelper;
  * @property string|null $shipment_at
  * @property string|null $api_data
  *
+ * @property ShipmentAddress $senderAddress
+ * @property ShipmentAddress $receiverAddress
  * @property ShipmentAddress[] $addresses
  * @property ShipmentContent $content
  * @property User $creator
@@ -59,7 +61,8 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
      */
     public function getAddresses(): ActiveQuery
     {
-        return $this->hasMany(ShipmentAddress::class, ['id' => 'address_id'])->viaTable('shipment_address_link', ['shipment_id' => 'id']);
+        return $this->hasMany(ShipmentAddress::class, ['id' => 'address_id'])
+            ->viaTable('shipment_address_link', ['shipment_id' => 'id']);
     }
 
     public function getCreator(): ActiveQuery

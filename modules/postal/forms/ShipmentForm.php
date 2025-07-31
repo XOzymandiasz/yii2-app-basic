@@ -31,6 +31,23 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
     private ?Shipment $model = null;
 
+    public ?int $sender_id = null;
+    public ?int $receiver_id = null;
+    private ?ShipmentAddress $receiverAddress = null;
+    private ?ShipmentAddress $senderAddress = null;
+
+    public function scenarios(): array
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_DIRECTION_OUT] = ['number', 'guid', 'provider', 'direction', 'content_id',
+            'creator_id', 'shipment_at', 'api_data', 'sender_id', 'receiver_id'];
+        $scenarios[self::SCENARIO_DIRECTION_IN] = ['number', 'guid', 'provider', 'direction', 'content_id',
+            'creator_id', 'shipment_at', 'api_data', 'receiverAddress', 'senderAddress', 'finished_at'];
+
+        return $scenarios;
+    }
+
     public function rules(): array
     {
         return [
@@ -44,7 +61,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
             [['number'], 'string', 'max' => 40],
             [['guid'], 'string', 'max' => 32],
             [['content_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShipmentContent::class, 'targetAttribute' => ['content_id' => 'id']],
-            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
         ];
     }
 
@@ -57,8 +73,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
             'provider' => Module::t('postal', 'Provider'),
             'content_id' => Module::t('postal', 'Content ID'),
             'creator_id' => Module::t('postal', 'Creator ID'),
-            'created_at' => Module::t('postal', 'Created At'),
-            'updated_at' => Module::t('postal', 'Updated At'),
             'guid' => Module::t('postal', 'Guid'),
             'finished_at' => Module::t('postal', 'Finished At'),
             'shipment_at' => Module::t('postal', 'Shipment At'),
@@ -69,8 +83,11 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     /**
      * @throws Exception
      */
-    public function save(): bool
+    public function save(bool $validate = true): bool
     {
+        if ($validate && !$this->validate()) {
+            return false;
+        }
         $model = $this->getModel();
 
         $model->number = $this->number;
@@ -80,15 +97,30 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $model->direction = $this->direction;
         $model->content_id = $this->content_id;
         $model->creator_id = $this->creator_id;
-        $model->created_at = $this->created_at;
-        $model->updated_at = $this->updated_at;
         $model->shipment_at = $this->shipment_at;
         $model->api_data = $this->api_data;
+        if (!$model->save(false)) {
+            return false;
+        }
 
-        $this->setModel($model);
+        if ($this->senderAddress) {
+            Yii::$app->db->createCommand()->insert('{{%shipment_address_link}}', [
+                'shipment_id' => $model->id,
+                'address_id' => $this->senderAddress->id,
+                'type' => ShipmentDirectionInterface::DIRECTION_OUT,
+            ])->execute();
+        }
 
-        return $this->model->save();
+        if ($this->receiverAddress) {
+            Yii::$app->db->createCommand()->insert('{{%shipment_address_link}}', [
+                'shipment_id' => $model->id,
+                'address_id' => $this->receiverAddress->id,
+                'type' => ShipmentDirectionInterface::DIRECTION_IN,
+            ])->execute();
+        }
 
+
+        return true;
     }
 
     public function getModel(): Shipment
@@ -124,14 +156,14 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         return static::getContentNames()[$this->content_id];
     }
 
-    public static function getContentNames(): array
+
+    public function getContentNames(): array
     {
-        return
-            ArrayHelper::map(
-                ShipmentContent::find()->all(),
-                'id',
-                'name'
-            );
+        $models = ShipmentContent::find()
+            ->andWhere(['is_active' => true])
+            ->orFilterWhere(['id' => $this->getModel()->content_id])
+            ->all();
+        return ArrayHelper::map($models, 'id', 'name');
     }
 
     public function getProvider(): string
@@ -161,10 +193,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
     public static function getDirectionsNames(): array
     {
-        return [
-            static::DIRECTION_OUT => Module::t('postal', 'Out'),
-            static::DIRECTION_IN => Module::t('postal', 'In'),
-        ];
+        return Shipment::getDirectionsNames();
     }
 
     public function getReceiverAddress(): ?ShipmentAddress
