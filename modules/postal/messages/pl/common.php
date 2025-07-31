@@ -17,5 +17,9 @@ return [
     'Are you sure you want to delete this item?' => 'Czy jesteś pewny, że chcesz usunąć ten przedmiot?',
     'Update Shipment Content: {name}' => 'Zaktualizuj zawartość przesyłki: {name}',
     'Create Shipment Address' => 'Utwórz adres pocztowy',
-    'Shipment Contents' => 'Zawartość przesyłki'
+    'Shipment Contents' => 'Zawartość przesyłki',
+    'Create Out Postal Shipment' => 'Utwórz wychodzącą przesyłkę pocztową',
+    '(empty)' => '(brak)',
+    '-- choose --' => '-- wybierz --',
+    'Create In Postal Shipment' => 'Utwórz przychodzącą przesyłkę pocztową'
 ];

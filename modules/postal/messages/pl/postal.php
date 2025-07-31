@@ -71,5 +71,8 @@ return [
     'Choose Receiver' => 'Wybierz odbiorce',
     'Choose provider' => 'Wybierz dostawce',
     'Receiver ID' => 'Odbiorca',
-    'Sender ID' => 'Nadawca'
+    'Sender ID' => 'Nadawca',
+    'tax ID' => 'NIP',
+    'Option' => 'Opcja',
+    'Secondary Name' => 'Alternatywna nazwa',
 ];
