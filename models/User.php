@@ -6,7 +6,13 @@ namespace app\models;
 use yii\db\ActiveRecord;
 
 /**
+ * //@todo check model and database name for geneneral shipments
  *
+ * This is the model class for table "shipment".
+ *
+ * @property int $id
+ * @property string $name
+ * @property $auth_key
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -60,13 +66,13 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     /**
      * Finds user by username
      *
-     * @param string $username
+     * @param string $name
      * @return static|null
      */
-    public static function findByUsername(string $username): ?self
+    public static function findByUsername(string $name): ?self
     {
         return static::findOne([
-            'name' => $username
+            'name' => $name
         ]);
 //        foreach (self::$users as $user) {
 //            if (strcasecmp($user['username'], $username) === 0) {
@@ -90,7 +96,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
@@ -98,8 +104,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
+
 
     /**
      * Validates password
