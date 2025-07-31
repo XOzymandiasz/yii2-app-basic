@@ -97,17 +97,29 @@ class ShipmentController extends Controller
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_OUT);
         $model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
         $model->creator_id = Yii::$app->user->id;
-        $model->guid = '21431314';
         if ($model->load($this->request->post())) {
-            $model->setReceiverAddress(ShipmentAddress::findOne($model->receiver_id));
-            $model->setSenderAddress(ShipmentAddress::findOne($model->sender_id));
-            if($model->save())
-                return $this->redirect(['view', 'id' => $model->getID()]);
+            if ($model->save()) {
+                return $this->redirect(['afterCreateOut', 'id' => $model->getModel()->id]);
+
+            }
         }
         return $this->render('create', [
             'model' => $model,
             'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
         ]);
+    }
+
+    public function actionAfterCreateOut(int $id)
+    {
+        $model = $this->findModel($id);
+        switch ($model->provider) {
+            case ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA:
+                return $this->redirect(['poczta-polska/create', [
+                    'id' => $id
+                ]]);
+            default:
+                throw new NotFoundHttpException();
+        }
     }
 
     /**
@@ -119,18 +131,25 @@ class ShipmentController extends Controller
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
         $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
         $model->creator_id = Yii::$app->user->id;
-        $model->guid = '21431314';
-        $model->finished_at = date('Y-m-d H:i:s');
+        $model->finished_at = date(DATE_ATOM);
         if ($model->load($this->request->post())) {
-            $model->setReceiverAddress(ShipmentAddress::findOne($model->receiver_id));
-            $model->setSenderAddress(ShipmentAddress::findOne($model->sender_id));
-            if($model->save())
-                return $this->redirect(['view', 'id' => $model->getID()]);
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $model->getModel()->id]);
         }
         return $this->render('create', [
             'model' => $model,
             'direction' => ShipmentDirectionInterface::DIRECTION_IN,
         ]);
+    }
+
+    public function actionCraeteOutPocztaPolska()
+    {
+
+        $model = new PocztaPolskaShipmentForm();
+        $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
+        $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
+        $model->creator_id = Yii::$app->user->id;
+        $model->finished_at = date(DATE_ATOM);
     }
 
 
@@ -143,8 +162,8 @@ class ShipmentController extends Controller
         $model = new ShipmentForm();
         $model->setModel($this->findModel($id));
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->getID()]);
+        if ($model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $id]);
         }
 
         return $this->render('update', [
