@@ -35,11 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'street',
             'house_number',
             'apartment_number',
-            //'postal_code',
-            //'city',
-            //'country',
+            'postal_code',
+            'city',
+            'country',
+            'option',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, ShipmentAddress $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
