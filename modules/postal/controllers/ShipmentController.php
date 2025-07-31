@@ -5,13 +5,9 @@ namespace app\modules\postal\controllers;
 use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\models\PostSearch;
-use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\ServiceType\Get;
-use app\modules\postal\sender\StructType\GetGuid;
 use Throwable;
 use Yii;
 use yii\db\Exception;
@@ -192,6 +188,6 @@ class ShipmentController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Module::t('poczta-polska', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Module::t('postal', 'The requested page does not exist.'));
     }
 }
