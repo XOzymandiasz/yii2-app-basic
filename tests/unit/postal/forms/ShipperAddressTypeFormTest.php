@@ -10,7 +10,6 @@ use UnitTester;
 /**
  * @property UnitTester $tester
  */
-
 class ShipperAddressTypeFormTest extends Unit
 {
     protected ShipperAddressTypeForm $model;
@@ -47,8 +46,8 @@ class ShipperAddressTypeFormTest extends Unit
 
         $this->tester->assertFalse($this->model->validate());
         $this->tester->assertSame('Fax should contain at most 30 characters.',
-                                            $this->model->getFirstError('fax'));
-     }
+            $this->model->getFirstError('fax'));
+    }
 
     public function testCreateModel(): void
     {
@@ -116,7 +115,7 @@ class ShipperAddressTypeFormTest extends Unit
             ->setFax("fax123")
             ->setMpk("MPK-X");
 
-        $this->model->setModel($profil);
+        $this->model->setProfilType($profil);
 
         $this->tester->assertSame("Firma", $this->model->name);
         $this->tester->assertSame("Oddział", $this->model->name2);

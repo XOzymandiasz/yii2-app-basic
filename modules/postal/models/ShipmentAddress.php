@@ -32,7 +32,6 @@ use yii\db\ActiveRecord;
  */
 class ShipmentAddress extends ActiveRecord
 {
-
     public static function tableName(): string
     {
         return '{{%shipment_address}}';

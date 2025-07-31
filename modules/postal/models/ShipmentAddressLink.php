@@ -16,7 +16,7 @@ use yii\db\ActiveRecord;
  * @property ShipmentAddress $address
  * @property Shipment $shipment
  */
-class ShipmentAddressLink extends ActiveRecord
+class ShipmentAddressLink extends ActiveRecord implements ShipmentDirectionInterface
 {
 
 

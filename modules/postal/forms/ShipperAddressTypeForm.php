@@ -27,26 +27,25 @@ class ShipperAddressTypeForm extends AddressTypeForm
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
-            'idProfil'  => Module::t('poczta-polska', 'Profile ID'),
+            'idProfil' => Module::t('poczta-polska', 'Profile ID'),
             'shortName' => Module::t('poczta-polska', 'Short Name'),
-            'fax'       => Module::t('poczta-polska', 'Fax'),
-            'mpk'       => Module::t('poczta-polska', 'MPK'),
+            'fax' => Module::t('poczta-polska', 'Fax'),
+            'mpk' => Module::t('poczta-polska', 'MPK'),
         ]);
     }
 
-    public function setModel(AdresType|ShipmentAddress $model): void
-    {
-        parent::setModel($model);
 
-        if ($model instanceof ProfilType) {
-            $this->idProfil  = $model->getIdProfil();
-            $this->shortName = $model->getNazwaSkrocona();
-            $this->fax       = $model->getFax();
-            $this->mpk       = $model->getMpk();
-        }
+    public function setProfilType(ProfilType $model): void
+    {
+        $this->setAdresType($model);
+        $this->idProfil = $model->getIdProfil();
+        $this->shortName = $model->getNazwaSkrocona();
+        $this->fax = $model->getFax();
+        $this->mpk = $model->getMpk();
     }
 
-    public function createModel(): ProfilType
+
+    public function getProfileType(): ProfilType
     {
         return (new ProfilType())
             ->setNazwa($this->name)
