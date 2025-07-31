@@ -1,6 +1,8 @@
 <?php
 
+use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -19,7 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('common', 'Create Shipment Address'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create Shipment Address Sender'),
+            ['create', 'direction' => ShipmentDirectionInterface::DIRECTION_OUT], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Create Shipment Address Receiver'),
+            ['create', 'direction' => ShipmentDirectionInterface::DIRECTION_IN], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
