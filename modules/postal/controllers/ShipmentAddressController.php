@@ -22,7 +22,7 @@ class ShipmentAddressController extends Controller
     /**
      * @inheritDoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
@@ -42,7 +42,7 @@ class ShipmentAddressController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new ShipmentAddressPostSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);

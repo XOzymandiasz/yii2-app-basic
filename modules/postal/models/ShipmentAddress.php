@@ -12,13 +12,14 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property string $name
- * @property string|null $street
  * @property string $house_number
- * @property string|null $apartment_number
  * @property string $postal_code
  * @property string $city
- * @property int|null $city_id
  * @property string $country
+ * @property string $option
+ * @property int|null $city_id
+ * @property string|null $street
+ * @property string|null $apartment_number
  * @property string|null $name_2
  * @property string|null $phone
  * @property string|null $mobile

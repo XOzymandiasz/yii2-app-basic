@@ -3,6 +3,7 @@
 namespace app\modules\postal\forms;
 
 use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
 use app\modules\postal\sender\StructType\AdresType;
 use yii\base\Model;
@@ -34,6 +35,7 @@ class AddressTypeForm extends Model
             [['name', 'city', 'postal_code'], 'required'],
             [['name', 'name_2'], 'string', 'max' => 60],
             [['street'], 'string', 'max' => 255],
+            [['option'], 'in', 'range' => array_keys(ShipmentForm::getDirectionsNames())],
             [['house_number', 'apartment_number'], 'string', 'max' => 11],
             [['city'], 'string', 'max' => 63],
             [['postal_code'], 'string', 'max' => 10],
@@ -49,19 +51,20 @@ class AddressTypeForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'name' => Module::t('poczta-polska', 'Name'),
-            'name_2' => Module::t('poczta-polska', 'Secondary Name'),
-            'street' => Module::t('poczta-polska', 'Street'),
-            'house_number' => Module::t('poczta-polska', 'House Number'),
-            'apartment_number' => Module::t('poczta-polska', 'Apartment Number'),
-            'city' => Module::t('poczta-polska', 'City'),
-            'postal_code' => Module::t('poczta-polska', 'Postal Code'),
-            'country' => Module::t('poczta-polska', 'Country'),
-            'phone' => Module::t('poczta-polska', 'Phone'),
-            'email' => Module::t('poczta-polska', 'Email'),
-            'mobile' => Module::t('poczta-polska', 'Mobile'),
-            'contact_person' => Module::t('poczta-polska', 'Contact Person'),
-            'taxID' => Module::t('poczta-polska', 'tax ID'),
+            'name' => Module::t('postal', 'Name'),
+            'name_2' => Module::t('postal', 'Secondary Name'),
+            'street' => Module::t('postal', 'Street'),
+            'house_number' => Module::t('postal', 'House Number'),
+            'apartment_number' => Module::t('postal', 'Apartment Number'),
+            'city' => Module::t('postal', 'City'),
+            'postal_code' => Module::t('postal', 'Postal Code'),
+            'country' => Module::t('postal', 'Country'),
+            'phone' => Module::t('postal', 'Phone'),
+            'email' => Module::t('postal', 'Email'),
+            'mobile' => Module::t('postal', 'Mobile'),
+            'contact_person' => Module::t('postal', 'Contact Person'),
+            'taxID' => Module::t('postal', 'tax ID'),
+            'option' => Module::t('postal', 'Option'),
         ];
     }
 
@@ -124,6 +127,7 @@ class AddressTypeForm extends Model
         $model->mobile = $this->mobile;
         $model->contact_person = $this->contact_person;
         $model->taxID = $this->taxID;
+        $model->option = $this->option;
 
 
         return $model->save(false);
@@ -145,6 +149,7 @@ class AddressTypeForm extends Model
         $this->mobile = $model->mobile;
         $this->contact_person = $model->contact_person;
         $this->taxID = $model->taxID;
+        $this->option = $model->option;
     }
 
     public function getModel(): ShipmentAddress
