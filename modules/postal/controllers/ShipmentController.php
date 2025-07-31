@@ -96,7 +96,7 @@ class ShipmentController extends Controller
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_OUT);
         $model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
-        $model->creator_id = 1;
+        $model->creator_id = Yii::$app->user->id;
         $model->guid = '21431314';
         if ($model->load($this->request->post())) {
             $model->setReceiverAddress(ShipmentAddress::findOne($model->receiver_id));
@@ -118,7 +118,7 @@ class ShipmentController extends Controller
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
         $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
-        $model->creator_id = 1;
+        $model->creator_id = Yii::$app->user->id;
         $model->guid = '21431314';
         $model->finished_at = date('Y-m-d H:i:s');
         if ($model->load($this->request->post())) {
