@@ -21,5 +21,7 @@ return [
     'Create Out Postal Shipment' => 'Utwórz wychodzącą przesyłkę pocztową',
     '(empty)' => '(brak)',
     '-- choose --' => '-- wybierz --',
-    'Create In Postal Shipment' => 'Utwórz przychodzącą przesyłkę pocztową'
+    'Create In Postal Shipment' => 'Utwórz przychodzącą przesyłkę pocztową',
+    'Create Shipment Address Sender' => 'Utwórz adres nadawcy',
+    'Create Shipment Address Receiver' => 'Utwórz adres odbiorcy',
 ];

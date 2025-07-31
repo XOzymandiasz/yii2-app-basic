@@ -75,4 +75,8 @@ return [
     'tax ID' => 'NIP',
     'Option' => 'Opcja',
     'Secondary Name' => 'Alternatywna nazwa',
+    'Short Name' => 'Skrócona nazwa',
+    'MPK' => 'MPK',
+    'Profile ID' => 'ID profilu',
+    'Fax' => 'Fax'
 ];
