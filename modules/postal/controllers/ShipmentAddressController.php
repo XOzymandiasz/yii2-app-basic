@@ -68,12 +68,13 @@ class ShipmentAddressController extends Controller
     /**
      * @throws Exception
      */
-    public function actionCreate(): Response|string
+    public function actionCreate(?string $direction = null): Response|string
     {
         $model = new AddressTypeForm();
+        $model->option = $direction;
 
         if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->getID()]);
+            return $this->redirect(['view', 'id' => $model->getModel()->id]);
         }
 
         return $this->render('create', [

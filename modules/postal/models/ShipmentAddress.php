@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property string|null $taxID
  *
  *
- * @property ShipmentAddressLink[] $shipmentAddressLinks
+ * @property ShipmentAddressLink[] $addressLinks
  * @property Shipment[] $shipments
  */
 class ShipmentAddress extends ActiveRecord
@@ -92,7 +92,7 @@ class ShipmentAddress extends ActiveRecord
     }
 
 
-    public function getShipmentAddressLinks(): ActiveQuery
+    public function getAddressLinks(): ActiveQuery
     {
         return $this->hasMany(ShipmentAddressLink::class, ['address_id' => 'id']);
     }

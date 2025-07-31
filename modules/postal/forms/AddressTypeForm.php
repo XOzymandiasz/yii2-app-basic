@@ -16,7 +16,8 @@ class AddressTypeForm extends Model
     public string $name = '';
     public string $postal_code = '';
     public string $city = '';
-
+    public string $option = ShipmentForm::SCENARIO_DIRECTION_OUT;
+    public ?string $direction = null;
     public ?string $street = null;
     public ?string $name_2 = null;
     public ?string $house_number = null;
@@ -32,7 +33,8 @@ class AddressTypeForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'city', 'postal_code'], 'required'],
+            [['name', 'city', 'postal_code', 'option'], 'required'],
+            ['!direction', 'string'],
             [['name', 'name_2'], 'string', 'max' => 60],
             [['street'], 'string', 'max' => 255],
             [['option'], 'in', 'range' => array_keys(ShipmentForm::getDirectionsNames())],
@@ -158,10 +160,5 @@ class AddressTypeForm extends Model
             $this->model = new ShipmentAddress();
         }
         return $this->model;
-    }
-
-    public function getID(): int
-    {
-        return $this->model->id;
     }
 }
