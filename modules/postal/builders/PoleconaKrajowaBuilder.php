@@ -1,5 +1,7 @@
 <?php
 
+namespace app\modules\postal\builders;
+
 use app\modules\postal\forms\PocztaPolskaShipmentForm;
 use app\modules\postal\sender\StructType\PrzesylkaPoleconaKrajowaType;
 
@@ -19,8 +21,8 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
                  ->setKategoria($this->model->category)
                  ->setFormat($this->model->format)
                  ->setMasa($this->model->mass)
-                 ->setAdres($this->model->getReceiverAddress())
-                 ->setNadawca($this->model->getSenderAddress())
+                 ->setAdres($this->model->getReceiverAddress()->getAdresType())
+                 ->setNadawca($this->model->getSenderAddress()->getAdresType())
                  ->setOpis($this->model->description);
 
 
