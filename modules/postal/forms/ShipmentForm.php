@@ -263,11 +263,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $this->senderAddress = $senderAddress;
     }
 
-    public function getID(): int
-    {
-        return $this->model->id;
-    }
-
     public function isInScenario(): bool
     {
         return $this->getScenario() === static::SCENARIO_DIRECTION_IN;
