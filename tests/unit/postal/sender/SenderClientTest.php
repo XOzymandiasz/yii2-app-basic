@@ -184,11 +184,12 @@ class SenderClientTest extends Unit
         $this->giveShipperType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
+        $option = $this->getDefaultOptions();
 
-        $add = new Add($this->getDefaultOptions());
+        $add = new Add($option);
         $response = $add->addShipment(new AddShipment([$this->shipmentType], null));
 
-        codecept_debug($response);
+        codecept_debug($response->getRetval()[0]->getGuid()[0]->getError());
 
         $this->tester->assertNotNull($response);
     }
