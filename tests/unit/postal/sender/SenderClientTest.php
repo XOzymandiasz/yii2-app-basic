@@ -41,6 +41,7 @@ use Dotenv\Dotenv;
 use InvalidArgumentException;
 use UnitTester;
 use WsdlToPhp\PackageBase\SoapClientInterface;
+use Yii;
 
 /**
  * @property UnitTester $tester
@@ -134,7 +135,7 @@ class SenderClientTest extends Unit
     {
         $this->giveAddressType();
         $this->shipmentType = (new PrzesylkaPoleconaKrajowaType(KategoriaType::VALUE_EKONOMICZNA))
-                                ->setAdres($this->customerAddressType);
+            ->setAdres($this->customerAddressType);
 
 
         $response = $this->addShipment([$this->shipmentType], null);
@@ -175,6 +176,7 @@ class SenderClientTest extends Unit
         $this->tester->assertNotEmpty($error);
         $this->tester->assertSame('Guid jest nieprawidłowy', $error[0]->getErrorDesc());
     }
+
 
     public function testCorrectAddShipment(): void
     {
@@ -274,7 +276,7 @@ class SenderClientTest extends Unit
         codecept_debug($buforsResponse);
 
         codecept_debug($getService->getEnvelopeList(
-            new GetEnvelopeList('2025-01-01','2025-12-31')
+            new GetEnvelopeList('2025-01-01', '2025-12-31')
         ));
 
     }
@@ -657,23 +659,23 @@ class SenderClientTest extends Unit
     }
 
     private function givePrzesylkaPoleconaKrajowaType(
-        string  $guid,
-        int     $numberOfPickups = 1,
-        string  $category = KategoriaType::VALUE_PRIORYTETOWA,
-        ?string $shipmentNumber = null,
-        ?EPOType $EPOType = null,
+        string                       $guid,
+        int                          $numberOfPickups = 1,
+        string                       $category = KategoriaType::VALUE_PRIORYTETOWA,
+        ?string                      $shipmentNumber = null,
+        ?EPOType                     $EPOType = null,
         ?PotwierdzenieDoreczeniaType $acknowledgmentOfPickup = null,
-        ?string $idLibraryForLegalDeposit = null,
-        ?string $specialConditions = null,
-        ?bool  $posteRestante = null,
-        ?string $dimension = null,
-        ?string  $format = null,
-        ?int $mass = null,
-        ?bool  $libraryCopy = null,
-        ?bool  $forBlindPeople = null,
-        ?bool  $urbanArea = null,
-        ?bool  $local = null,
-        ?bool  $customerShipmentNumber = null
+        ?string                      $idLibraryForLegalDeposit = null,
+        ?string                      $specialConditions = null,
+        ?bool                        $posteRestante = null,
+        ?string                      $dimension = null,
+        ?string                      $format = null,
+        ?int                         $mass = null,
+        ?bool                        $libraryCopy = null,
+        ?bool                        $forBlindPeople = null,
+        ?bool                        $urbanArea = null,
+        ?bool                        $local = null,
+        ?bool                        $customerShipmentNumber = null
 
     ): void
     {
