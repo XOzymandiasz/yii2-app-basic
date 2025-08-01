@@ -14,7 +14,9 @@ class PocztaPolskaCreateShipmentFactory
             //ShipmentType::VALUE_PRZESYLKA_BIZNESOWA        => (new BiznesowaBuilder($form))->build(),
             //ShipmentType::VALUE_LIST_WARTOSCIOWY_KRAJOWY   => (new ListWartosciowyBuilder($form))->build(),
             //ShipmentType::VALUE_LIST_ZWYKLY_FIRMOWY        => (new ListZwyklyFirmowyBuilder($form))->build(),
-            default => throw new InvalidArgumentException(Module::t('poczta-polska', "Unsupported shipment type: {$form->shipmentType}")),
+            default => throw new InvalidArgumentException(
+                Module::t('poczta-polska', "Unsupported shipment type: {$form->shipmentType}")
+            ),
         };
     }
 }
