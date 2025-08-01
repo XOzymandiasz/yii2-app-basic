@@ -153,6 +153,15 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $this->creator_id = $model->creator_id;
         $this->shipment_at = $model->shipment_at;
         $this->api_data = $model->api_data;
+
+        $senderAddressLink = $model->getSenderAddress()->one();
+        $this->senderAddress = $senderAddressLink;
+        $this->sender_id = $senderAddressLink->id;
+
+        $receiverAddressLink = $model->getReceiverAddress()->one();
+        $this->receiverAddress = $receiverAddressLink;
+        $this->receiver_id = $receiverAddressLink->id;
+
     }
 
     public static function getAddressesNames(): array

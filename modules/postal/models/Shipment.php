@@ -55,9 +55,28 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
         return '{{%shipment}}';
     }
 
-    public function getSenderAddress(): ShipmentAddressLink
+    public function getSenderAddress(): ActiveQuery
     {
-        return $this->addressLinks[ShipmentDirectionInterface::DIRECTION_IN];
+        return $this->hasOne(ShipmentAddress::class, ['id' => 'address_id'])
+            ->via('senderAddressLink');
+    }
+
+    public function getSenderAddressLink(): ActiveQuery
+    {
+        return $this->hasOne(ShipmentAddressLink::class, ['shipment_id' => 'id'])
+            ->andWhere(['type' => ShipmentDirectionInterface::DIRECTION_IN]);
+    }
+
+    public function getReceiverAddress(): ActiveQuery
+    {
+        return $this->hasOne(ShipmentAddress::class, ['id' => 'address_id'])
+            ->via('receiverAddressLink');
+    }
+
+    public function getReceiverAddressLink(): ActiveQuery
+    {
+        return $this->hasOne(ShipmentAddressLink::class, ['shipment_id' => 'id'])
+            ->andWhere(['type' => ShipmentDirectionInterface::DIRECTION_OUT]);
     }
 
     /**
