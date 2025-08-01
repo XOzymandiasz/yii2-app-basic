@@ -3,6 +3,7 @@
 namespace app\modules\postal;
 
 use app\modules\postal\components\PocztaPolskaTracker;
+use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module as BaseModule;
@@ -51,5 +52,10 @@ class Module extends BaseModule
     public function getPocztaPolskaTracker(): PocztaPolskaTracker
     {
         return $this->get('pocztaPolskaTracker');
+    }
+
+    public function getPocztaPolskaSenderOptions(): PocztaPolskaSenderOptions
+    {
+        return $this->get('pocztaPolskaSenderOptions');
     }
 }

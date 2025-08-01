@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use yii\bootstrap5\BootstrapAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
 use yii\symfonymailer\Mailer;
@@ -72,6 +73,7 @@ $config = [
     'modules' => [
         'postal' => [
             'class' => PostalModule::class,
+         //   'pocztaPolskaSenderOptions' => PocztaPolskaSenderOptions::testInstance(),
         ]
 
     ],
