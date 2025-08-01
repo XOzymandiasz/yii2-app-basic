@@ -9,28 +9,18 @@ use app\modules\postal\sender\EnumType\ShipmentType;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use PocztaPolskaCreateShipmentFactory;
-use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
-class ElektronicznyNadawcaShipmentForm extends Model
+class PocztaPolskaShipmentForm extends ShipmentForm
 {
-
-    //bufforId -> senderProfile
-    //category
-    //size
-    //czy jest polecony
 
 
     protected const CATEGORY_DEFAULT = KategoriaType::VALUE_PRIORYTETOWA;
     protected const FORMAT_DEFAULT = FormatType::VALUE_S;
-    public string $shipmentType;
-    public string $guid;
     public bool $isRegistered = true;
 
     public ?string $description = null;
-    public ?string $shipmentNumber = null;
-    private ?AddressTypeForm $addressForm = null;
-    private ?ShipperAddressTypeForm $shipperAddressForm = null;
+    public ?int $mass = 500;
 
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
@@ -52,16 +42,13 @@ class ElektronicznyNadawcaShipmentForm extends Model
     public function rules(): array
     {
         return [
-            [['shipmentType', 'category', 'guid'], 'required'],
-            [['category', 'format', 'shipmentNumber'], 'string'],
+            [['category'], 'required'],
+            [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
+            [['mass'], 'integer'],
             ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
             ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
             [['description'], 'string', 'max' => 500],
-            [['guid'], 'string', 'length' => 32],
-            ['shipmentNumber', 'match', 'pattern' => '/^\d{10,20}$/',
-                'message' => Module::t('poczta-polska',
-                    'Shipment number must contain only digits and be between 10 and 20 characters long.')],
         ];
     }
 
@@ -71,18 +58,17 @@ class ElektronicznyNadawcaShipmentForm extends Model
             'category' => Module::t('poczta-polska', 'Category'),
             'format' => Module::t('poczta-polska', 'Format'),
             'description' => Module::t('poczta-polska', 'Description'),
-            'guid' => Module::t('poczta-polska', 'GUID'),
-            'shipmentType' => Module::t('poczta-polska', 'Shipment Type'),
-            'addressForm' => Module::t('poczta-polska', 'Recipient Address'),
             'shipperAddressForm' => Module::t('poczta-polska', 'Shippeer Address'),
+            'isRegistered' => Module::t('poczta-polska', 'Registered'),
+            'mass' => Module::t('poczta-polska', 'Mass'),
         ];
     }
 
-    public function save()
+    public function save(bool $validate = true): bool
     {
 
         //@todo create ActiveRecord: PostalShipment
-
+        return $validate;
     }
 
 
@@ -126,20 +112,20 @@ class ElektronicznyNadawcaShipmentForm extends Model
         return $this->shipperAddressForm;
     }
 
-    public function validate($attributeNames = null, $clearErrors = true): bool
-    {
-        return parent::validate($attributeNames, $clearErrors)
-            && $this->getAddressForm()->validate($attributeNames, $clearErrors)
-            && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
-    }
-
-
-    public function load($data, $formName = null): bool
-    {
-        return parent::load($data, $formName)
-            && $this->getAddressForm()->load($data, $formName)
-            && $this->getShipperAddressForm()->load($data, $formName);
-    }
+    //public function validate($attributeNames = null, $clearErrors = true): bool
+    //{
+    //    return parent::validate($attributeNames, $clearErrors)
+    //        && $this->getAddressForm()->validate($attributeNames, $clearErrors)
+    //        && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
+    //}
+//
+//
+    //public function load($data, $formName = null): bool
+    //{
+    //    return parent::load($data, $formName)
+    //        && $this->getAddressForm()->load($data, $formName)
+    //        && $this->getShipperAddressForm()->load($data, $formName);
+    //}
 
     public static function getShipmentTypes(): array
     {

@@ -3,7 +3,7 @@
 namespace unit\postal\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
-use app\modules\postal\forms\ElektronicznyNadawcaShipmentForm;
+use app\modules\postal\forms\PocztaPolskaShipmentForm;
 use app\modules\postal\forms\ShipperAddressTypeForm;
 use app\modules\postal\sender\EnumType\KategoriaType;
 use app\modules\postal\sender\EnumType\ShipmentType;
@@ -15,13 +15,13 @@ use UnitTester;
  */
 class ElektronicznyNadawcaShipmentFormTest extends Unit
 {
-    protected ElektronicznyNadawcaShipmentForm $model;
+    protected PocztaPolskaShipmentForm $model;
     protected AddressTypeForm $addressType;
     protected ShipperAddressTypeForm $shipperType;
 
     protected function _before(): void
     {
-        $this->model = new ElektronicznyNadawcaShipmentForm();
+        $this->model = new PocztaPolskaShipmentForm();
         $this->addressType = new AddressTypeForm();
         $this->shipperType = new ShipperAddressTypeForm();
     }

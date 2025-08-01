@@ -1,12 +1,12 @@
 <?php
 
-use app\modules\postal\forms\ElektronicznyNadawcaShipmentForm;
+use app\modules\postal\forms\PocztaPolskaShipmentForm;
 use app\modules\postal\sender\StructType\PrzesylkaPoleconaKrajowaType;
 
 class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
 {
-    private ElektronicznyNadawcaShipmentForm $form;
-    public function __construct(ElektronicznyNadawcaShipmentForm $form) {
+    private PocztaPolskaShipmentForm $form;
+    public function __construct(PocztaPolskaShipmentForm $form) {
         $this->form = $form;
     }
 
@@ -17,7 +17,6 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
         $shipment->setFormat($this->form->format)
                  ->setAdres($this->form->getAddressForm()->createModel())
                  ->setNadawca($this->form->getShipperAddressForm()->createModel())
-                 ->setRodzaj($this->form->shipmentType)
                  ->setGuid($this->form->guid)
                  ->setOpis($this->form->description);
 
