@@ -29,6 +29,8 @@ class BufforRepositoryTest extends Unit
     public function testGetAll(): void
     {
         $all = $this->repository->getAll();
+        //$all = Yii::createObject(BufforRepository::class)->getAll();
+        codecept_debug($all);
         $this->tester->assertIsArray($all);
     }
 }

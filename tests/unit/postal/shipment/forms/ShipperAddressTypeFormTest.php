@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\forms;
+namespace unit\postal\shipment\forms;
 
 use app\modules\postal\forms\ShipperAddressTypeForm;
 use app\modules\postal\sender\StructType\ProfilType;

@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\forms;
+namespace unit\postal\shipment\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\ContentTypeForm;

@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\forms;
+namespace forms;
 
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\forms\PocztaPolskaShipmentForm;
@@ -13,7 +13,7 @@ use UnitTester;
 /**
  * @property UnitTester $tester
  */
-class ElektronicznyNadawcaShipmentFormTest extends Unit
+class PocztaPolskaShipmentFormTest extends Unit
 {
     protected PocztaPolskaShipmentForm $model;
     protected AddressTypeForm $addressType;

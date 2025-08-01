@@ -3,9 +3,12 @@
 namespace unit\postal\sender;
 
 
+use app\modules\postal\Module;
 use app\modules\postal\sender\EnumType\GabarytType;
 use app\modules\postal\sender\EnumType\KategoriaType;
 use app\modules\postal\sender\PocztaPolskaSenderClassMap;
+use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\sender\repositories\AddRepository;
 use app\modules\postal\sender\ServiceType\Add;
 use app\modules\postal\sender\ServiceType\Clear;
 use app\modules\postal\sender\ServiceType\Create;
@@ -42,6 +45,7 @@ use InvalidArgumentException;
 use UnitTester;
 use WsdlToPhp\PackageBase\SoapClientInterface;
 use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * @property UnitTester $tester
@@ -178,6 +182,7 @@ class SenderClientTest extends Unit
     }
 
 
+
     public function testCorrectAddShipment(): void
     {
         $this->giveGuids(1);
@@ -186,12 +191,10 @@ class SenderClientTest extends Unit
         $this->giveShipperType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
-        $option = $this->getDefaultOptions();
+        $repo = new AddRepository(PocztaPolskaSenderOptions::testInstance());
+        $response = $repo->addShipment($this->shipmentType, null);
 
-        $add = new Add($option);
-        $response = $add->addShipment(new AddShipment([$this->shipmentType], null));
-
-        codecept_debug($response->getRetval()[0]->getGuid()[0]->getError());
+        codecept_debug($response);
 
         $this->tester->assertNotNull($response);
     }

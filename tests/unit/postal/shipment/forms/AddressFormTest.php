@@ -1,14 +1,12 @@
 <?php
 
-namespace unit\postal\forms;
+namespace unit\postal\shipment\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\models\ShipmentAddress;
-use app\modules\postal\sender\StructType\AdresType;
 use Codeception\Test\Unit;
 use UnitTester;
-use Yii;
 use yii\base\Model;
 
 /**

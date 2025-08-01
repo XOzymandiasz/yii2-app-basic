@@ -1,6 +1,8 @@
 <?php
 
 
+namespace tracker;
+
 use app\modules\postal\components\exceptions\BaseException;
 use app\modules\postal\components\PocztaPolskaTracker;
 use app\modules\postal\components\PocztaPolskaTrackerClient;
@@ -79,7 +81,7 @@ class PocztaPolskaTrackerTest extends \Codeception\Test\Unit
         $events = $mailInfo->events;
         foreach ($events as $event) {
             $state = $event->state;
-            if(isset($state) && $state->isShipped()) {
+            if (isset($state) && $state->isShipped()) {
                 $this->tester->assertNotNull($mail->getShipmentAt());
             }
         }
@@ -97,7 +99,7 @@ class PocztaPolskaTrackerTest extends \Codeception\Test\Unit
         $events = $mailInfo->events;
         foreach ($events as $event) {
             $state = $event->state;
-            if(isset($state) && $state->isSent()) {
+            if (isset($state) && $state->isSent()) {
                 $this->tester->assertNotNull($mail->getSentAt());
             }
         }

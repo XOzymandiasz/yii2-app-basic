@@ -1,8 +1,12 @@
 <?php
 
 
+namespace forms;
+
 use app\modules\postal\components\ShipmentInterface;
 use Codeception\Test\Unit;
+use PocztaPolskaShipmentCheckForm;
+use UnitTester;
 
 /**
  * @property UnitTester $tester
@@ -41,7 +45,6 @@ class PocztaPolskaShipmentCheckFormTest extends Unit
         $this->tester->assertTrue($model->validate());
         $this->tester->assertFalse($model->hasErrors('number'));
     }
-
 
 
 }
