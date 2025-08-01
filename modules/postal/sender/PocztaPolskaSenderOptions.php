@@ -8,8 +8,8 @@ use yii\base\Component;
 class PocztaPolskaSenderOptions extends Component
 {
 
-    public string $login;
-    public string $password;
+    public string $login = '';
+    public string $password = '';
     public array $classMap = [];
 
     public bool $useLocalFile = true;
@@ -18,7 +18,6 @@ class PocztaPolskaSenderOptions extends Component
     public int $cache = WSDL_CACHE_NONE;
 
     public array $options = [];
-
 
     private string $testLocation = 'https://en-testwebapi.poczta-polska.pl/websrv/labs.php';
     private string $prodWsdl = '';
