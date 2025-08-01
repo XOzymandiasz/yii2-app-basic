@@ -3,9 +3,7 @@
 namespace app\modules\postal\forms;
 
 use app\modules\postal\models\ShipmentAddress;
-use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
-use app\modules\postal\sender\StructType\AdresType;
 use yii\base\Model;
 use yii\db\Exception;
 
@@ -70,40 +68,6 @@ class AddressTypeForm extends Model
         ];
     }
 
-    public function setAdresType(AdresType $model): void
-    {
-        $this->name = $model->getNazwa();
-        $this->name_2 = $model->getNazwa2();
-        $this->street = $model->getUlica();
-        $this->house_number = $model->getNumerDomu();
-        $this->apartment_number = $model->getNumerLokalu();
-        $this->city = $model->getMiejscowosc();
-        $this->postal_code = $model->getKodPocztowy();
-        $this->country = $model->getKraj();
-        $this->phone = $model->getTelefon();
-        $this->email = $model->getEmail();
-        $this->mobile = $model->getMobile();
-        $this->contact_person = $model->getOsobaKontaktowa();
-        $this->taxID = $model->getNip();
-    }
-
-    public function getAdresType(): AdresType
-    {
-        return (new AdresType())
-            ->setNazwa($this->name)
-            ->setUlica($this->street)
-            ->setNumerDomu($this->house_number)
-            ->setNumerLokalu($this->apartment_number)
-            ->setMiejscowosc($this->city)
-            ->setKodPocztowy($this->postal_code)
-            ->setKraj($this->country)
-            ->setNazwa2($this->name_2)
-            ->setTelefon($this->phone)
-            ->setEmail($this->email)
-            ->setMobile($this->mobile)
-            ->setOsobaKontaktowa($this->contact_person)
-            ->setNip($this->taxID);
-    }
 
     /**
      * @throws Exception
