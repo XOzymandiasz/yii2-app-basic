@@ -105,7 +105,7 @@ class ShipmentController extends Controller
         ]);
     }
 
-    public function actionAfterCreateOut(int $id)
+    public function actionAfterCreateOut(int $id): Response
     {
         $model = $this->findModel($id);
         switch ($model->provider) {
