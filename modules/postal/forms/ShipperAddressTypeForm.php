@@ -27,10 +27,10 @@ class ShipperAddressTypeForm extends AddressTypeForm
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
-            'idProfil' => Module::t('poczta-polska', 'Profile ID'),
-            'shortName' => Module::t('poczta-polska', 'Short Name'),
-            'fax' => Module::t('poczta-polska', 'Fax'),
-            'mpk' => Module::t('poczta-polska', 'MPK'),
+            'idProfil' => Module::t('postal', 'Profile ID'),
+            'shortName' => Module::t('postal', 'Short Name'),
+            'fax' => Module::t('postal', 'Fax'),
+            'mpk' => Module::t('postal', 'MPK'),
         ]);
     }
 
