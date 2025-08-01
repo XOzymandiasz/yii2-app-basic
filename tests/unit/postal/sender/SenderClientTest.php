@@ -666,7 +666,7 @@ class SenderClientTest extends Unit
         ?string $specialConditions = null,
         ?bool  $posteRestante = null,
         ?string $dimension = null,
-        ?bool  $format = null,
+        ?string  $format = null,
         ?int $mass = null,
         ?bool  $libraryCopy = null,
         ?bool  $forBlindPeople = null,
