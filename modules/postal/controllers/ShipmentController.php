@@ -110,7 +110,7 @@ class ShipmentController extends Controller
         $model = $this->findModel($id);
         switch ($model->provider) {
             case ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA:
-                return $this->redirect(['poczta-polska/create', [
+                return $this->redirect(['poczta-polska/create-from-shipment', [
                     'id' => $id
                 ]]);
             default:
