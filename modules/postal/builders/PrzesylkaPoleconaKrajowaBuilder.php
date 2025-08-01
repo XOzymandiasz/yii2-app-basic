@@ -5,20 +5,23 @@ use app\modules\postal\sender\StructType\PrzesylkaPoleconaKrajowaType;
 
 class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
 {
-    private PocztaPolskaShipmentForm $form;
-    public function __construct(PocztaPolskaShipmentForm $form) {
-        $this->form = $form;
+    private PocztaPolskaShipmentForm $model;
+    public function __construct(PocztaPolskaShipmentForm $model) {
+        $this->model = $model;
     }
 
     public function build(): PrzesylkaPoleconaKrajowaType
     {
-        $shipment = new PrzesylkaPoleconaKrajowaType($this->form->category);
+        $shipment = new PrzesylkaPoleconaKrajowaType($this->model->category);
 
-        $shipment->setFormat($this->form->format)
-                 ->setAdres($this->form->getAddressForm()->createModel())
-                 ->setNadawca($this->form->getShipperAddressForm()->createModel())
-                 ->setGuid($this->form->guid)
-                 ->setOpis($this->form->description);
+        $shipment->setFormat($this->model->format)
+                 ->setNumerNadania($this->model->number)
+                 ->setKategoria($this->model->category)
+                 ->setFormat($this->model->format)
+                 ->setMasa($this->model->mass)
+                 ->setAdres($this->model->getReceiverAddress())
+                 ->setNadawca($this->model->getSenderAddress())
+                 ->setOpis($this->model->description);
 
 
         return $shipment;
