@@ -65,7 +65,7 @@ class AddressTypeForm extends Model
             'email' => Module::t('postal', 'Email'),
             'mobile' => Module::t('postal', 'Mobile'),
             'contact_person' => Module::t('postal', 'Contact Person'),
-            'taxID' => Module::t('postal', 'tax ID'),
+            'taxID' => Module::t('postal', 'Tax ID'),
             'option' => Module::t('postal', 'Option'),
         ];
     }
