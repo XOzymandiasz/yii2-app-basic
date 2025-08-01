@@ -17,7 +17,6 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
         $shipment = new PrzesylkaPoleconaKrajowaType($this->model->category);
 
         $shipment->setFormat($this->model->format)
-                 ->setNumerNadania($this->model->number)
                  ->setKategoria($this->model->category)
                  ->setFormat($this->model->format)
                  ->setMasa($this->model->mass)
@@ -25,6 +24,9 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
                  ->setNadawca($this->model->getSenderAddress()->getAdresType())
                  ->setOpis($this->model->description);
 
+        if ($this->model->number){
+            $shipment->setNumerNadania($this->model->number);
+        }
 
         return $shipment;
     }

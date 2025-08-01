@@ -96,7 +96,6 @@ class ShipmentController extends Controller
         if ($model->load($this->request->post())) {
             if ($model->save()) {
                 return $this->redirect(['afterCreateOut', 'id' => $model->getModel()->id]);
-
             }
         }
         return $this->render('create', [
@@ -138,15 +137,6 @@ class ShipmentController extends Controller
         ]);
     }
 
-    public function actionCraeteOutPocztaPolska()
-    {
-
-        $model = new PocztaPolskaShipmentForm();
-        $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
-        $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
-        $model->creator_id = Yii::$app->user->id;
-        $model->finished_at = date(DATE_ATOM);
-    }
 
 
     /**

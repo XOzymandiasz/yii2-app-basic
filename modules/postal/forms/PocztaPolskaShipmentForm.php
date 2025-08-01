@@ -5,10 +5,17 @@ namespace app\modules\postal\forms;
 use app\modules\postal\Module;
 use app\modules\postal\sender\EnumType\FormatType;
 use app\modules\postal\sender\EnumType\KategoriaType;
-use app\modules\postal\sender\EnumType\ShipmentType;
+use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\sender\repositories\AddServiceRepository;
+use app\modules\postal\sender\repositories\BufforRepository;
+use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
-use PocztaPolskaCreateShipmentFactory;
+use app\modules\postal\builders\PocztaPolskaCreateShipmentFactory;
+use Throwable;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 
 class PocztaPolskaShipmentForm extends ShipmentForm
@@ -19,25 +26,30 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     protected const FORMAT_DEFAULT = FormatType::VALUE_S;
     public bool $isRegistered = true;
 
+    public ?int $idBuffor = null;
     public ?string $description = null;
     public ?int $mass = 500;
 
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
 
+    public ?AddServiceRepository $addService = null;
+
     /**
      * @var BuforType[]
      */
     public array $buffors = [];
 
-//    public function init(): void
-//    {
-//        parent::init();
-//        if (empty($this->buffors)) {
-//            $this->buffors = Yii::createObject(BufforRepository::class)->getAll();
-//        }
-//
-//    }
+    /**
+     * @throws InvalidConfigException
+     */
+    public function init(): void
+    {
+        parent::init();
+        if (empty($this->buffors)) {
+            $this->buffors = Yii::createObject(BufforRepository::class)->getAll();
+        }
+    }
 
     public function rules(): array
     {
@@ -45,7 +57,7 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             [['category'], 'required'],
             [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
-            [['mass'], 'integer'],
+            [['!idBuffor', 'mass'], 'integer'],
             ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
             ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
             [['description'], 'string', 'max' => 500],
@@ -64,12 +76,12 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         ];
     }
 
-    public function save(bool $validate = true): bool
-    {
-
-        //@todo create ActiveRecord: PostalShipment
-        return $validate;
-    }
+    //public function save(bool $validate = true): bool
+    //{
+//
+    //    //@todo create ActiveRecord: PostalShipment
+    //    return $validate;
+    //}
 
 
     public function getBufforsNames(): array
@@ -86,50 +98,31 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
-    public function setAddressForm(AddressTypeForm $addressForm): void
+    /**
+     * @throws StaleObjectException
+     * @throws Throwable
+     */
+    public function addShipment(): bool
     {
-        $this->addressForm = $addressForm;
-    }
+        /**
+         * @var AddShipmentResponse $response
+         */
+        $this->giveAddService();
 
-    public function getAddressForm(): AddressTypeForm
-    {
-        if ($this->addressForm === null) {
-            $this->addressForm = new AddressTypeForm();
+        $response = $this->addService->addShipment($this->createShipment(), $this->idBuffor);
+
+        $retval = $response->getRetval()[0];
+        $model = $this->getModel();
+
+        if (!empty($retval->getError()[0])) {
+            return false;
         }
-        return $this->addressForm;
-    }
 
-    public function setShipperAddressForm(ShipperAddressTypeForm $shipperAddressForm): void
-    {
-        $this->shipperAddressForm = $shipperAddressForm;
-    }
+        $model->guid = $retval->getGuid();
+        $model->number = $retval->getNumerNadania();
+        $model->update(false);
 
-    public function getShipperAddressForm(): ShipperAddressTypeForm
-    {
-        if ($this->shipperAddressForm === null) {
-            $this->shipperAddressForm = new ShipperAddressTypeForm();
-        }
-        return $this->shipperAddressForm;
-    }
-
-    //public function validate($attributeNames = null, $clearErrors = true): bool
-    //{
-    //    return parent::validate($attributeNames, $clearErrors)
-    //        && $this->getAddressForm()->validate($attributeNames, $clearErrors)
-    //        && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
-    //}
-//
-//
-    //public function load($data, $formName = null): bool
-    //{
-    //    return parent::load($data, $formName)
-    //        && $this->getAddressForm()->load($data, $formName)
-    //        && $this->getShipperAddressForm()->load($data, $formName);
-    //}
-
-    public static function getShipmentTypes(): array
-    {
-        return ShipmentType::getValidValues();
+        return true;
     }
 
     public static function getCategoriesNames(): array
@@ -148,5 +141,33 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             FormatType::VALUE_L => Module::t('poczta-polska', 'L'),
         ];
     }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    protected function giveAddService(): AddServiceRepository
+    {
+        if ($this->addService === null) {
+            $options = PocztaPolskaSenderOptions::testInstance();
+            $this->addService = new AddServiceRepository($options);
+        }
+        return $this->addService;
+    }
+
+
+    //public function validate($attributeNames = null, $clearErrors = true): bool
+    //{
+    //    return parent::validate($attributeNames, $clearErrors)
+    //        && $this->getAddressForm()->validate($attributeNames, $clearErrors)
+    //        && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
+    //}
+//
+//
+    //public function load($data, $formName = null): bool
+    //{
+    //    return parent::load($data, $formName)
+    //        && $this->getAddressForm()->load($data, $formName)
+    //        && $this->getShipperAddressForm()->load($data, $formName);
+    //}
 
 }
