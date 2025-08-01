@@ -16,6 +16,15 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'idBuffor')->widget(Select2::class, [
+        'data' => $model->getBufforsNames(),
+        'options' => ['placeholder' => Module::t('poczta-polska', 'Choose buffor')],
+        'pluginOptions' => [
+            'allowClear' => true,
+        ],
+    ])
+    ?>
+
     <?= $form->field($model, 'category')->widget(Select2::class, [
         'data' => $model->getCategoriesNames(),
         'options' => ['placeholder' => Module::t('poczta-polska', 'Choose category')],
