@@ -34,6 +34,9 @@ class PocztaPolskaController extends Controller
         ]);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     private function findModel(int $id): Shipment
     {
         $model = Shipment::find()
