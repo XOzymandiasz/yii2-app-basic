@@ -7,7 +7,6 @@ use app\modules\postal\sender\ServiceType\Add;
 use app\modules\postal\sender\StructType\AddShipment;
 use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\PrzesylkaType;
-use Yii;
 use yii\base\Component;
 
 class AddRepository extends Component
