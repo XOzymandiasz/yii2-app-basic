@@ -34,13 +34,7 @@ use edzima\teryt;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'profile')->widget(Select2::class, [
-        'data' => $model->getProfileNames(),
-        'options' => ['placeholder' => Module::t('postal', 'Choose sender profile')],
-        'pluginOptions' => [
-            'allowClear' => true,
-        ],
-    ]) ?>
+
 
 
     <?= $form->field($model, 'sendAt')->input('date') ?>
