@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\modules\postal\sender\ServiceType;
 
+use app\modules\postal\sender\StructType\CreateEnvelopeBufor;
+use app\modules\postal\sender\StructType\CreateEnvelopeBuforResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -15,13 +17,13 @@ class Create extends AbstractSoapClientBase
 {
     /**
      * Method to call the operation originally named createEnvelopeBufor
+     * @param CreateEnvelopeBufor $parameters
+     * @return CreateEnvelopeBuforResponse|null
+     * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
-     * @uses AbstractSoapClientBase::saveLastError()
-     * @param \app\modules\postal\sender\StructType\CreateEnvelopeBufor $parameters
-     * @return \app\modules\postal\sender\StructType\CreateEnvelopeBuforResponse|bool
      */
-    public function createEnvelopeBufor(\app\modules\postal\sender\StructType\CreateEnvelopeBufor $parameters)
+    public function createEnvelopeBufor(CreateEnvelopeBufor $parameters): CreateEnvelopeBuforResponse|null
     {
         try {
             $this->setResult($resultCreateEnvelopeBufor = $this->getSoapClient()->__soapCall('createEnvelopeBufor', [
@@ -31,9 +33,9 @@ class Create extends AbstractSoapClientBase
             return $resultCreateEnvelopeBufor;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
         }
+
+        return null;
     }
     /**
      * Method to call the operation originally named createAccount
@@ -169,8 +171,8 @@ class Create extends AbstractSoapClientBase
     }
     /**
      * Returns the result
-     * @see AbstractSoapClientBase::getResult()
-     * @return \app\modules\postal\sender\StructType\CreateAccountResponse|\app\modules\postal\sender\StructType\CreateChecklistTemplateResponse|\app\modules\postal\sender\StructType\CreateEnvelopeBuforResponse|\app\modules\postal\sender\StructType\CreateParcelContentResponse|\app\modules\postal\sender\StructType\CreateProfilResponse|\app\modules\postal\sender\StructType\CreateReturnDocumentsProfileResponse|\app\modules\postal\sender\StructType\CreateShopEZwrotyResponse
+     * @return \app\modules\postal\sender\StructType\CreateAccountResponse|\app\modules\postal\sender\StructType\CreateChecklistTemplateResponse|CreateEnvelopeBuforResponse|\app\modules\postal\sender\StructType\CreateParcelContentResponse|\app\modules\postal\sender\StructType\CreateProfilResponse|\app\modules\postal\sender\StructType\CreateReturnDocumentsProfileResponse|\app\modules\postal\sender\StructType\CreateShopEZwrotyResponse
+     *@see AbstractSoapClientBase::getResult()
      */
     public function getResult()
     {

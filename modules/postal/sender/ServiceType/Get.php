@@ -8,6 +8,9 @@ use app\modules\postal\sender\StructType\GetEnvelopeBuforList;
 use app\modules\postal\sender\StructType\GetEnvelopeBuforListResponse;
 use app\modules\postal\sender\StructType\GetEnvelopeList;
 use app\modules\postal\sender\StructType\GetEnvelopeListResponse;
+use app\modules\postal\sender\StructType\GetPlacowkiPocztowe;
+use app\modules\postal\sender\StructType\GetUrzedyNadania;
+use app\modules\postal\sender\StructType\GetUrzedyNadaniaResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -19,13 +22,13 @@ class Get extends AbstractSoapClientBase
 {
     /**
      * Method to call the operation originally named getUrzedyNadania
-     * @param \app\modules\postal\sender\StructType\GetUrzedyNadania $parameters
-     * @return \app\modules\postal\sender\StructType\GetUrzedyNadaniaResponse|bool
+     * @param GetUrzedyNadania $parameters
+     * @return GetUrzedyNadaniaResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function getUrzedyNadania(\app\modules\postal\sender\StructType\GetUrzedyNadania $parameters)
+    public function getUrzedyNadania(\app\modules\postal\sender\StructType\GetUrzedyNadania $parameters): GetUrzedyNadaniaResponse|null
     {
         try {
             $this->setResult($resultGetUrzedyNadania = $this->getSoapClient()->__soapCall('getUrzedyNadania', [
@@ -36,8 +39,9 @@ class Get extends AbstractSoapClientBase
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
 
-            return false;
+
         }
+        return null;
     }
 
     /**
@@ -300,7 +304,7 @@ class Get extends AbstractSoapClientBase
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function getPlacowkiPocztowe(\app\modules\postal\sender\StructType\GetPlacowkiPocztowe $parameters)
+    public function getPlacowkiPocztowe(GetPlacowkiPocztowe $parameters)
     {
         try {
             $this->setResult($resultGetPlacowkiPocztowe = $this->getSoapClient()->__soapCall('getPlacowkiPocztowe', [
@@ -310,9 +314,8 @@ class Get extends AbstractSoapClientBase
             return $resultGetPlacowkiPocztowe;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-
-            return false;
         }
+        return null;
     }
 
     /**
