@@ -1,6 +1,7 @@
 <?php
 
-use app\modules\postal\controllers\PocztaPolskaShipmentController;
+namespace functional\postal;
+use FunctionalTester;
 
 class PocztaPolskaCreateCest
 {
@@ -10,11 +11,10 @@ class PocztaPolskaCreateCest
      */
     public const ROUTE_CREATE = 'postal/poczta-polska-shipment/create';
 
-    public function _before(\FunctionalTester $I)
+    public function _before(FunctionalTester $I)
     {
         $I->amOnRoute(static::ROUTE_CREATE);
     }
-
 
     public function checkPage(FunctionalTester $I): void
     {
