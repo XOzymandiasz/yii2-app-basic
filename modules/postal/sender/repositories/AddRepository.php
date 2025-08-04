@@ -9,16 +9,12 @@ use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 
-class AddServiceRepository extends Component
+class AddRepository extends Component
 {
     private ?Add $service = null;
     private PocztaPolskaSenderOptions $senderOptions;
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function __construct(PocztaPolskaSenderOptions $senderOptions, array $config = [])
     {
         $this->senderOptions = $senderOptions;
@@ -27,7 +23,7 @@ class AddServiceRepository extends Component
 
     public function addShipment(PrzesylkaType $shipment, ?int $idBuffor): ?AddShipmentResponse
     {
-        $this->getService();
+        $this->service = $this->getService();
 
         return $this->service->addShipment(new AddShipment([$shipment], $idBuffor));
     }
