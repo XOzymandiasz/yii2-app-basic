@@ -162,5 +162,6 @@ return [
     'Choose Content' => 'Wybierz zawartość',
     'DPD' => 'DPD',
     'Registered' => 'Polecona',
-    'Choose provider' => 'Wybierz dostawce'
+    'Choose provider' => 'Wybierz dostawce',
+    'Choose buffor' => 'Wybierz buffor',
 ];
