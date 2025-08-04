@@ -24,4 +24,5 @@ return [
     'Create In Postal Shipment' => 'Utwórz przychodzącą przesyłkę pocztową',
     'Create Shipment Address Sender' => 'Utwórz adres nadawcy',
     'Create Shipment Address Receiver' => 'Utwórz adres odbiorcy',
+    'Poczta Polska Shipments' => 'Przesyłka Poczta Polska',
 ];
