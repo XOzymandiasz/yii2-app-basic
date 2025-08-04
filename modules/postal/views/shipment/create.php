@@ -1,10 +1,11 @@
 <?php
 
+use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\modules\postal\models\Shipment $model */
+/** @var ShipmentForm $model */
 
 $this->title = Module::t('common', 'Create Postal Shipment');
 $this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];
