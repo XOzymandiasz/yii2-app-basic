@@ -23,7 +23,6 @@ class ProfileTest extends Unit
 
     public function _before(): void
     {
-
         parent::_before();
         $this->repository = new ProfileRepository(PocztaPolskaSenderOptions::testInstance());
     }
