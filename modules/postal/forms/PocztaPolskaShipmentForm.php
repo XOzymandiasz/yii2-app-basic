@@ -6,14 +6,13 @@ use app\modules\postal\Module;
 use app\modules\postal\sender\EnumType\FormatType;
 use app\modules\postal\sender\EnumType\KategoriaType;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\repositories\AddServiceRepository;
+use app\modules\postal\sender\repositories\ShipmentRepository;
 use app\modules\postal\sender\repositories\BufforRepository;
 use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use app\modules\postal\builders\PocztaPolskaCreateShipmentFactory;
 use Throwable;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
@@ -33,21 +32,19 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
 
-    public ?AddServiceRepository $addService = null;
+    public ?ShipmentRepository $addService = null;
 
     /**
      * @var BuforType[]
      */
     public array $buffors = [];
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function init(): void
     {
         parent::init();
         if (empty($this->buffors)) {
-            $this->buffors = Yii::createObject(BufforRepository::class)->getAll();
+            //$this->buffors = Yii::createObject(BufforRepository::class)->getAll();
+            $this->buffors = $this->getBufforService()->getAll();
         }
     }
 
@@ -107,11 +104,12 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         /**
          * @var AddShipmentResponse $response
          */
-        $this->giveAddService();
+        $this->addService = $this->getAddService();
 
         $response = $this->addService->addShipment($this->createShipment(), $this->idBuffor);
 
         $retval = $response->getRetval()[0];
+
         $model = $this->getModel();
 
         if (!empty($retval->getError()[0])) {
@@ -142,14 +140,21 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         ];
     }
 
+
+    protected function getBufforService(): BufforRepository
+    {
+        return new BufforRepository(
+            PocztaPolskaSenderOptions::testInstance()
+        );
+    }
     /**
      * @throws InvalidConfigException
      */
-    protected function giveAddService(): AddServiceRepository
+    protected function getAddService(): ShipmentRepository
     {
         if ($this->addService === null) {
             $options = PocztaPolskaSenderOptions::testInstance();
-            $this->addService = new AddServiceRepository($options);
+            $this->addService = new ShipmentRepository($options);
         }
         return $this->addService;
     }
