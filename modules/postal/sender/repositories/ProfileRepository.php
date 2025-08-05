@@ -10,6 +10,12 @@ use yii\helpers\ArrayHelper;
 class ProfileRepository extends BaseRepository
 {
 
+    /**
+     * @var ProfilType[]
+     */
+    private array $profiles = [];
+
+
     protected $serviceConfig = [
         'class' => ProfileService::class,
     ];
@@ -29,11 +35,6 @@ class ProfileRepository extends BaseRepository
         Yii::error($this->getService()->getLastError(), __METHOD__);
         return false;
     }
-
-    /**
-     * @var ProfilType[]
-     */
-    private array $profiles = [];
 
     /**
      * @return ProfilType[]
