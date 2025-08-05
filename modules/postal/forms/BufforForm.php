@@ -71,12 +71,17 @@ class BufforForm extends Model
 
     public function createType(): BuforType
     {
-        return (new BuforType())
+        $buffor = (new BuforType())
             ->setActive($this->isActive)
             ->setUrzadNadania($this->dispatchOffice)
             ->setOpis($this->name)
-            ->setDataNadania($this->sendAt)
-            ->setProfil($this->getProfileRepository()->getList()[$this->profilId]);
+            ->setDataNadania($this->sendAt);
+
+        if ($this->profilId !== null) {
+            $buffor->setProfil($this->getProfileRepository()->getList()[$this->profilId]);
+        }
+
+        return $buffor;
     }
 
     protected function getBufforRepository(): BufforRepository
