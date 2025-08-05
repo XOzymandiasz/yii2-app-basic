@@ -42,34 +42,6 @@ class BufforRepository extends Component
     }
 
     /**
-     * @var ProfilType[]
-     */
-    private array $profiles = [];
-
-    /**
-     * @return ProfilType[]
-     */
-    public function getProfiles(bool $refresh = false): array
-    {
-        if ($refresh || empty($this->profiles)) {
-            $response = $this->getService()->getProfiles();
-            if (!$response) {
-                Yii::warning([
-                    'lastResponseError' => $this->getService()->getLastError()
-                ], __METHOD__);
-            }
-            $this->profiles = ArrayHelper::index($response->getProfil(),
-                function (ProfilType $profile) {
-                    return $profile->getIdProfil();
-                }
-            );
-
-        }
-
-        return $this->profiles;
-    }
-
-    /**
      * @return PlacowkaPocztowaType[]
      */
     public function getDispatchOffices(string $regionId): array
