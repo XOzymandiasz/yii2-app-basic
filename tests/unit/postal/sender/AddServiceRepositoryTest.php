@@ -2,8 +2,7 @@
 
 namespace unit\postal\sender;
 
-use app\modules\postal\sender\repositories\AddRepository;
-use unit\postal\sender\SenderClientTest;
+use app\modules\postal\sender\repositories\ShipmentRepository;
 use Codeception\Test\Unit;
 use UnitTester;
 
@@ -12,7 +11,7 @@ use UnitTester;
  */
 class AddServiceRepositoryTest extends Unit
 {
-    private ?AddRepository $service = null;
+    private ?ShipmentRepository $service = null;
     public function testAddService()
     {
         $this->giveAddService();
@@ -28,7 +27,7 @@ class AddServiceRepositoryTest extends Unit
     protected function giveAddService()
     {
         if($this->service == null) {
-            $this->service = new AddRepository();
+            $this->service = new ShipmentRepository();
         }
         return $this->service;
     }

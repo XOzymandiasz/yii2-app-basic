@@ -2,88 +2,57 @@
 
 namespace forms;
 
-use app\modules\postal\forms\AddressTypeForm;
+use _support\UnitModelTrait;
 use app\modules\postal\forms\PocztaPolskaShipmentForm;
-use app\modules\postal\forms\ShipperAddressTypeForm;
+use app\modules\postal\sender\EnumType\FormatType;
 use app\modules\postal\sender\EnumType\KategoriaType;
-use app\modules\postal\sender\EnumType\ShipmentType;
 use Codeception\Test\Unit;
 use UnitTester;
+use yii\base\Model;
 
 /**
  * @property UnitTester $tester
  */
 class PocztaPolskaShipmentFormTest extends Unit
 {
+    use UnitModelTrait;
+
     protected PocztaPolskaShipmentForm $model;
-    protected AddressTypeForm $addressType;
-    protected ShipperAddressTypeForm $shipperType;
+
 
     protected function _before(): void
     {
         $this->model = new PocztaPolskaShipmentForm();
-        $this->addressType = new AddressTypeForm();
-        $this->shipperType = new ShipperAddressTypeForm();
     }
 
-    public function testRequiredFieldsValidation(): void
+    public function testValidationRequiredFields(): void
     {
-        $this->model->shipmentType = '';
-        $this->model->category = '';
-        $this->model->guid = '';
-
-        $this->assertFalse($this->model->validate());
-        $this->assertSame(
-            'Shipment Type cannot be blank.',
-            $this->model->getFirstError('shipmentType')
-        );
-    }
-
-    public function testValidShipmentTypeAndCategory(): void
-    {
-        $this->model->shipmentType = ShipmentType::VALUE_PRZESYLKA_POLECONA_KRAJOWA;
-        $this->model->category = KategoriaType::VALUE_EKONOMICZNA;
-        $this->model->guid = '12345678901234567890123456789012';
-
-        $this->assertTrue($this->model->validate());
-    }
-
-    public function testInvalidShipmentNumberFormat(): void
-    {
-        $this->model->shipmentType = ShipmentType::VALUE_PRZESYLKA_POLECONA_KRAJOWA;
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
-        $this->model->guid = '12345678901234567890123456789012';
-        $this->model->shipmentNumber = 'abc123';
+        $this->model->format = FormatType::VALUE_S;
+        $this->model->mass = 100;
+        $this->model->description = "Some text";
 
-        $this->assertFalse($this->model->validate());
-        $this->assertSame(
-            'Shipment number must contain only digits and be between 10 and 20 characters long.',
-            $this->model->getFirstError('shipmentNumber')
-        );
+        $this->thenSuccessValidate(['category', 'format', 'mass', 'description']);
     }
 
-    public function testValidShipmentNumber(): void
+    public function testValidationWithoutRequiredFields(): void
     {
-        $this->model->shipmentType = ShipmentType::VALUE_PRZESYLKA_POLECONA_KRAJOWA;
-        $this->model->category = KategoriaType::VALUE_EKONOMICZNA;
-        $this->model->guid = '12345678901234567890123456789012';
-        $this->model->shipmentNumber = '12345678980';
+        $this->model->category = '';
 
-        $this->addressType->name = "Jan Kowalski";
-        $this->addressType->street = "Dmowskiego";
-        $this->addressType->postalCode = "83314";
-        $this->addressType->city = "Warszawa";
-
-        $this->shipperType->name = "Jan Kowalski";
-        $this->shipperType->street = "Dmowskiego";
-        $this->shipperType->postalCode = "83314";
-        $this->shipperType->city = "Warszawa";
-
-
-
-        $this->assertTrue($this->model->validate());
-
+        $this->thenUnsuccessValidate(['category']);
+        $this->thenSeeError('Category cannot be blank.', 'category');
     }
 
+    public function testValidationWithTooLong(): void
+    {
+        $this->model->description = str_repeat('a', 501);
 
+        $this->thenUnsuccessValidate(['description']);
+        $this->thenSeeError('Description should contain at most 500 characters.', 'description');
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 }

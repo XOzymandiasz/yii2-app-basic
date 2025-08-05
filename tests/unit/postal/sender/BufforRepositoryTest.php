@@ -4,6 +4,7 @@ namespace unit\postal\sender;
 
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\BufforRepository;
+use app\modules\postal\sender\StructType\ProfilType;
 use Codeception\Test\Unit;
 use UnitTester;
 use Yii;
@@ -25,7 +26,6 @@ class BufforRepositoryTest extends Unit
         );
     }
 
-
     public function testGetAll(): void
     {
         $all = $this->repository->getAll();
@@ -33,4 +33,5 @@ class BufforRepositoryTest extends Unit
         codecept_debug($all);
         $this->tester->assertIsArray($all);
     }
+
 }
