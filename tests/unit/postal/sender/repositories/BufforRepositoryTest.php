@@ -1,8 +1,7 @@
 <?php
 
-namespace unit\postal\sender;
+namespace unit\postal\sender\repositories;
 
-use _support\UnitModelTrait;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\BufforRepository;
 use app\modules\postal\sender\repositories\ProfileRepository;
@@ -17,7 +16,6 @@ use UnitTester;
  */
 class BufforRepositoryTest extends Unit
 {
-    private const PROFILE_ID = 772567;
     private BufforRepository $repository;
     private ?ProfileRepository $profileRepository = null;
 
@@ -31,10 +29,9 @@ class BufforRepositoryTest extends Unit
 
     public function testGetAll(): void
     {
-        $all = $this->repository->getAll();
-        //$all = Yii::createObject(BufforRepository::class)->getAll();
-        codecept_debug($all);
-        $this->tester->assertIsArray($all);
+        $response = $this->repository->getAll();
+
+        $this->tester->assertIsArray($response);
     }
 
     public function testGetDispatchOffices(): void
@@ -51,14 +48,30 @@ class BufforRepositoryTest extends Unit
         });
     }
 
-
-    public function testCreate(): void
+    public function testCreateWithNoProfileAndClear(): void
     {
-        $bufor = $this->getBuffor(profileId: self::PROFILE_ID);
+        $bufor = $this->getBuffor();
 
-        $response = $this->repository->create($bufor);
+        $createResponse = $this->repository->create($bufor);
+        $clearResponse = $this->repository->clear($bufor->getIdBufor());
 
-        $this->tester->assertTrue($response);
+        $this->tester->assertTrue($createResponse);
+        $this->tester->assertTrue($clearResponse);
+    }
+
+    public function testCreateAndClear(): void
+    {
+        $profiles = $this->getProfileRepository()->getList();
+
+        $firstProfile = reset($profiles);
+
+        $bufor = $this->getBuffor(profileId:$firstProfile->getIdProfil());
+
+        $createResponse = $this->repository->create($bufor);
+        $clearResponse = $this->repository->clear($bufor->getIdBufor());
+
+        $this->tester->assertTrue($createResponse);
+        $this->tester->assertTrue($clearResponse);
     }
 
 
@@ -72,12 +85,17 @@ class BufforRepositoryTest extends Unit
         ?string $name = null
     ): BuforType
     {
-        return (new BuforType)
+        $bufor = (new BuforType)
                 ->setActive($isActive)
                 ->setUrzadNadania($dispatchOffice)
                 ->setOpis($name)
-                ->setDataNadania($sendAt)
-                ->setProfil($this->getProfileRepository()->getList()[$profileId]);
+                ->setDataNadania($sendAt);
+
+        if ($profileId !== null) {
+            $bufor->setProfil($this->getProfileRepository()->getList()[$profileId]);
+        }
+
+        return $bufor;
     }
 
     private function getProfileRepository(): ?ProfileRepository
