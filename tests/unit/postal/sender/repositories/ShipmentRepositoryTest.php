@@ -39,7 +39,7 @@ class ShipmentRepositoryTest extends Unit
         $this->tester->assertEmpty($response->getError());
     }
 
-    public function getShipment(
+    protected function getShipment(
         AdresType $address,
         string $kategoria = KategoriaType::VALUE_PRIORYTETOWA
     ): PrzesylkaType
@@ -48,7 +48,7 @@ class ShipmentRepositoryTest extends Unit
                 ->setAdres($address);
     }
 
-    public function getAddress(
+    protected function getAddress(
         string $name = 'Test name',
         string $street = 'Test street',
         string $city = 'Test city',
