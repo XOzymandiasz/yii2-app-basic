@@ -8,12 +8,10 @@ use app\modules\postal\sender\EnumType\KategoriaType;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\ShipmentRepository;
 use app\modules\postal\sender\repositories\BufforRepository;
-use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use app\modules\postal\builders\PocztaPolskaCreateShipmentFactory;
 use Throwable;
-use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 
@@ -72,14 +70,6 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             'mass' => Module::t('poczta-polska', 'Mass'),
         ];
     }
-
-    //public function save(bool $validate = true): bool
-    //{
-//
-    //    //@todo create ActiveRecord: PostalShipment
-    //    return $validate;
-    //}
-
 
     public function getBufforsNames(): array
     {
@@ -143,9 +133,8 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             PocztaPolskaSenderOptions::testInstance()
         );
     }
-    /**
-     * @throws InvalidConfigException
-     */
+
+
     protected function getShipmentService(): ShipmentRepository
     {
         if ($this->shipmentService === null) {
@@ -154,21 +143,5 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         }
         return $this->shipmentService;
     }
-
-
-    //public function validate($attributeNames = null, $clearErrors = true): bool
-    //{
-    //    return parent::validate($attributeNames, $clearErrors)
-    //        && $this->getAddressForm()->validate($attributeNames, $clearErrors)
-    //        && $this->getShipperAddressForm()->validate($attributeNames, $clearErrors);
-    //}
-//
-//
-    //public function load($data, $formName = null): bool
-    //{
-    //    return parent::load($data, $formName)
-    //        && $this->getAddressForm()->load($data, $formName)
-    //        && $this->getShipperAddressForm()->load($data, $formName);
-    //}
 
 }
