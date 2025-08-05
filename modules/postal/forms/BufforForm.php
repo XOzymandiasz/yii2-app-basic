@@ -17,6 +17,7 @@ class BufforForm extends Model
     public ?string $regionId = null;
     public ?string $sendAt = null;
     public bool $isActive = false;
+    public ?int $profilId = null;
     public ?int $dispatchOffice = null;
     public ?string $name = null;
 
