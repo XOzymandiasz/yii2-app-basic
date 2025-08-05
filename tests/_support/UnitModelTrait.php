@@ -15,7 +15,7 @@ trait UnitModelTrait
     abstract public function getModel(): Model;
 
 
-    protected function thenSuccessValidate(array $attributes = [], bool $clearErrors = true): void
+    protected function thenSuccessValidate( $attributes = null, bool $clearErrors = true): void
     {
         $validate = $this->getModel()->validate($attributes, $clearErrors);
         if (!$validate) {
@@ -24,7 +24,7 @@ trait UnitModelTrait
         $this->tester->assertTrue($validate);
     }
 
-    protected function thenUnsuccessValidate(array $attributes = [], bool $clearErrors = true): void
+    protected function thenUnsuccessValidate( $attributes = null, bool $clearErrors = true): void
     {
         $validate = $this->getModel()->validate($attributes, $clearErrors);
         codecept_debug($this->getModel()->getErrors());
