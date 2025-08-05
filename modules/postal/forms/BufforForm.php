@@ -5,10 +5,12 @@ namespace app\modules\postal\forms;
 use app\modules\postal\Module;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\BufforRepository;
+use app\modules\postal\sender\repositories\ProfileRepository;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PlacowkaPocztowaType;
 use app\modules\postal\sender\StructType\ProfilType;
 use yii\base\Model;
+
 class BufforForm extends Model
 {
     public ?string $regionId = null;
@@ -18,13 +20,14 @@ class BufforForm extends Model
     public ?int $dispatchOffice = null;
     public ?string $name = null;
 
-    private ?BufforRepository $service = null;
-
+    private ?BufforRepository $bufforRepository = null;
+    private ?ProfileRepository $profileRepository = null;
 
     public function init(): void
     {
         parent::init();
-        $this->service = $this->getBufforRepository();
+        $this->bufforRepository = $this->getBufforRepository();
+        $this->profileRepository = $this->getProfileRepository();
     }
 
     public function rules(): array
@@ -52,7 +55,7 @@ class BufforForm extends Model
 
     public function getProfilesNames(): array
     {
-        $models = $this->service->getProfiles();
+        $models = $this->getProfileRepository()->getList();
         $names = [];
 
         foreach ($models as $model) {
@@ -72,17 +75,26 @@ class BufforForm extends Model
             ->setActive($this->isActive)
             ->setUrzadNadania($this->dispatchOffice)
             ->setOpis($this->name)
-            ->setDataNadania($this->sendAt);
-            //->setProfil($this->getBufforRepository()->getProfiles()[$this->profilId]);
+            ->setDataNadania($this->sendAt)
+            ->setProfil($this->getProfileRepository()->getList()[$this->profilId]);
     }
 
     protected function getBufforRepository(): BufforRepository
     {
         $options = PocztaPolskaSenderOptions::testInstance();
-        if (null === $this->service) {
-            $this->service = new BufforRepository($options);
+        if (null === $this->bufforRepository) {
+            $this->bufforRepository = new BufforRepository($options);
         }
-        return $this->service;
+        return $this->bufforRepository;
+    }
+
+    private function getProfileRepository(): ?ProfileRepository
+    {
+        $options = PocztaPolskaSenderOptions::testInstance();
+        if (null === $this->profileRepository) {
+            $this->profileRepository = new ProfileRepository($options);
+        }
+        return $this->profileRepository;
     }
 
     public static function getProfileName(ProfilType $model): string
@@ -102,6 +114,8 @@ class BufforForm extends Model
             . ' ' . $model->getNumerDomu()
             . ' (' . $model->getNazwaWydruk() . ')';
     }
+
+
 
 
 }
