@@ -28,6 +28,9 @@ class PocztaPolskaBufforController extends Controller
         ]);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function actionGetDispatchOfficesNames(): Response
     {
         $params = Yii::$app->request->post('depdrop_parents');
