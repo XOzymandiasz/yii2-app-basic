@@ -9,8 +9,11 @@ use app\modules\postal\sender\StructType\GetEnvelopeBuforListResponse;
 use app\modules\postal\sender\StructType\GetEnvelopeList;
 use app\modules\postal\sender\StructType\GetEnvelopeListResponse;
 use app\modules\postal\sender\StructType\GetPlacowkiPocztowe;
+use app\modules\postal\sender\StructType\GetPrintForParcel;
+use app\modules\postal\sender\StructType\GetPrintForParcelResponse;
 use app\modules\postal\sender\StructType\GetUrzedyNadania;
 use app\modules\postal\sender\StructType\GetUrzedyNadaniaResponse;
+use app\modules\postal\sender\StructType\PrintType;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -781,25 +784,26 @@ class Get extends AbstractSoapClientBase
      * Method to call the operation originally named getPrintForParcel
      * Meta information extracted from the WSDL
      * - documentation: The method returns parcels printouts for passed guid's
-     * @param \app\modules\postal\sender\StructType\GetPrintForParcel $parameters
-     * @return \app\modules\postal\sender\StructType\GetPrintForParcelResponse|bool
+     * @param GetPrintForParcel $parameters
+     * @return GetPrintForParcelResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function getPrintForParcel(\app\modules\postal\sender\StructType\GetPrintForParcel $parameters)
+    public function getPrintForParcel(?array $guid, ?PrintType $type): GetPrintForParcelResponse|null
     {
         try {
             $this->setResult($resultGetPrintForParcel = $this->getSoapClient()->__soapCall('getPrintForParcel', [
-                $parameters,
+                new GetPrintForParcel($guid, $type),
             ], [], [], $this->outputHeaders));
 
             return $resultGetPrintForParcel;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
 
-            return false;
         }
+
+        return null;
     }
 
     /**
