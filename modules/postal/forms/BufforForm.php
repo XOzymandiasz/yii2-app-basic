@@ -18,8 +18,7 @@ class BufforForm extends Model
     public ?string $sendAt = null;
     public bool $isActive = false;
     public ?int $dispatchOffice = null;
-    public ?string $description = null;
-    public ?ProfilType $profile = null;
+    public ?string $name = null;
 
     public ?BufforRepository $service = null;
 
@@ -33,8 +32,8 @@ class BufforForm extends Model
     public function rules(): array
     {
         return [
-            [['idBuffor', 'idDispatchOffice', 'isActive'], 'integer'],
-            [['sendAt', 'description'], 'string'],
+            [['idBuffor', 'idDispatchOffice', 'isActive', 'profilId'], 'integer'],
+            [['sendAt', 'name'], 'string'],
             [['isActive'], 'boolean'],
         ];
     }
@@ -46,8 +45,10 @@ class BufforForm extends Model
             'sendAt' => Module::t('poczta-polska', 'Send at'),
             'dispatchOffice' => Module::t('poczta-polska', 'Dispatch Office'),
             'isActive' => Module::t('poczta-polska', 'Is active'),
-            'description' => Module::t('poczta-polska', 'Description'),
+            'name' => Module::t('poczta-polska', 'Name'),
             'profile' => Module::t('poczta-polska', 'Profile'),
+            'profilId' => Module::t('poczta-polska', 'Profil'),
+            'regionId' => Module::t('poczta-polska', 'Region'),
         ];
     }
 
