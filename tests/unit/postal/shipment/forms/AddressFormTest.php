@@ -28,13 +28,13 @@ class AddressFormTest extends Unit
     {
         $this->model->name = "Jan Kowalski";
         $this->model->street = "Dmowskiego";
-        $this->model->postalCode = "83314";
+        $this->model->postal_code = "83314";
         $this->model->city = "Warszawa";
 
         $this->thenSuccessValidate(['name','street','postalCode','city']);
     }
 
-    public function testMissingValidationRequiredFields(): void
+    public function testEmptyTest(): void
     {
         $this->thenUnsuccessValidate(['name','street','postalCode','city']);
 
@@ -64,7 +64,7 @@ class AddressFormTest extends Unit
     {
         $this->model->name = "Firma";
         $this->model->street = "Ulica";
-        $this->model->postalCode = "11111";
+        $this->model->postal_code = "11111";
         $this->model->city = "Miasto";
         $this->model->email = "x@x";
 
@@ -77,7 +77,7 @@ class AddressFormTest extends Unit
     {
         $this->model->name = "Firma";
         $this->model->street = "Ulica";
-        $this->model->postalCode = "11-111";
+        $this->model->postal_code = "11-111";
         $this->model->city = "Miasto";
 
 
@@ -97,7 +97,7 @@ class AddressFormTest extends Unit
         $adresType->country = "PL";
         $adresType->house_number = "1";
         $adresType->apartment_number = "1";
-        $adresType->name2 = "Jan Kochanowski";
+        $adresType->name_2 = "Jan Kochanowski";
         $adresType->email = "firma@example.com";
         $adresType->phone = '123456789';
         $adresType->mobile = '987654321';
@@ -110,17 +110,17 @@ class AddressFormTest extends Unit
             'country', 'house_number', 'mobile', 'contact_person', 'taxID']);
 
         $this->tester->assertSame('Jan Kowalski', $this->model->name);
-        $this->tester->assertSame('Jan Kochanowski', $this->model->name2);
+        $this->tester->assertSame('Jan Kochanowski', $this->model->name_2);
         $this->tester->assertSame('Dmowskiego', $this->model->street);
-        $this->tester->assertSame('1', $this->model->houseNumber);
-        $this->tester->assertSame('1', $this->model->apartmentNumber);
+        $this->tester->assertSame('1', $this->model->house_number);
+        $this->tester->assertSame('1', $this->model->apartment_number);
         $this->tester->assertSame('Warszawa', $this->model->city);
-        $this->tester->assertSame('83314', $this->model->postalCode);
+        $this->tester->assertSame('83314', $this->model->postal_code);
         $this->tester->assertSame('PL', $this->model->country);
         $this->tester->assertSame('123456789', $this->model->phone);
         $this->tester->assertSame('firma@example.com', $this->model->email);
         $this->tester->assertSame('987654321', $this->model->mobile);
-        $this->tester->assertSame('333333333', $this->model->contactPerson);
+        $this->tester->assertSame('333333333', $this->model->contact_person);
         $this->tester->assertSame('1234567890', $this->model->taxID);
     }
 
