@@ -3,7 +3,7 @@
 namespace unit\postal\sender;
 
 use _support\UnitModelTrait;
-use app\modules\postal\forms\ShipperAddressTypeForm;
+use app\modules\postal\forms\ProfileForm;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\ProfileRepository;
 use Codeception\Test\Unit;
@@ -18,7 +18,7 @@ class ProfileTest extends Unit
     use UnitModelTrait;
 
     private ProfileRepository $repository;
-    private ShipperAddressTypeForm $model;
+    private ProfileForm $model;
 
 
     public function _before(): void
@@ -52,7 +52,7 @@ class ProfileTest extends Unit
 
     private function giveModel(array $config = []): void
     {
-        $this->model = new ShipperAddressTypeForm($config);
+        $this->model = new ProfileForm($config);
     }
 
     public function getModel(): Model
