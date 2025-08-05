@@ -53,19 +53,13 @@ class BufforForm extends Model
         ];
     }
 
-    public static function getRegionsNames(): array
+    public function getProfilesNames(): array
     {
-        return [
-            Region::REGION_DOLNOSLASKIE => Module::t('poczta-polska', 'Lower Silesia'),
-        ];
-    }
-
-    public function getDispatchOfficesNames(): array
-    {
-        $offices = $this->service->getDispatchesOffices();
+        $models = $this->service->getProfiles();
         $names = [];
-        foreach ($offices as $office) {
-            $names[$office->getUrzadNadania()] = $office->getNazwaWydruk() . ': ' . $office->getUrzadNadania();
+
+        foreach ($models as $model) {
+            $names[$model->getIdProfil()] = static::getProfileName($model);
         }
         return $names;
     }
@@ -86,6 +80,15 @@ class BufforForm extends Model
         return $this->service;
     }
 
+    public static function getProfileName(ProfilType $model): string
+    {
+        return $model->getNazwa()
+            . ' ' . $model->getUlica()
+            . ' ' . $model->getNumerDomu()
+            . ' ' . $model->getMiejscowosc()
+            . ' ' . $model->getKodPocztowy()
+            . ' ' . $model->getKraj();
+    }
 
     public static function getDispatchOfficeName(PlacowkaPocztowaType $model): string
     {
