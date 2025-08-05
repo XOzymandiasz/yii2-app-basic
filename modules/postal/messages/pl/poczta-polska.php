@@ -73,7 +73,7 @@ return [
     'City' => 'Miejscowość',
     'Secondary Name' => 'Alternatywne Imie i Nazwisko',
     'Mobile' => 'Mobile',
-    'Name' => 'Imie i Nazwisko',
+    'Name' => 'Nazwa',
     'Apartment Number' => 'Numer lokalu',
     'tax ID' => 'NIP',
     'Phone' => 'Numer telefonu',
