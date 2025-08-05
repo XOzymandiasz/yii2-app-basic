@@ -5,15 +5,12 @@ namespace app\modules\postal\forms;
 use app\modules\postal\Module;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\BufforRepository;
+use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PlacowkaPocztowaType;
 use app\modules\postal\sender\StructType\ProfilType;
-use edzima\teryt\models\Region;
 use yii\base\Model;
-
 class BufforForm extends Model
 {
-    public ?int $idBuffor = null;
-
     public ?string $regionId = null;
     public ?string $sendAt = null;
     public bool $isActive = false;
@@ -21,7 +18,7 @@ class BufforForm extends Model
     public ?int $dispatchOffice = null;
     public ?string $name = null;
 
-    public ?BufforRepository $service = null;
+    private ?BufforRepository $service = null;
 
 
     public function init(): void
@@ -64,12 +61,20 @@ class BufforForm extends Model
         return $names;
     }
 
-    public function getProfileNames(): array
+    public function create(): bool
     {
-        $profiles = [];
-        return $this->service->getProfileNames();
+        return $this->getBufforRepository()->create($this->createType());
     }
 
+    public function createType(): BuforType
+    {
+        return (new BuforType())
+            ->setActive($this->isActive)
+            ->setUrzadNadania($this->dispatchOffice)
+            ->setOpis($this->name)
+            ->setDataNadania($this->sendAt);
+            //->setProfil($this->getBufforRepository()->getProfiles()[$this->profilId]);
+    }
 
     protected function getBufforRepository(): BufforRepository
     {
