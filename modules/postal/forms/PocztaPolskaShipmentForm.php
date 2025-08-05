@@ -32,7 +32,7 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
 
-    public ?ShipmentRepository $addService = null;
+    public ?ShipmentRepository $shipmentService = null;
 
     /**
      * @var BuforType[]
@@ -101,23 +101,19 @@ class PocztaPolskaShipmentForm extends ShipmentForm
      */
     public function addShipment(): bool
     {
-        /**
-         * @var AddShipmentResponse $response
-         */
-        $this->addService = $this->getAddService();
+        $this->shipmentService = $this->getShipmentService();
 
-        $response = $this->addService->addShipment($this->createShipment(), $this->idBuffor);
+        $response = $this->shipmentService->add($this->createShipment(), $this->idBuffor);
 
-        $retval = $response->getRetval()[0];
-
-        $model = $this->getModel();
-
-        if (!empty($retval->getError()[0])) {
+        if($response === null)
+        {
             return false;
         }
 
-        $model->guid = $retval->getGuid();
-        $model->number = $retval->getNumerNadania();
+        $model = $this->getModel();
+
+        $model->guid = $response->getGuid();
+        $model->number = $response->getNumerNadania();
         $model->update(false);
 
         return true;
@@ -150,13 +146,13 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     /**
      * @throws InvalidConfigException
      */
-    protected function getAddService(): ShipmentRepository
+    protected function getShipmentService(): ShipmentRepository
     {
-        if ($this->addService === null) {
+        if ($this->shipmentService === null) {
             $options = PocztaPolskaSenderOptions::testInstance();
-            $this->addService = new ShipmentRepository($options);
+            $this->shipmentService = new ShipmentRepository($options);
         }
-        return $this->addService;
+        return $this->shipmentService;
     }
 
 
