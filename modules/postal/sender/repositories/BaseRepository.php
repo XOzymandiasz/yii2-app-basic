@@ -4,6 +4,8 @@ namespace app\modules\postal\sender\repositories;
 
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\services\BaseService;
+use InvalidArgumentException;
+use WsdlToPhp\PackageBase\AbstractStructBase;
 use Yii;
 use yii\base\Component;
 
@@ -35,5 +37,26 @@ abstract class BaseRepository extends Component
     {
         $config = $this->serviceConfig;
         return Yii::createObject($config, [$this->senderOptions->getSoapOptions()]);
+    }
+
+    protected function warning(string $category, $extraMessage = null, AbstractStructBase $response = null): void
+    {
+        $message = [];
+        if ($extraMessage) {
+            $message['message'] = $extraMessage;
+        }
+        if ($response) {
+            try {
+                $error = $response->getPropertyValue('error');
+                if ($error) {
+                    $message['error'] = $error;
+                }
+            } catch (InvalidArgumentException $exception) {
+                $message['response'] = $response;
+            }
+        }
+        $message['lastResponseError'] = $this->getService()->getLastError();
+
+        Yii::warning($message, $category);
     }
 }
