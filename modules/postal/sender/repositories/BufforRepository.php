@@ -31,10 +31,13 @@ class BufforRepository extends BaseRepository
     public function getAll(): array
     {
         $response = $this->getService()->getEnvelopeBuforList();
-        if ($response && empty($response->getError())) {
-            return $response->getBufor();
+        if ($response) {
+            if(empty($response->getError())){
+                return $response->getBufor();
+            }
+            $this->warning(__METHOD__, null, $response);
         }
-        $this->warning(__METHOD__, null, $response);
+        $this->warning(__METHOD__, 'response is null', $response);
         return [];
     }
 
