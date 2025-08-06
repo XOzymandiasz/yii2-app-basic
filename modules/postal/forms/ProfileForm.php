@@ -2,18 +2,16 @@
 
 namespace app\modules\postal\forms;
 
-use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\Module;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\ProfileRepository;
 use app\modules\postal\sender\StructType\ProfilType;
-use \app\modules\postal\sender\StructType\AdresType;
 
 
 class ProfileForm extends AddressTypeForm
 {
     public ?int $idProfil = null;
-    public ?string $shortName = null;
+    public ?string $profileName = null;
     public ?string $fax = null;
     public ?string $mpk = null;
 
@@ -29,7 +27,7 @@ class ProfileForm extends AddressTypeForm
     {
         return array_merge(parent::rules(), [
             [['idProfil'], 'integer'],
-            [['fax', 'shortName'], 'string', 'max' => 30],
+            [['fax', 'profileName'], 'string', 'max' => 30],
             [['mpk'], 'string', 'max' => 50],
         ]);
     }
@@ -38,7 +36,7 @@ class ProfileForm extends AddressTypeForm
     {
         return array_merge(parent::attributeLabels(), [
             'idProfil' => Module::t('postal', 'Profile ID'),
-            'shortName' => Module::t('postal', 'Short Name'),
+            'profileName' => Module::t('postal', 'Profile name'),
             'fax' => Module::t('postal', 'Fax'),
             'mpk' => Module::t('postal', 'MPK'),
         ]);
@@ -53,7 +51,7 @@ class ProfileForm extends AddressTypeForm
     {
         return (new ProfilType())
             ->setIdProfil($this->idProfil)
-            ->setNazwaSkrocona($this->shortName)
+            ->setNazwaSkrocona($this->profileName)
             ->setFax($this->fax)
             ->setMpk($this->mpk)
             ->setNazwa($this->name)
