@@ -20,6 +20,7 @@ use yii\web\Response;
 class PocztaPolskaShipmentController extends Controller
 {
 
+
     /**
      * @throws Throwable
      * @throws StaleObjectException
@@ -29,10 +30,23 @@ class PocztaPolskaShipmentController extends Controller
     {
         $shipment = $this->findModel($id);
         $model = new PocztaPolskaShipmentForm(['model' => $shipment]);
+        $model->buffors = $this->module
+            ->getRepositoriesFactory()
+            ->getBufforRepository()
+            ->getAll();
 
+        if (empty($model->buffors)) {
+            Yii::$app->session->setFlash(
+                'danger', Module::t('poczta-polska', 'Not found buffor. Create before Add Shipment'));
+            return $this->redirect(['buffor/create']);
+        }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->addShipment()) {
-            Yii::warning("Shipment created", __METHOD__);
+        if ($model->load(Yii::$app->request->post())
+            && $model->validate()
+            && $model->addShipment($this->module->getRepositoriesFactory()->getShipmentRepository())) {
+
+            //return $this->redirect(['shipment/view', 'id' => $id]);
+            return $this->redirect(['download-label', 'id' => $id]);
         }
 
         return $this->render('create-from-shipment', [
