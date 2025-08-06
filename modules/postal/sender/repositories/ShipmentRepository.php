@@ -17,22 +17,19 @@ class ShipmentRepository extends BaseRepository
     public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
     {
         $response = $this->getService()->add(new AddShipment([$shipment], $idBuffor));
-
-        if ($response) {
-            $retval = $response->getRetval()[0]; #todo ask for comment
-
-            if (empty($retval->getError())) {
-                return $retval;
-            }
+        if (!$response) {
+            $this->warning(__METHOD__, 'response is null');
+            return null;
         }
-
-        if ($response && empty($retval->getError())) {
-            Yii::warning([
-                'responseError' => $retval->getError(),
-                'lastResponseError' => $this->getService()->getLastError()
-            ], __METHOD__);
+        $value = $response->getRetval();
+        /**
+         * @var AddShipmentResponseItemType|false $shipmentResponse
+         */
+        $shipmentResponse = reset($value);
+        if ($shipmentResponse !== false) {
+            return $shipmentResponse;
         }
-
+        $this->warning(__METHOD__, 'empty retval', $response);
         return null;
     }
 

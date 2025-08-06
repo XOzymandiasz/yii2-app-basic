@@ -6,12 +6,13 @@ namespace app\modules\postal\sender\repositories;
 use app\modules\postal\sender\services\BufforService;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PlacowkaPocztowaType;
-use Yii;
 
-class BufforRepository extends Component
+class BufforRepository extends BaseRepository
 {
 
-    private ?BufforService $service = null;
+    protected $serviceConfig = [
+        'class' => BufforService::class,
+    ];
 
 
     public function clear(?int $bufforId): bool
@@ -20,10 +21,7 @@ class BufforRepository extends Component
         if ($response && empty($response->getError())) {
             return true;
         }
-        Yii::warning([
-            'responseError' => $response->getError(),
-            'lastResponseError' => $this->getService()->getLastError()
-        ], __METHOD__);
+        $this->warning(__METHOD__, null, $response);
         return false;
     }
 
@@ -36,6 +34,7 @@ class BufforRepository extends Component
         if ($response && empty($response->getError())) {
             return $response->getBufor();
         }
+        $this->warning(__METHOD__, null, $response);
         return [];
     }
 
@@ -51,36 +50,31 @@ class BufforRepository extends Component
                 return $model->getIdZPO() === null;
             });
         }
-        Yii::warning([
-            'lastResponseError' => $this->getService()->getLastError()
-        ], __METHOD__);
-        return [];
 
+        $this->warning(__METHOD__);
+
+        return [];
     }
 
     public function create(BuforType $buffor): bool
     {
         $response = $this->getService()->create($buffor);
 
-        if ($response && empty($response->getError())) {
-            return true;
+        if ($response) {
+            if (empty($response->getError())) {
+                return true;
+            }
+            $this->warning(__METHOD__, null, $response);
         }
 
-        Yii::warning($response->getError(), __METHOD__);
+        $this->warning(__METHOD__, 'response is null');
 
-        Yii::warning([
-            'lastResponseError' => $this->getService()->getLastError()
-        ], __METHOD__);
         return false;
 
     }
 
-
     protected function getService(): BufforService
     {
-        if ($this->service === null) {
-            $this->service = new BufforService($this->senderOptions->getSoapOptions());
-        }
-        return $this->service;
+        return parent::getService();
     }
 }

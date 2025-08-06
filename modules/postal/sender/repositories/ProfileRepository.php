@@ -4,7 +4,6 @@ namespace app\modules\postal\sender\repositories;
 
 use app\modules\postal\sender\services\ProfileService;
 use app\modules\postal\sender\StructType\ProfilType;
-use Yii;
 use yii\helpers\ArrayHelper;
 
 class ProfileRepository extends BaseRepository
@@ -24,17 +23,17 @@ class ProfileRepository extends BaseRepository
 
     public function create(ProfilType $model): bool
     {
-        $response = $this->getService()
-            ->create($model);
+        $response = $this->getService()->create($model);
         if ($response) {
             if (empty($response->getError())) {
                 return true;
             }
-            Yii::error([
-                'error' => $response->getError(),
-            ]);
+
+            $this->warning(__METHOD__, null, $response);
         }
-        Yii::error($this->getService()->getLastError(), __METHOD__);
+
+        $this->warning(__METHOD__, 'response is null');
+
         return false;
     }
 
@@ -46,9 +45,7 @@ class ProfileRepository extends BaseRepository
         if ($refresh || empty($this->profiles)) {
             $response = $this->getService()->getList();
             if (!$response) {
-                Yii::warning([
-                    'lastResponseError' => $this->getService()->getLastError()
-                ], __METHOD__);
+                $this->warning(__METHOD__, 'response is null');
             }
             $this->profiles = ArrayHelper::index($response->getProfil(),
                 function (ProfilType $profile) {
