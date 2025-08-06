@@ -2,7 +2,6 @@
 
 use app\modules\postal\forms\PocztaPolskaShipmentForm;
 use app\modules\postal\Module;
-use app\modules\postal\sender\EnumType\FormatType;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
