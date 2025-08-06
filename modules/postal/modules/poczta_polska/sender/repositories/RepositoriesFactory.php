@@ -5,6 +5,7 @@ namespace app\modules\postal\modules\poczta_polska\sender\repositories;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 class RepositoriesFactory extends Component
 {
