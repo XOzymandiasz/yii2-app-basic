@@ -42,8 +42,6 @@ use Dotenv\Dotenv;
 use InvalidArgumentException;
 use UnitTester;
 use WsdlToPhp\PackageBase\SoapClientInterface;
-use Yii;
-use yii\base\InvalidConfigException;
 
 /**
  * @property UnitTester $tester
