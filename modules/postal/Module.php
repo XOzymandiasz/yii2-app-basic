@@ -4,6 +4,7 @@ namespace app\modules\postal;
 
 use app\modules\postal\components\PocztaPolskaTracker;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\sender\repositories\RepositoriesFactory;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module as BaseModule;
@@ -18,9 +19,16 @@ class Module extends BaseModule
     public string $userTable = '{{%user}}';
     public string $userPrimaryKeyColumn = '{{id}}';
 
+    /**
+     * @var string|array|PocztaPolskaSenderOptions
+     */
+    public $senderOptions;
+
+
     public function init(): void
     {
         parent::init();
+  //      $this->senderOptions = Instance::ensure($this->senderOptions, PocztaPolskaSenderOptions::class);
         Yii::setAlias('@edzima/postal', __DIR__);
         Yii::configure($this, require(__DIR__ . '/config.php'));
         static::registerTranslations();
@@ -57,5 +65,14 @@ class Module extends BaseModule
     public function getPocztaPolskaSenderOptions(): PocztaPolskaSenderOptions
     {
         return $this->get('pocztaPolskaSenderOptions');
+    }
+
+    public function getRepositoriesFactory(): RepositoriesFactory
+    {
+        //@todo fix with config from module without component
+        return new RepositoriesFactory(
+            PocztaPolskaSenderOptions::testInstance()
+        );
+        return $this->get('repositoriesFactory');
     }
 }
