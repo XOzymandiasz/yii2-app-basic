@@ -27,7 +27,7 @@ use kartik\select2\Select2;
     ])
     ?>
 
-    <?= $form->field($model, 'dispatchOffice')->widget(DepDrop::class, [
+    <?= $form->field($model, 'dispatchOfficeId')->widget(DepDrop::class, [
         'type' => DepDrop::TYPE_SELECT2,
         // 'data' => $model->getDispatchOfficesNames(),
         'options' => ['placeholder' => Module::t('postal', 'Choose dispatch office')],
@@ -51,7 +51,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'isActive')->checkbox() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Zapisz', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Module::t('common','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
