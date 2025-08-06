@@ -11,6 +11,7 @@ use Yii;
 use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
 
 /**
@@ -24,7 +25,7 @@ class PocztaPolskaShipmentController extends Controller
      * @throws StaleObjectException
      * @throws NotFoundHttpException
      */
-    public function actionCreateFromShipment(int $id): string
+    public function actionCreateFromShipment(int $id): string|Response
     {
         $shipment = $this->findModel($id);
         $model = new PocztaPolskaShipmentForm(['model' => $shipment]);
@@ -39,13 +40,18 @@ class PocztaPolskaShipmentController extends Controller
         ]);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     * @throws RangeNotSatisfiableHttpException
+     */
     public function actionDownloadLabel(int $id): Response
     {
         $model = $this->findModel($id);
         $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
-        $label = $repository->getLabel([$model->guid]);
-        $label = 'content';
-        return Yii::$app->response->sendContentAsFile($file, $fileName, [
+        $label = $repository->getLabel($model->guid, $repository->createPrintType());
+
+        $filename = 'label' . $model->guid . '.pdf';
+        return Yii::$app->response->sendContentAsFile($label, $filename, [
             'mimeType' => 'application/pdf',
             'inline' => true,
         ]);
