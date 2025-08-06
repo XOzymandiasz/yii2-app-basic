@@ -3,6 +3,7 @@
 use app\modules\postal\components\PocztaPolskaTracker;
 use app\modules\postal\components\PocztaPolskaTrackerClient;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\sender\repositories\RepositoriesFactory;
 
 return [
     'components' => [
