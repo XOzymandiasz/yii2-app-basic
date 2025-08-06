@@ -36,7 +36,7 @@ class RepositoriesFactory extends Component
         parent::__construct($config);
     }
 
-    public function getAddRepository(): ShipmentRepository
+    public function getShipmentRepository(): ShipmentRepository
     {
         $config = $this->classMap[self::REPOSITORY_SHIPMENT];
         return Yii::createObject($config, [$this->senderOptions]);
