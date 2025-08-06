@@ -30,7 +30,7 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
 
-    public ?ShipmentRepository $shipmentService = null;
+    private ?ShipmentRepository $shipmentService = null;
 
     /**
      * @var BuforType[]
@@ -52,10 +52,10 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             [['category'], 'required'],
             [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
-            [['!idBuffor', 'mass'], 'integer'],
+            [['idBuffor', 'mass'], 'integer'],
             ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
             ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
-            [['description'], 'string', 'max' => 500],
+            [['description'], 'string', 'max' => 500], #todo: check is this written out to label
         ];
     }
 
@@ -71,23 +71,10 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         ];
     }
 
-    public function getBufforsNames(): array
-    {
-        return ArrayHelper::map(
-            $this->buffors,
-            'idBufor',
-            'opis'
-        );
-    }
-
-    public function createShipment(): PrzesylkaType
-    {
-        return PocztaPolskaCreateShipmentFactory::create($this);
-    }
 
     /**
-     * @throws StaleObjectException
      * @throws Throwable
+     * @throws StaleObjectException
      */
     public function addShipment(): bool
     {
@@ -109,21 +96,29 @@ class PocztaPolskaShipmentForm extends ShipmentForm
         return true;
     }
 
-    public static function getCategoriesNames(): array
+    public function createShipment(): PrzesylkaType
     {
-        return [
-            KategoriaType::VALUE_EKONOMICZNA => Module::t('poczta-polska', 'Category: Economies'),
-            KategoriaType::VALUE_PRIORYTETOWA => Module::t('poczta-polska', 'Category: Priority'),
-        ];
+        return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
-    public static function getFormatTypes(): array
+
+    public function setModel(Shipment $model): void
     {
-        return [
-            FormatType::VALUE_S => Module::t('poczta-polska', 'S'),
-            FormatType::VALUE_M => Module::t('poczta-polska', 'M'),
-            FormatType::VALUE_L => Module::t('poczta-polska', 'L'),
-        ];
+        parent::setModel($model);
+        $this->description = $model->content->name;
+    }
+
+    public function getBufforsNames(): array
+    {
+        return ArrayHelper::map(
+            $this->buffors,
+            function (BuforType $buffer) {
+                return $buffer->getIdBufor();
+            },
+            function (BuforType $buffer) {
+                return $buffer->getOpis(); #todo merge opis with sendAt
+            }
+        );
     }
 
 
