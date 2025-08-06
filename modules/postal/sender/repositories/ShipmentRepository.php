@@ -38,7 +38,7 @@ class ShipmentRepository extends BaseRepository
         return null;
     }
 
-    public function getLabel(?string $guid, ?PrintType $type): string|null
+    public function getLabel(string $guid, PrintType $type): string|null #todo
     {
         $response = $this->getService()->printForParcel([$guid], $type);
 
@@ -46,7 +46,10 @@ class ShipmentRepository extends BaseRepository
             if(empty($response->getError())){
                 $printResult = $response->getPrintResult();
                 $labelResponse = reset($printResult);
-                return $labelResponse->getPrint();
+                if ($labelResponse !== false) {
+                    return $labelResponse->getPrint();
+                }
+                $this->warning(__METHOD__, 'empty print', $response);
             }
             $this->warning(__METHOD__, null, $response);
         }
