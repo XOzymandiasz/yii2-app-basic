@@ -3,8 +3,8 @@
 namespace app\modules\postal\widgets;
 
 
-use app\modules\postal\entities\Mail;
-use app\modules\postal\entities\MailInfoEvent;
+use app\modules\postal\modules\poczta_polska\entities\Mail;
+use app\modules\postal\modules\poczta_polska\entities\MailInfoEvent;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;

@@ -3,7 +3,7 @@
 namespace app\modules\postal\models;
 
 use app\modules\postal\Module;
-use app\modules\postal\sender\StructType\AdresType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;

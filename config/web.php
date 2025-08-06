@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
 use edzima\teryt\Module as TerytModule;
 use yii\bootstrap5\BootstrapAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
@@ -76,7 +77,11 @@ $config = [
         ],
         'postal' => [
             'class' => PostalModule::class,
-            //   'pocztaPolskaSenderOptions' => PocztaPolskaSenderOptions::testInstance(),
+            'modules' => [
+                'poczta_polska' => [
+                    'class' => PocztaPolskaModule::class,
+                ],
+            ]
         ]
 
     ],

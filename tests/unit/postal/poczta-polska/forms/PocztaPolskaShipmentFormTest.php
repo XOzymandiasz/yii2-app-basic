@@ -3,9 +3,9 @@
 namespace forms;
 
 use _support\UnitModelTrait;
-use app\modules\postal\forms\PocztaPolskaShipmentForm;
-use app\modules\postal\sender\EnumType\FormatType;
-use app\modules\postal\sender\EnumType\KategoriaType;
+use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use Codeception\Test\Unit;
 use UnitTester;
 use yii\base\Model;

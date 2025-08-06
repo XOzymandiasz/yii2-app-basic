@@ -1,0 +1,179 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
+
+use SoapFault;
+use WsdlToPhp\PackageBase\AbstractSoapClientBase;
+
+/**
+ * This class stands for Update ServiceType
+ * @subpackage Services
+ */
+class Update extends AbstractSoapClientBase
+{
+    /**
+     * Method to call the operation originally named updateEnvelopeBufor
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateEnvelopeBufor(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateEnvelopeBufor = $this->getSoapClient()->__soapCall('updateEnvelopeBufor', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateEnvelopeBufor;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateAccount
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccountResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateAccount(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateAccount = $this->getSoapClient()->__soapCall('updateAccount', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateAccount;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateProfil
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfilResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateProfil(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateProfil = $this->getSoapClient()->__soapCall('updateProfil', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateProfil;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateShopEZwroty
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateShopEZwroty $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateShopEZwrotyResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateShopEZwroty(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateShopEZwroty $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateShopEZwroty = $this->getSoapClient()->__soapCall('updateShopEZwroty', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateShopEZwroty;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateParcelContent
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateParcelContent $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateParcelContentResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateParcelContent(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateParcelContent $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateParcelContent = $this->getSoapClient()->__soapCall('updateParcelContent', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateParcelContent;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateReturnDocumentsProfile
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateReturnDocumentsProfile $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateReturnDocumentsProfileResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateReturnDocumentsProfile(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateReturnDocumentsProfile $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateReturnDocumentsProfile = $this->getSoapClient()->__soapCall('updateReturnDocumentsProfile', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateReturnDocumentsProfile;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Method to call the operation originally named updateChecklistTemplate
+     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateChecklistTemplate $parameters
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateChecklistTemplateResponse|bool
+     * @uses AbstractSoapClientBase::saveLastError()
+     * @uses AbstractSoapClientBase::getSoapClient()
+     * @uses AbstractSoapClientBase::setResult()
+     */
+    public function updateChecklistTemplate(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateChecklistTemplate $parameters)
+    {
+        try {
+            $this->setResult($resultUpdateChecklistTemplate = $this->getSoapClient()->__soapCall('updateChecklistTemplate', [
+                $parameters,
+            ], [], [], $this->outputHeaders));
+        
+            return $resultUpdateChecklistTemplate;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        
+            return false;
+        }
+    }
+    /**
+     * Returns the result
+     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccountResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateChecklistTemplateResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateParcelContentResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfilResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateReturnDocumentsProfileResponse|\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateShopEZwrotyResponse
+     * @see AbstractSoapClientBase::getResult()
+     */
+    public function getResult()
+    {
+        return parent::getResult();
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace functional\postal;
 
+use app\modules\postal\modules\poczta_polska\controllers\PocztaPolskaShipmentCheckController;
 use FunctionalTester;
 
 class PocztaPolskaShipmentCheckCest

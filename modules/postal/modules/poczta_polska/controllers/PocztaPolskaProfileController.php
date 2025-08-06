@@ -1,0 +1,33 @@
+<?php
+
+namespace app\modules\postal\modules\poczta_polska\controllers;
+
+use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
+use Yii;
+use yii\web\Controller;
+use yii\web\Response;
+
+/**
+ * @property Module $module
+ */
+
+class PocztaPolskaProfileController extends Controller
+{
+
+    public function actionCreate():string|Response
+    {
+        $model = new ProfileForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->create()) {
+            return $this->redirect(['index',
+                'model'=>$model]
+            );
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+}

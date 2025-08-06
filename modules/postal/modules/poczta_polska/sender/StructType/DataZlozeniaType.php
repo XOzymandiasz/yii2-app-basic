@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\modules\postal\modules\poczta_polska\sender\StructType;
+
+use InvalidArgumentException;
+use WsdlToPhp\PackageBase\AbstractStructBase;
+
+/**
+ * This class stands for dataZlozeniaType StructType
+ * @subpackage Structs
+ */
+#[\AllowDynamicProperties]
+class DataZlozeniaType extends AbstractStructBase
+{
+    /**
+     * The od
+     * @var string|null
+     */
+    protected ?string $od = null;
+    /**
+     * The do
+     * @var string|null
+     */
+    protected ?string $do = null;
+    /**
+     * Constructor method for dataZlozeniaType
+     * @uses DataZlozeniaType::setOd()
+     * @uses DataZlozeniaType::setDo()
+     * @param string $od
+     * @param string $do
+     */
+    public function __construct(?string $od = null, ?string $do = null)
+    {
+        $this
+            ->setOd($od)
+            ->setDo($do);
+    }
+    /**
+     * Get od value
+     * @return string|null
+     */
+    public function getOd(): ?string
+    {
+        return $this->od;
+    }
+    /**
+     * Set od value
+     * @param string $od
+     * @return \app\modules\postal\sender\StructType\DataZlozeniaType
+     */
+    public function setOd(?string $od = null): self
+    {
+        // validation for constraint: string
+        if (!is_null($od) && !is_string($od)) {
+            throw new InvalidArgumentException(sprintf('Invalid value %s, please provide a string, %s given', var_export($od, true), gettype($od)), __LINE__);
+        }
+        $this->od = $od;
+        
+        return $this;
+    }
+    /**
+     * Get do value
+     * @return string|null
+     */
+    public function getDo(): ?string
+    {
+        return $this->do;
+    }
+    /**
+     * Set do value
+     * @param string $do
+     * @return \app\modules\postal\sender\StructType\DataZlozeniaType
+     */
+    public function setDo(?string $do = null): self
+    {
+        // validation for constraint: string
+        if (!is_null($do) && !is_string($do)) {
+            throw new InvalidArgumentException(sprintf('Invalid value %s, please provide a string, %s given', var_export($do, true), gettype($do)), __LINE__);
+        }
+        $this->do = $do;
+        
+        return $this;
+    }
+}

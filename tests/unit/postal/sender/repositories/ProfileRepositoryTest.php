@@ -2,12 +2,11 @@
 
 namespace unit\postal\sender\repositories;
 
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\repositories\ProfileRepository;
-use app\modules\postal\sender\StructType\ProfilType;
+use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use Codeception\Test\Unit;
 use UnitTester;
-use yii\debug\models\search\Profile;
 
 /**
  * @property UnitTester $tester

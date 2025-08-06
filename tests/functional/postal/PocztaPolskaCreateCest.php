@@ -1,6 +1,7 @@
 <?php
 
 namespace functional\postal;
+use app\modules\postal\modules\poczta_polska\controllers\PocztaPolskaShipmentController;
 use FunctionalTester;
 
 class PocztaPolskaCreateCest

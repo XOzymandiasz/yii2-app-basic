@@ -8,7 +8,7 @@ use app\modules\postal\components\exceptions\ForbiddenAuthException;
 use app\modules\postal\components\exceptions\InvalidAuthException;
 use app\modules\postal\components\exceptions\PasswordChangeRequiredException;
 use app\modules\postal\components\exceptions\UnavailableServiceException;
-use app\modules\postal\components\PocztaPolskaTrackerClient;
+use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTrackerClient;
 use UnitTester;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;

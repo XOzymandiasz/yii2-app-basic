@@ -2,17 +2,17 @@
 
 namespace unit\postal\sender\repositories;
 
-use app\modules\postal\sender\EnumType\KategoriaType;
-use app\modules\postal\sender\EnumType\PrintFormatEnum;
-use app\modules\postal\sender\EnumType\PrintKindEnum;
-use app\modules\postal\sender\EnumType\PrintMethodEnum;
-use app\modules\postal\sender\EnumType\PrintResolutionEnum;
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\repositories\ShipmentRepository;
-use app\modules\postal\sender\StructType\AdresType;
-use app\modules\postal\sender\StructType\PrintType;
-use app\modules\postal\sender\StructType\PrzesylkaPoleconaKrajowaType;
-use app\modules\postal\sender\StructType\PrzesylkaType;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintFormatEnum;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintKindEnum;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintMethodEnum;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintResolutionEnum;
+use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
+use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\PrintType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPoleconaKrajowaType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use Codeception\Test\Unit;
 use UnitTester;
 

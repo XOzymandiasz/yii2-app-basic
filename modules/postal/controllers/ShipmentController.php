@@ -120,7 +120,7 @@ class ShipmentController extends Controller
         ], __METHOD__);
         switch ($model->provider) {
             case ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA:
-                return $this->redirect(['poczta-polska-shipment/create-from-shipment', 'id' => $id]);
+                return $this->redirect(['poczta_polska/poczta-polska-shipment/create-from-shipment', 'id' => $id]);
             default:
                 throw new NotFoundHttpException();
         }

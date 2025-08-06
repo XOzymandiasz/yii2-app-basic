@@ -3,9 +3,9 @@
 
 namespace forms;
 
-use app\modules\postal\components\ShipmentInterface;
+use app\modules\postal\modules\poczta_polska\components\ShipmentInterface;
+use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentCheckForm;
 use Codeception\Test\Unit;
-use PocztaPolskaShipmentCheckForm;
 use UnitTester;
 
 /**

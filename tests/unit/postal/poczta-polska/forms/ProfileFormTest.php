@@ -2,8 +2,7 @@
 
 namespace forms;
 
-use app\modules\postal\forms\ProfileForm;
-use app\modules\postal\sender\StructType\ProfilType;
+use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
 use Codeception\Test\Unit;
 use UnitTester;
 

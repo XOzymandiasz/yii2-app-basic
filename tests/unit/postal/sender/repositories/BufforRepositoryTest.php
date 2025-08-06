@@ -2,10 +2,10 @@
 
 namespace unit\postal\sender\repositories;
 
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\repositories\BufforRepository;
-use app\modules\postal\sender\repositories\ProfileRepository;
-use app\modules\postal\sender\StructType\BuforType;
+use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\modules\poczta_polska\sender\repositories\BufforRepository;
+use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
+use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use Codeception\Test\Unit;
 use edzima\teryt\models\Region;
 use InvalidArgumentException;

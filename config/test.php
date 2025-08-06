@@ -3,7 +3,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
 use app\modules\postal\Module as PostalModule;
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
 
 /**
  * Application configuration shared by all test types
@@ -58,9 +58,9 @@ return [
     'modules' => [
         'postal' => [
             'class' => PostalModule::class,
-            'components' => [
-                'pocztaPolskaTracker' => [
-                    'class' => PocztaPolskaShipmentTrackerMock::class
+            'modules' => [
+                'poczta_polska' => [
+                    'class' => PocztaPolskaModule::class,
                 ],
             ]
         ]
