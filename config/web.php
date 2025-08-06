@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 use app\modules\postal\Module as PostalModule;
+use edzima\teryt\Module as TerytModule;
 use yii\bootstrap5\BootstrapAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
 use yii\symfonymailer\Mailer;
@@ -11,7 +12,7 @@ use yii\symfonymailer\Mailer;
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'teryt'],
     'language' => 'pl-PL',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -70,9 +71,12 @@ $config = [
         ],
     ],
     'modules' => [
+        'teryt' => [
+            'class' => TerytModule::class,
+        ],
         'postal' => [
             'class' => PostalModule::class,
-         //   'pocztaPolskaSenderOptions' => PocztaPolskaSenderOptions::testInstance(),
+            //   'pocztaPolskaSenderOptions' => PocztaPolskaSenderOptions::testInstance(),
         ]
 
     ],
