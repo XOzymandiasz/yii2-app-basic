@@ -119,8 +119,4 @@ class BufforForm extends Model
             . ' ' . $model->getNumerDomu()
             . ' (' . $model->getNazwaWydruk() . ')';
     }
-
-
-
-
 }
