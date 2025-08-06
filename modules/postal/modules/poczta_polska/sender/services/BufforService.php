@@ -11,6 +11,8 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforL
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforListResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztowe;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztoweResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
+use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelopeResponseType;
 use SoapFault;
 
 class BufforService extends BaseService
@@ -60,8 +62,6 @@ class BufforService extends BaseService
         return null;
     }
 
-
-
     public function create(BuforType $bufor): CreateEnvelopeBuforResponse|null
     {
         try {
@@ -77,6 +77,19 @@ class BufforService extends BaseService
         return null;
     }
 
+    public function send(?int $idBufor, ?int $urzadNadania, ?array $pakiet): SendEnvelopeResponseType|null
+    {
+        try {
+            $this->setResult($resultSendEnvelope = $this->getSoapClient()->__soapCall('sendEnvelope', [
+                new SendEnvelope($urzadNadania, $pakiet, $idBufor),
+            ], [], [], $this->outputHeaders));
 
+            return $resultSendEnvelope;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+
+        return null;
+    }
 
 }

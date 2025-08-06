@@ -59,9 +59,9 @@ class BufforRepository extends BaseRepository
         return [];
     }
 
-    public function create(BuforType $buffor): bool
+    public function create(BuforType $buffer): bool
     {
-        $response = $this->getService()->create($buffor);
+        $response = $this->getService()->create($buffer);
 
         if ($response) {
             if (empty($response->getError())) {
@@ -74,6 +74,22 @@ class BufforRepository extends BaseRepository
 
         return false;
 
+    }
+
+    public function send(int $idBufor, int $urzadNadania, ?array $pakiet = null): bool
+    {
+        $response = $this->getService()->send($idBufor, $urzadNadania, $pakiet);
+
+        if($response){
+            if (empty($response->getError())){
+                return true;
+            }
+            $this->warning(__METHOD__, null, $response);
+        }
+
+        $this->warning(__METHOD__, 'response is null');
+
+        return false;
     }
 
     protected function getService(): BufforService
