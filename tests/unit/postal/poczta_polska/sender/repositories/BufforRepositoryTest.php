@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\sender\repositories;
+namespace unit\postal\poczta_polska\sender\repositories;
 
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\repositories\BufforRepository;
