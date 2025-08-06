@@ -17,7 +17,7 @@ class BufforForm extends Model
     public ?string $sendAt = null;
     public bool $isActive = false;
     public ?int $profilId = null;
-    public ?int $dispatchOffice = null;
+    public ?int $dispatchOfficeId = null;
     public ?string $name = null;
 
     private ?BufforRepository $bufforRepository = null;
@@ -33,7 +33,7 @@ class BufforForm extends Model
     public function rules(): array
     {
         return [
-            [['idBuffor', 'idDispatchOffice', 'isActive', 'profilId'], 'integer'],
+            [['idBuffor', 'dispatchOfficeId', 'isActive', 'profilId'], 'integer'],
             [['sendAt', 'name'], 'string'],
             [['isActive'], 'boolean'],
         ];
@@ -44,7 +44,7 @@ class BufforForm extends Model
         return [
             'idBuffor' => Module::t('poczta-polska', 'ID Buffor'),
             'sendAt' => Module::t('poczta-polska', 'Send at'),
-            'dispatchOffice' => Module::t('poczta-polska', 'Dispatch Office'),
+            'dispatchOfficeId' => Module::t('poczta-polska', 'Dispatch Office'),
             'isActive' => Module::t('poczta-polska', 'Is active'),
             'name' => Module::t('poczta-polska', 'Name'),
             'profile' => Module::t('poczta-polska', 'Profile'),
@@ -73,7 +73,7 @@ class BufforForm extends Model
     {
         $buffor = (new BuforType())
             ->setActive($this->isActive)
-            ->setUrzadNadania($this->dispatchOffice)
+            ->setUrzadNadania($this->dispatchOfficeId)
             ->setOpis($this->name)
             ->setDataNadania($this->sendAt);
 
