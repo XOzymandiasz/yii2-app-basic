@@ -53,7 +53,7 @@ class PocztaPolskaBufforController extends Controller
         ]);
     }
 
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
         $buffers = $repository->getAll();
@@ -72,6 +72,15 @@ class PocztaPolskaBufforController extends Controller
         return $this->render('index', [
             'models' => $models,
         ]);
+    }
+
+    public function actionDelete(int $id): Response
+    {
+        $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
+
+        $repository->clear($id);
+
+        return $this->redirect(['index']);
     }
 
     /**
