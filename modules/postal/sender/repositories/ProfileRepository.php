@@ -20,6 +20,8 @@ class ProfileRepository extends BaseRepository
         'class' => ProfileService::class,
     ];
 
+    // #todo: add delete method
+
     public function create(ProfilType $model): bool
     {
         $response = $this->getService()
