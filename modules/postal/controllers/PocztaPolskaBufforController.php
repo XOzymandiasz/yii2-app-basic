@@ -53,8 +53,31 @@ class PocztaPolskaBufforController extends Controller
         ]);
     }
 
+    public function actionIndex()
+    {
+        $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
+        $buffers = $repository->getAll();
 
-    public function actionStagesList(int $stageId = null): array
+        $models = [];
+        foreach ($buffers as $buffer) {
+            $model = new BufforForm();
+            $model->name = $buffer->getOpis();
+            $model->sendAt = $buffer->getDataNadania();
+            $model->dispatchOfficeId = $buffer->getUrzadNadania();
+            $model->isActive = $buffer->getActive();
+            $model->profilId = $buffer->getProfil() ? $buffer->getProfil()->getIdProfil() : null;
+            $models[] = $model;
+        }
+
+        return $this->render('index', [
+            'models' => $models,
+        ]);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function actionStagesList(int $regionId = null): array
     {
         $params = Yii::$app->request->post('depdrop_parents');
         if (empty($params)) {
