@@ -16,7 +16,7 @@ use yii\web\Response;
 /**
  * @property Module $module
  */
-class PocztaPolskaController extends Controller //#todo add Shipment to class name
+class PocztaPolskaShipmentController extends Controller
 {
 
     /**
@@ -31,11 +31,23 @@ class PocztaPolskaController extends Controller //#todo add Shipment to class na
 
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->addShipment()) {
-            Yii::$app->session->setFlash('success', 'Wysłano przesyłkę.');
+            Yii::warning("Shipment created", __METHOD__);
         }
 
         return $this->render('create-from-shipment', [
             'model' => $model,
+        ]);
+    }
+
+    public function actionDownloadLabel(int $id): Response
+    {
+        $model = $this->findModel($id);
+        $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
+        $label = $repository->getLabel([$model->guid]);
+        $label = 'content';
+        return Yii::$app->response->sendContentAsFile($file, $fileName, [
+            'mimeType' => 'application/pdf',
+            'inline' => true,
         ]);
     }
 
