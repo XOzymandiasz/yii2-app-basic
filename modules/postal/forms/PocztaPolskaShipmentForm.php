@@ -25,31 +25,23 @@ class PocztaPolskaShipmentForm extends ShipmentForm
 
     public ?int $idBuffor = null;
     public ?string $description = null;
-    public ?int $mass = 500;
 
+
+    public ?int $mass = self::MASS_DEFAULT;
     public string $category = self::CATEGORY_DEFAULT;
     public ?string $format = self::FORMAT_DEFAULT;
 
-    private ?ShipmentRepository $shipmentService = null;
 
     /**
      * @var BuforType[]
      */
     public array $buffors = [];
 
-    public function init(): void
-    {
-        parent::init();
-        if (empty($this->buffors)) {
-            //$this->buffors = Yii::createObject(BufforRepository::class)->getAll();
-            $this->buffors = $this->getBufforService()->getAll();
-        }
-    }
 
     public function rules(): array
     {
         return [
-            [['category'], 'required'],
+            [['category', 'idBuffer'], 'required'],
             [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
             [['idBuffor', 'mass'], 'integer'],
@@ -78,9 +70,8 @@ class PocztaPolskaShipmentForm extends ShipmentForm
      */
     public function addShipment(): bool
     {
-        $this->shipmentService = $this->getShipmentService();
 
-        $response = $this->shipmentService->add($this->createShipment(), $this->idBuffor);
+        $response = $repository->add($this->createShipment(), $this->idBuffer);
 
         if($response === null)
         {
@@ -116,27 +107,32 @@ class PocztaPolskaShipmentForm extends ShipmentForm
                 return $buffer->getIdBufor();
             },
             function (BuforType $buffer) {
-                return $buffer->getOpis(); #todo merge opis with sendAt
+                return $this->getBufforFullName($buffer);
             }
         );
     }
 
-
-    protected function getBufforService(): BufforRepository
+    public static function getCategoriesNames(): array
     {
-        return new BufforRepository(
-            PocztaPolskaSenderOptions::testInstance()
-        );
+        return [
+            KategoriaType::VALUE_EKONOMICZNA => Module::t('poczta-polska', 'Category: Economies'),
+            KategoriaType::VALUE_PRIORYTETOWA => Module::t('poczta-polska', 'Category: Priority'),
+        ];
+    }
+
+    public static function getFormatTypes(): array
+    {
+        return [
+            FormatType::VALUE_S => Module::t('poczta-polska', 'S'),
+            FormatType::VALUE_M => Module::t('poczta-polska', 'M'),
+            FormatType::VALUE_L => Module::t('poczta-polska', 'L'),
+        ];
     }
 
 
-    protected function getShipmentService(): ShipmentRepository
+    public static function getBufforFullName(BuforType $buffer): string
     {
-        if ($this->shipmentService === null) {
-            $options = PocztaPolskaSenderOptions::testInstance();
-            $this->shipmentService = new ShipmentRepository($options);
-        }
-        return $this->shipmentService;
+        return $buffer->getOpis() . ' ' . $buffer->getDataNadania();
     }
 
 }
