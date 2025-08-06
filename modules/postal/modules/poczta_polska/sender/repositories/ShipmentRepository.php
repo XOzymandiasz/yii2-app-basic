@@ -38,8 +38,12 @@ class ShipmentRepository extends BaseRepository
         return null;
     }
 
-    public function getLabel(string $guid, PrintType $type): string|null #todo
+    public function getLabel(string $guid, ?PrintType $type = null): string|null
     {
+        if ($type == null){
+            $type = $this->createPrintType();
+        }
+
         $response = $this->getService()->printForParcel([$guid], $type);
 
         if ($response) {
