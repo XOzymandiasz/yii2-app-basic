@@ -3,12 +3,11 @@
 namespace unit\postal\sender;
 
 
-use app\modules\postal\Module;
 use app\modules\postal\sender\EnumType\GabarytType;
 use app\modules\postal\sender\EnumType\KategoriaType;
 use app\modules\postal\sender\PocztaPolskaSenderClassMap;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\sender\repositories\AddRepository;
+use app\modules\postal\sender\repositories\ShipmentRepository;
 use app\modules\postal\sender\ServiceType\Add;
 use app\modules\postal\sender\ServiceType\Clear;
 use app\modules\postal\sender\ServiceType\Create;
@@ -21,7 +20,6 @@ use app\modules\postal\sender\StructType\AdresType;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\CreateEnvelopeBufor;
 use app\modules\postal\sender\StructType\EPOType;
-use app\modules\postal\sender\StructType\GetEnvelopeBuforList;
 use app\modules\postal\sender\StructType\GetEnvelopeList;
 use app\modules\postal\sender\StructType\GetGuid;
 use app\modules\postal\sender\StructType\GetOutboxBook;
@@ -191,7 +189,7 @@ class SenderClientTest extends Unit
         $this->giveShipperType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
-        $repo = new AddRepository(PocztaPolskaSenderOptions::testInstance());
+        $repo = new ShipmentRepository(PocztaPolskaSenderOptions::testInstance());
         $response = $repo->addShipment($this->shipmentType, null);
 
         codecept_debug($response);
@@ -399,7 +397,7 @@ class SenderClientTest extends Unit
 
             $bufforResponse = $this->createBuffor()->getCreatedBufor();
 
-            $buffor = $get->getEnvelopeBuforList(new GetEnvelopeBuforList());
+            $buffor = $get->getEnvelopeBuforList();
 
             $envelope = $get->getEnvelopeList(new GetEnvelopeList());
 
@@ -426,7 +424,6 @@ class SenderClientTest extends Unit
         $this->tester->assertNotNull($envelopeId);
 
     }
-
 
     public function testPrintForParcelListWartosciowyKrajowyType()
     {
