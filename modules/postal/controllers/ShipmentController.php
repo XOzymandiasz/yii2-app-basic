@@ -98,6 +98,10 @@ class ShipmentController extends Controller
                 return $this->redirect(['after-create-out', 'id' => $model->getModel()->id]);
             }
         }
+
+        Yii::debug([
+            'model' => $model->getAttributes(),
+        ],__METHOD__);
         return $this->render('create', [
             'model' => $model,
             'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
