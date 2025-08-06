@@ -6,13 +6,16 @@ use WsdlToPhp\PackageGenerator\ConfigurationReader\GeneratorOptions;
 use WsdlToPhp\PackageGenerator\Generator\Generator;
 use Yii;
 use yii\console\Controller;
+use yii\helpers\Console;
 
 class WSDLController extends Controller
 {
 
-    public function actionGenerate(): void
+    public function actionGenerate(string $wsdl = null): void
     {
-        $wsdl = 'https://en-testwebapi.poczta-polska.pl/websrv/?wsdl';
+        if($wsdl === null){
+            $wsdl = 'https://en-testwebapi.poczta-polska.pl/websrv/?wsdl';
+        }
         $destination = Yii::getAlias('@app/modules/postal/sender');
         $namespace = 'app\\modules\\postal\\sender';
 
@@ -21,15 +24,12 @@ class WSDLController extends Controller
             ->setOrigin($wsdl)
             ->setDestination($destination)
             ->setNamespace($namespace)
-            ->setCategory('cat')
-            ->setComposerName('poczta-polska-sender')
             ->setGenerateTutorialFile(false)
             ->setStandalone(false)
             ->setNamespaceDictatesDirectories(true);
 
         $generator = new Generator($options);
         $generator->generatePackage();
-
-        echo "sukces\n";
+        Console::output('Success generate.');
     }
 }
