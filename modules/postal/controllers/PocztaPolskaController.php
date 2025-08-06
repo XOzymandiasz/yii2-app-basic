@@ -5,13 +5,18 @@ namespace app\modules\postal\controllers;
 use app\modules\postal\forms\PocztaPolskaShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentProviderInterface;
+use app\modules\postal\Module;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
-class PocztaPolskaController extends Controller
+/**
+ * @property Module $module
+ */
+class PocztaPolskaController extends Controller //#todo add Shipment to class name
 {
 
     /**
