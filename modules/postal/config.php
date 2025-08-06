@@ -7,6 +7,7 @@ use app\modules\postal\sender\repositories\RepositoriesFactory;
 
 return [
     'components' => [
+
         'pocztaPolskaTracker' => [
             'class' => PocztaPolskaTracker::class,
         ],
@@ -15,9 +16,16 @@ return [
         ],
         'pocztaPolskaSenderOptions' => [
             'class' => PocztaPolskaSenderOptions::class,
-            'login' => $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_TEST_USERNAME'],
-            'password' => $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_TEST_PASSWORD'],
-            'isTest' => true,
+            //'login' => YII_ENV_TEST
+            //    ? $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_TEST_USERNAME']
+            //    : $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_USERNAME'],
+            //'password' => YII_ENV_TEST
+            //    ? $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_TEST_PASSWORD']
+            //    : $_ENV['POCZTA_POLSKA_ELEKTRONICZNY_NADAWCA_PASSWORD'],
+            //'isTest' => YII_ENV_TEST,
+        ],
+        'repositoriesFactory' => [
+            'class' => RepositoriesFactory::class,
         ],
     ],
 ];
