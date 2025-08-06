@@ -116,7 +116,7 @@ class ShipmentController extends Controller
         ], __METHOD__);
         switch ($model->provider) {
             case ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA:
-                return $this->redirect(['poczta-polska/create-from-shipment', 'id' => $id]);
+                return $this->redirect(['poczta-polska-shipment/create-from-shipment', 'id' => $id]);
             default:
                 throw new NotFoundHttpException();
         }
@@ -183,6 +183,6 @@ class ShipmentController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Module::t('postal', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Module::t('common', 'The requested page does not exist.'));
     }
 }
