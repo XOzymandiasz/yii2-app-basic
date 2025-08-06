@@ -34,7 +34,6 @@ $dataProvider = new ArrayDataProvider([
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            // Można dodać kolumnę z numeracją
             ['class' => 'yii\grid\SerialColumn'],
 
             [
@@ -63,12 +62,6 @@ $dataProvider = new ArrayDataProvider([
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
                 'buttons' => [
-                    'view' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', ['view', 'id' => $model->profilId]);
-                    },
-                    'update' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['update', 'id' => $model->profilId]);
-                    },
                     'delete' => function ($url, $model) {
                         return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->profilId], [
                             'data' => [
