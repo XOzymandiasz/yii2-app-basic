@@ -4,8 +4,8 @@ namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentProviderInterface;
-use app\modules\postal\Module;
 use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\Module;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -62,7 +62,7 @@ class PocztaPolskaShipmentController extends Controller
     {
         $model = $this->findModel($id);
         $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
-        $label = $repository->getLabel($model->guid, $repository->createPrintType());
+        $label = $repository->getLabel($model->guid);
 
         $filename = 'label' . $model->guid . '.pdf';
         return Yii::$app->response->sendContentAsFile($label, $filename, [

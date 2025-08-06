@@ -2,8 +2,8 @@
 
 namespace app\modules\postal\modules\poczta_polska\controllers;
 
-use app\modules\postal\Module;
 use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
+use app\modules\postal\modules\poczta_polska\Module;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
