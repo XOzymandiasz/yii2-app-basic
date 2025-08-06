@@ -4,10 +4,8 @@ namespace app\modules\postal\sender\repositories;
 
 use app\modules\postal\sender\services\ShipmentService;
 use app\modules\postal\sender\StructType\AddShipment;
-use app\modules\postal\sender\StructType\AddShipmentResponse;
 use app\modules\postal\sender\StructType\AddShipmentResponseItemType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
-use Yii;
 
 class ShipmentRepository extends BaseRepository
 {
@@ -16,7 +14,7 @@ class ShipmentRepository extends BaseRepository
         'class' => ShipmentService::class,
     ];
 
-    public function add(PrzesylkaType $shipment, ?int $idBuffor): AddShipmentResponseItemType|null
+    public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
     {
         $response = $this->getService()->add(new AddShipment([$shipment], $idBuffor));
 
