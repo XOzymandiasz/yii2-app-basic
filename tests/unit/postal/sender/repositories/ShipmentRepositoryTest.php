@@ -3,9 +3,14 @@
 namespace unit\postal\sender\repositories;
 
 use app\modules\postal\sender\EnumType\KategoriaType;
+use app\modules\postal\sender\EnumType\PrintFormatEnum;
+use app\modules\postal\sender\EnumType\PrintKindEnum;
+use app\modules\postal\sender\EnumType\PrintMethodEnum;
+use app\modules\postal\sender\EnumType\PrintResolutionEnum;
 use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\ShipmentRepository;
 use app\modules\postal\sender\StructType\AdresType;
+use app\modules\postal\sender\StructType\PrintType;
 use app\modules\postal\sender\StructType\PrzesylkaPoleconaKrajowaType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use Codeception\Test\Unit;
@@ -26,17 +31,46 @@ class ShipmentRepositoryTest extends Unit
         );
     }
 
-    public function testAdd():void
+    public function testAdd(): void
     {
         $address = $this->getAddress();
+        $shipment = $this->getShipment($address);
 
-        $response = $this->repository->add($this->getShipment($address));
-
-        codecept_debug($response);
+        $response = $this->repository->add($shipment);
 
         $this->tester->assertIsString($response->getGuid());
         $this->tester->assertIsString($response->getNumerNadania());
         $this->tester->assertEmpty($response->getError());
+    }
+
+    public function testGetLabel(): void
+    {
+        $address = $this->getAddress();
+        $shipment = $this->getShipment($address);
+        $printType = $this->getPrintType();
+
+        $addResponse = $this->repository->add($shipment);
+        $guid = $addResponse->getGuid();
+
+        $getLabelResponse = $this->repository->getLabel($guid, $printType);
+
+        $this->tester->assertIsString($addResponse->getGuid());
+        $this->tester->assertIsString($addResponse->getNumerNadania());
+        $this->tester->assertEmpty($addResponse->getError());
+        $this->tester->assertIsString($getLabelResponse);
+    }
+
+    protected function getPrintType(
+        ?string $format = PrintFormatEnum::VALUE_PDF_FORMAT,
+        ?string $kind = PrintKindEnum::VALUE_ADDRESS_LABEL_BY_GUID,
+        ?string $method = PrintMethodEnum::VALUE_EACH_PARCEL_SEPARATELY,
+        ?string $resolution = PrintResolutionEnum::VALUE_DPI_300
+    ): PrintType{
+        return (new PrintType())
+            ->setFormat($format)
+            ->setKind($kind)
+            ->setMethod($method)
+            ->setResolution($resolution);
     }
 
     protected function getShipment(
