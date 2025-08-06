@@ -72,7 +72,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         ];
     }
 
-    public function load($data, $formName = null)
+    public function load($data, $formName = null): bool
     {
         $load = parent::load($data, $formName);
         $this->getSenderAddress()->load($data, $formName);
