@@ -2,12 +2,11 @@
 
 namespace app\modules\postal\forms;
 
+use app\modules\postal\models\Shipment;
 use app\modules\postal\Module;
 use app\modules\postal\sender\EnumType\FormatType;
 use app\modules\postal\sender\EnumType\KategoriaType;
-use app\modules\postal\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\sender\repositories\ShipmentRepository;
-use app\modules\postal\sender\repositories\BufforRepository;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PrzesylkaType;
 use app\modules\postal\builders\PocztaPolskaCreateShipmentFactory;
@@ -18,12 +17,13 @@ use yii\helpers\ArrayHelper;
 class PocztaPolskaShipmentForm extends ShipmentForm
 {
 
-
     protected const CATEGORY_DEFAULT = KategoriaType::VALUE_PRIORYTETOWA;
     protected const FORMAT_DEFAULT = FormatType::VALUE_S;
-    public bool $isRegistered = true;
+    protected const MASS_DEFAULT = 500;
 
-    public ?int $idBuffor = null;
+
+    public bool $isRegistered = true;
+    public ?int $idBuffer = null;
     public ?string $description = null;
 
 
@@ -44,7 +44,8 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             [['category', 'idBuffer'], 'required'],
             [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
-            [['idBuffor', 'mass'], 'integer'],
+            [['idBuffer', 'mass'], 'integer'],
+            ['idBuffer', 'in', 'range' => array_keys($this->getBufforsNames())],
             ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
             ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
             [['description'], 'string', 'max' => 500], #todo: check is this written out to label
@@ -68,13 +69,12 @@ class PocztaPolskaShipmentForm extends ShipmentForm
      * @throws Throwable
      * @throws StaleObjectException
      */
-    public function addShipment(): bool
+    public function addShipment(ShipmentRepository $repository): bool
     {
 
         $response = $repository->add($this->createShipment(), $this->idBuffer);
 
-        if($response === null)
-        {
+        if ($response === null) {
             return false;
         }
 
