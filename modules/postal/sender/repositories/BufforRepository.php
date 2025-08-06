@@ -6,9 +6,7 @@ namespace app\modules\postal\sender\repositories;
 use app\modules\postal\sender\services\BufforService;
 use app\modules\postal\sender\StructType\BuforType;
 use app\modules\postal\sender\StructType\PlacowkaPocztowaType;
-use app\modules\postal\sender\StructType\ProfilType;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 class BufforRepository extends Component
 {
