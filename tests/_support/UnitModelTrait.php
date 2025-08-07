@@ -43,7 +43,6 @@ trait UnitModelTrait
         $this->tester->assertEmpty($this->getModel()->getErrors($attribute));
     }
 
-
     public function thenSuccessSave(): void
     {
         if (!$this->getModel()->hasMethod('save')) {
@@ -64,6 +63,5 @@ trait UnitModelTrait
         $save = (bool)$this->getModel()->save();
         $this->tester->assertFalse($save);
     }
-
 
 }

@@ -5,10 +5,17 @@ namespace unit\postal\shipment\forms;
 use _support\UnitModelTrait;
 use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
+use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\models\ShipmentContent;
+use app\modules\postal\models\ShipmentDirectionInterface;
+use app\modules\postal\models\ShipmentProviderInterface;
 use Codeception\Test\Unit;
+use unit\fixtures\ShipmentAddressFixture;
+use unit\fixtures\ShipmentAddressLinkFixture;
+use unit\fixtures\ShipmentContentFixture;
+use unit\fixtures\ShipmentFixture;
 use UnitTester;
 use yii\base\Model;
-
 /**
  * @property UnitTester $tester
  */
@@ -30,15 +37,15 @@ class ShipmentFormTest extends Unit
         $this->model->provider = 'DPD';
         $this->model->content_id = 1;
         $this->model->creator_id = 1;
-        $this->model->created_at = date('Y-m-d H:i:s');
-        $this->model->updated_at = date('Y-m-d H:i:s');
+        $this->model->sender_id = 1;
+        $this->model->receiver_id = 2;
         $this->model->guid = '12345678901234567890123456789012';
 
         $this->thenSuccessValidate(['direction','number','provider','content_id','creator_id','created_at','updated_at',
                                     'guid']);
     }
 
-    public function testValidationMissingRequiredFields(): void
+    public function testEmpty(): void
     {
         $this->thenUnsuccessValidate(['direction','number','provider','content_id','creator_id','created_at',
             'updated_at', 'guid'],false);
@@ -54,13 +61,11 @@ class ShipmentFormTest extends Unit
 
     }
 
-    public function testValidationFieldLengths(): void
+    public function testIncorrectLengths(): void
     {
         $this->model->number = str_repeat('A', 41);
         $this->model->provider = str_repeat('B', 7);
         $this->model->guid = str_repeat('C', 33);
-        $this->model->created_at = date('Y-m-d H:i:s');
-        $this->model->updated_at = date('Y-m-d H:i:s');
 
         $this->thenUnsuccessValidate(['number','provider','created_at', 'updated_at', 'guid']);
 
@@ -71,33 +76,77 @@ class ShipmentFormTest extends Unit
 
     public function testSetModel()
     {
-        $shipment = new Shipment();
-        $shipment->number = 'ABC123';
-        $shipment->guid = 'guid-001';
-        $shipment->finished_at = '2024-01-01 12:00:00';
-        $shipment->provider = 'DPD';
-        $shipment->direction = ShipmentForm::SCENARIO_DIRECTION_OUT;
-        $shipment->content_id = 42;
-        $shipment->creator_id = 5;
-        $shipment->created_at = '2024-01-01 10:00:00';
-        $shipment->updated_at = '2024-01-02 10:00:00';
-        $shipment->shipment_at = '2024-01-03 15:00:00';
-        $shipment->api_data = '{"key":"value"}';
+        $model = $this->tester->grabFixture('shipment', 'shipment_1');
 
-        $form = new ShipmentForm();
-        $form->setModel($shipment);
+        $this->model->setModel($model);
 
-        $this->tester->assertSame($shipment->number, $form->number);
-        $this->tester->assertSame($shipment->guid, $form->guid);
-        $this->tester->assertSame($shipment->finished_at, $form->finished_at);
-        $this->tester->assertSame($shipment->provider, $form->provider);
-        $this->tester->assertSame($shipment->direction, $form->direction);
-        $this->tester->assertSame($shipment->content_id, $form->content_id);
-        $this->tester->assertSame($shipment->creator_id, $form->creator_id);
-        $this->tester->assertSame($shipment->created_at, $form->created_at);
-        $this->tester->assertSame($shipment->updated_at, $form->updated_at);
-        $this->tester->assertSame($shipment->shipment_at, $form->shipment_at);
-        $this->tester->assertSame($shipment->api_data, $form->api_data);
+        $this->tester->assertSame($model->number, $this->model->number);
+        $this->tester->assertSame($model->guid, $this->model->guid);
+        $this->tester->assertSame($model->finished_at, $this->model->finished_at);
+        $this->tester->assertSame($model->provider, $this->model->provider);
+        $this->tester->assertSame($model->direction, $this->model->direction);
+        $this->tester->assertSame($model->content_id, $this->model->content_id);
+        $this->tester->assertSame($model->creator_id, $this->model->creator_id);
+        $this->tester->assertSame($model->shipment_at, $this->model->shipment_at);
+        $this->tester->assertSame($model->api_data, $this->model->api_data);
+    }
+
+    public function testGetModel(): void
+    {
+        $model = $this->tester->grabFixture('shipment', 'shipment_1');
+
+        $this->model->setModel($model);
+
+        $gottenModel = $this->model->getModel();
+
+        $this->tester->assertSame($this->model->number,     $gottenModel->number     );
+        $this->tester->assertSame($this->model->guid,       $gottenModel->guid       );
+        $this->tester->assertSame($this->model->finished_at,$gottenModel->finished_at);
+        $this->tester->assertSame($this->model->provider,   $gottenModel->provider   );
+        $this->tester->assertSame($this->model->direction,  $gottenModel->direction  );
+        $this->tester->assertSame($this->model->content_id, $gottenModel->content_id );
+        $this->tester->assertSame($this->model->creator_id, $gottenModel->creator_id );
+        $this->tester->assertSame($this->model->shipment_at,$gottenModel->shipment_at);
+        $this->tester->assertSame($this->model->api_data,   $gottenModel->api_data   );
+    }
+
+    public function testUpdate()
+    {
+        $model = Shipment::findOne(['id' => 1]);
+
+        $this->model->setModel($model);
+        $this->model->number = 'ABC123';
+        $this->model->provider = ShipmentProviderInterface::PROVIDER_DPD;
+        $this->model->guid = 'abcd';
+
+        $this->assertNotNull($model);
+        $this->thenSuccessValidate();
+        $this->thenSuccessSave();
+
+        $this->tester->seeRecord(Shipment::class, [
+            'id' => $model->id,
+            'number' => 'ABC123',
+            'provider' => ShipmentProviderInterface::PROVIDER_DPD,
+            'guid' => 'abcd',
+        ]);
+    }
+
+    public function testDelete(): void
+    {
+        $id = $this->tester->haveRecord(Shipment::class, [
+            'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
+            'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+            'content_id' => ShipmentContent::findOne(['id' => 1])->id,
+            'creator_id' => 1,
+            'number' => 'RR123456789PL'
+        ]);
+        $this->tester->seeRecord(Shipment::class, ['id' => $id]);
+
+        $model = Shipment::findOne($id);
+        $this->assertNotNull($model);
+
+        $this->tester->assertNotFalse($model->delete());
+        $this->tester->dontSeeRecord(Shipment::class, ['id' => $id]);
     }
 
     public function getModel(): Model
