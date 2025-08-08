@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBufor;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforListResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeListResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztowe;
@@ -392,25 +394,24 @@ class Get extends AbstractSoapClientBase
 
     /**
      * Method to call the operation originally named getEnvelopeBufor
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBufor $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforResponse|bool
+     * @param GetEnvelopeBufor $parameters
+     * @return GetEnvelopeBuforResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function getEnvelopeBufor(\app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBufor $parameters)
+    public function getEnvelopeBufor(?int $idBufor): GetEnvelopeBuforResponse|null
     {
         try {
             $this->setResult($resultGetEnvelopeBufor = $this->getSoapClient()->__soapCall('getEnvelopeBufor', [
-                $parameters,
+                new GetEnvelopeBufor($idBufor),
             ], [], [], $this->outputHeaders));
 
             return $resultGetEnvelopeBufor;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-
-            return false;
         }
+        return null;
     }
 
     /**

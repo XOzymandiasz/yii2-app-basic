@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
+use app\modules\postal\modules\poczta_polska\sender\StructType\AccountType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccountResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -37,25 +40,25 @@ class Update extends AbstractSoapClientBase
     }
     /**
      * Method to call the operation originally named updateAccount
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccountResponse|bool
+     * @param UpdateAccount $parameters
+     * @return UpdateAccountResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function updateAccount(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount $parameters)
+    public function updateAccount(AccountType $account): UpdateAccountResponse|null
     {
         try {
             $this->setResult($resultUpdateAccount = $this->getSoapClient()->__soapCall('updateAccount', [
-                $parameters,
+                new UpdateAccount($account),
             ], [], [], $this->outputHeaders));
         
             return $resultUpdateAccount;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
+
         }
+        return null;
     }
     /**
      * Method to call the operation originally named updateProfil

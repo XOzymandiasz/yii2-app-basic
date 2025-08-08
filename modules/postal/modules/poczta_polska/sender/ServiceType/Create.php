@@ -6,6 +6,9 @@ namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBufor;
 use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBuforResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfil;
+use app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfilResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -61,25 +64,24 @@ class Create extends AbstractSoapClientBase
     }
     /**
      * Method to call the operation originally named createProfil
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfil $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfilResponse|bool
+     * @param CreateProfil $parameters
+     * @return CreateProfilResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function createProfil(\app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfil $parameters)
+    public function createProfil(ProfilType $model): ?CreateProfilResponse
     {
         try {
             $this->setResult($resultCreateProfil = $this->getSoapClient()->__soapCall('createProfil', [
-                $parameters,
+                new CreateProfil($model),
             ], [], [], $this->outputHeaders));
         
             return $resultCreateProfil;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
         }
+        return null;
     }
     /**
      * Method to call the operation originally named createShopEZwroty
