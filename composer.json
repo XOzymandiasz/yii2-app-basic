@@ -85,7 +85,8 @@
     ],
     "autoload-dev": {
         "psr-4": {
-            "unit\\": "tests/unit/"
+            "tests\\": "tests/"
         }
     }
+
 }

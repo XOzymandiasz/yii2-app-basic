@@ -15,6 +15,9 @@ use yii\base\Module as BaseModule;
  */
 class Module extends BaseModule
 {
+    #@todo: move to bootsrtap
+    public $shipmentModelClass;
+
     /**
      * @var string|array|PocztaPolskaSenderOptions
      */
