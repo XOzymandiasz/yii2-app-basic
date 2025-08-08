@@ -2,8 +2,10 @@
 
 use app\modules\postal\Module;
 use yii\data\DataProviderInterface;
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var DataProviderInterface $dataProvider */
@@ -27,40 +29,36 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'name',
                 'label' => Module::t('poczta-polska', 'Name'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getOpis();
+                }
             ],
             [
-                'attribute' => 'sendAt',
                 'label' => Module::t('poczta-polska', 'Send at'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getDataNadania();
+                }
             ],
             [
-                'attribute' => 'dispatchOfficeId',
                 'label' => Module::t('poczta-polska', 'Dispatch Office'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getUrzadNadania();
+                }
             ],
             [
-                'attribute' => 'isActive',
                 'label' => Module::t('poczta-polska', 'Is active'),
-                'value' => fn($model) => $model->isActive ? Module::t('common', 'Yes') : Module::t('common', 'No'),
+                'value' => fn($model) => $model->getActive() ? Module::t('common', 'Yes') : Module::t('common', 'No'),
             ],
             [
-                'attribute' => 'profilId',
-                'label' => Module::t('poczta-polska', 'Profile'),
-            ],
+                'class' => ActionColumn::class,
+                'template' => '{view} {delete}',
+                'urlCreator' => function ($action, $model, $key) {
+                    return Url::to([$action, 'id' => $key]);
+                },
 
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete}',
-                'buttons' => [
-                    'delete' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->profilId], [
-                            'data' => [
-                                'confirm' => Module::t('common', 'Are you sure you want to delete this item?'),
-                                'method' => 'post',
-                            ],
-                        ]);
-                    },
-                ],
+                'contentOptions' => ['style' => 'white-space:nowrap;'],
+                'headerOptions' => ['style' => 'width:1%'],
             ],
         ],
     ]); ?>

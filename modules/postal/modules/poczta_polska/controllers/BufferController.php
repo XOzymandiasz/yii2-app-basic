@@ -61,6 +61,9 @@ class BufferController extends Controller
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $buffers,
+            'key' => static function($model) {
+                return $model->getIdBufor();
+            },
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -75,8 +78,23 @@ class BufferController extends Controller
         ]);
 
         return $this->render('index', [
-            'models' => $dataProvider->getModels(),
+            'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function actionView(int $id): string
+    {
+        $repo = $this->module->getRepositoriesFactory()->getBufforRepository();
+        $model = $repo->getById($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('view', ['model' => $model]);
     }
 
     public function actionDelete(int $id): Response
@@ -88,34 +106,6 @@ class BufferController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function actionStagesList(int $regionId = null): array
-    {
-        $params = Yii::$app->request->post('depdrop_parents');
-        if (empty($params)) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $id = (int)reset($params);
 
-        $output = [];
-//        foreach ($stages as $id => $name) {
-//            $output[] = [
-//                'id' => $id,
-//                'name' => $name,
-//            ];
-//        }
-//        $selected = $stageId;
-//        if (!isset($stages[$stageId])) {
-//            $selected = array_key_first($stages);
-//        }
-
-        return [
-            'output' => $output,
-            //         'selected' => $selected,
-        ];
-    }
 
 }

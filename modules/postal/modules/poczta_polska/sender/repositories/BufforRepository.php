@@ -41,6 +41,17 @@ class BufforRepository extends BaseRepository
         return [];
     }
 
+    public function getById(int $id): BuforType|null
+    {
+        foreach ($this->getAll() as $buffer) {
+            if ($buffer->getidBufor() == $id) {
+                return $buffer;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return PlacowkaPocztowaType[]
      */
