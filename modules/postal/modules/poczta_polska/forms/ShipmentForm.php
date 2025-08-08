@@ -2,9 +2,9 @@
 
 namespace app\modules\postal\modules\poczta_polska\forms;
 
-use app\modules\postal\forms\ShipmentForm;
+use app\modules\postal\forms\ShipmentForm as PostalShipmentForm;
 use app\modules\postal\models\Shipment;
-use app\modules\postal\Module;
+use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
@@ -15,7 +15,7 @@ use Throwable;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 
-class PocztaPolskaShipmentForm extends ShipmentForm
+class ShipmentForm extends PostalShipmentForm
 {
 
     protected const CATEGORY_DEFAULT = KategoriaType::VALUE_PRIORYTETOWA;
@@ -49,19 +49,19 @@ class PocztaPolskaShipmentForm extends ShipmentForm
             ['idBuffer', 'in', 'range' => array_keys($this->getBufforsNames())],
             ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
             ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
-            [['description'], 'string', 'max' => 500], #todo: check is this written out to label
+            [['description'], 'string', 'max' => 500],
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
-            'category' => Module::t('poczta-polska', 'Category'),
-            'format' => Module::t('poczta-polska', 'Format'),
-            'description' => Module::t('poczta-polska', 'Description'),
-            'shipperAddressForm' => Module::t('poczta-polska', 'Shippeer Address'),
-            'isRegistered' => Module::t('poczta-polska', 'Registered'),
-            'mass' => Module::t('poczta-polska', 'Mass'),
+            'category' => PostalModule::t('poczta-polska', 'Category'),
+            'format' => PostalModule::t('poczta-polska', 'Format'),
+            'description' => PostalModule::t('poczta-polska', 'Description'),
+            'shipperAddressForm' => PostalModule::t('poczta-polska', 'Shippeer Address'),
+            'isRegistered' => PostalModule::t('poczta-polska', 'Registered'),
+            'mass' => PostalModule::t('poczta-polska', 'Mass'),
         ];
     }
 
@@ -116,17 +116,17 @@ class PocztaPolskaShipmentForm extends ShipmentForm
     public static function getCategoriesNames(): array
     {
         return [
-            KategoriaType::VALUE_EKONOMICZNA => Module::t('poczta-polska', 'Category: Economies'),
-            KategoriaType::VALUE_PRIORYTETOWA => Module::t('poczta-polska', 'Category: Priority'),
+            KategoriaType::VALUE_EKONOMICZNA => PostalModule::t('poczta-polska', 'Category: Economies'),
+            KategoriaType::VALUE_PRIORYTETOWA => PostalModule::t('poczta-polska', 'Category: Priority'),
         ];
     }
 
     public static function getFormatTypes(): array
     {
         return [
-            FormatType::VALUE_S => Module::t('poczta-polska', 'S'),
-            FormatType::VALUE_M => Module::t('poczta-polska', 'M'),
-            FormatType::VALUE_L => Module::t('poczta-polska', 'L'),
+            FormatType::VALUE_S => PostalModule::t('poczta-polska', 'S'),
+            FormatType::VALUE_M => PostalModule::t('poczta-polska', 'M'),
+            FormatType::VALUE_L => PostalModule::t('poczta-polska', 'L'),
         ];
     }
 

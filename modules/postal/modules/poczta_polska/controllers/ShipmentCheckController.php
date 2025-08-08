@@ -3,8 +3,9 @@
 namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\components\filters\ActionTimeFilter;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentCheckForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentCheckForm;
 use app\modules\postal\modules\poczta_polska\Module;
+use app\modules\postal\Module as PostalModule;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\filters\AccessControl;
@@ -15,7 +16,7 @@ use yii\web\Response;
 /**
  * @property Module $module
  */
-class PocztaPolskaShipmentCheckController extends Controller
+class ShipmentCheckController extends Controller
 {
     /**
      * @inheritDoc
@@ -41,7 +42,8 @@ class PocztaPolskaShipmentCheckController extends Controller
                     ],
                     'denyCallback' => function ()
                     {
-                        Yii::$app->session->setFlash('warning', Module::t('poczta-polska', 'You must be logged in to view this page.'));
+                        Yii::$app->session->setFlash('warning', PostalModule::t('poczta-polska',
+                            'You must be logged in to view this page.'));
                         return Yii::$app->response->redirect(['/postal/poczta-polska-shipment-check/shipment/index']);
                     }
                 ]
@@ -50,7 +52,7 @@ class PocztaPolskaShipmentCheckController extends Controller
     }
     public function actionShipmentCheckForm(): Response|string
     {
-        $model = new PocztaPolskaShipmentCheckForm();
+        $model = new ShipmentCheckForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             return $this->redirect([
@@ -72,7 +74,7 @@ class PocztaPolskaShipmentCheckController extends Controller
      */
     public function actionCheckMail(string $number, bool $addPostInfo): string
     {
-        $form = new PocztaPolskaShipmentCheckForm([
+        $form = new ShipmentCheckForm([
             'number' => $number,
             'withPostInfo' => $addPostInfo,
         ]);

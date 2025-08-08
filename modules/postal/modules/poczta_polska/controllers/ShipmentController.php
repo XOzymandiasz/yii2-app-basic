@@ -4,8 +4,9 @@ namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentProviderInterface;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\Module;
+use app\modules\postal\Module as PostalModule;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -17,7 +18,7 @@ use yii\web\Response;
 /**
  * @property Module $module
  */
-class PocztaPolskaShipmentController extends Controller
+class ShipmentController extends Controller
 {
 
 
@@ -29,7 +30,7 @@ class PocztaPolskaShipmentController extends Controller
     public function actionCreateFromShipment(int $id): string|Response
     {
         $shipment = $this->findModel($id);
-        $model = new PocztaPolskaShipmentForm(['model' => $shipment]);
+        $model = new ShipmentForm(['model' => $shipment]);
         $model->buffors = $this->module
             ->getRepositoriesFactory()
             ->getBufforRepository()
@@ -37,15 +38,16 @@ class PocztaPolskaShipmentController extends Controller
 
         if (empty($model->buffors)) {
             Yii::$app->session->setFlash(
-                'danger', Module::t('poczta-polska', 'Not found buffor. Create before Add Shipment'));
-            return $this->redirect(['buffor/create']);
+                'danger', PostalModule::t('poczta-polska', 'Not found buffor. Create before Add Shipment'));
+            return $this->redirect(['buffer/create']);
         }
 
         if ($model->load(Yii::$app->request->post())
             && $model->validate()
             && $model->addShipment($this->module->getRepositoriesFactory()->getShipmentRepository())) {
-
-            //return $this->redirect(['shipment/view', 'id' => $id]);
+            if($returnUrl){
+                return $this->redirect($returnUrl);
+            }
             return $this->redirect(['download-label', 'id' => $id]);
         }
 
