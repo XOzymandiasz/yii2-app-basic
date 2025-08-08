@@ -8,7 +8,7 @@ use FunctionalTester;
 class PocztaPolskaShipmentCheckCest
 {
     /**
-     * @see PocztaPolskaShipmentCheckController::actionShipmentCheckForm()
+     * @see ShipmentCheckController::actionShipmentCheckForm()
      */
     public const ROUTE_SHIPMENT_CHECK = 'postal/poczta-polska-shipment-check/shipment-check-form';
 

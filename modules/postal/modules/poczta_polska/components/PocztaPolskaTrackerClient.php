@@ -3,11 +3,11 @@
 namespace app\modules\postal\modules\poczta_polska\components;
 
 
-use app\modules\postal\components\exceptions\BadRequestException;
-use app\modules\postal\components\exceptions\ForbiddenAuthException;
-use app\modules\postal\components\exceptions\InvalidAuthException;
-use app\modules\postal\components\exceptions\PasswordChangeRequiredException;
-use app\modules\postal\components\exceptions\UnavailableServiceException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\BadRequestException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\ForbiddenAuthException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\InvalidAuthException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\PasswordChangeRequiredException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\UnavailableServiceException;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;

@@ -9,7 +9,7 @@ use yii\helpers\Url;
 class PocztaPolskaMailViewCest
 {
     /**
-     * @see PocztaPolskaShipmentCheckController::actionCheckMail()
+     * @see ShipmentCheckController::actionCheckMail()
      */
 
     public const ROUTE_CHECK_MAIL = 'poczta-polska-shipment-check/check-mail';

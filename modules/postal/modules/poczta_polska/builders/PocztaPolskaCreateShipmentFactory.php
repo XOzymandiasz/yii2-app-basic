@@ -3,13 +3,13 @@
 namespace app\modules\postal\modules\poczta_polska\builders;
 
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use InvalidArgumentException;
 
 class PocztaPolskaCreateShipmentFactory
 {
-    public static function create(PocztaPolskaShipmentForm $form): PrzesylkaType
+    public static function create(ShipmentForm $form): PrzesylkaType
     {
         return match ($form->isRegistered) {
             true => (new PoleconaKrajowaBuilder($form))->build(),

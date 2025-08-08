@@ -1,13 +1,13 @@
 <?php
 
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var PocztaPolskaShipmentForm $model */
+/** @var ShipmentForm $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 

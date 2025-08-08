@@ -5,6 +5,7 @@ namespace app\modules\postal\modules\poczta_polska\controllers;
 use app\modules\postal\modules\poczta_polska\forms\BufforForm;
 use app\modules\postal\modules\poczta_polska\Module;
 use Yii;
+use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -12,7 +13,7 @@ use yii\web\Response;
 /**
  * @property Module $module
  */
-class PocztaPolskaBufforController extends Controller
+class BufferController extends Controller
 {
     public function actionCreate(): string|Response
     {
@@ -58,19 +59,23 @@ class PocztaPolskaBufforController extends Controller
         $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
         $buffers = $repository->getAll();
 
-        $models = [];
-        foreach ($buffers as $buffer) {
-            $model = new BufforForm();
-            $model->name = $buffer->getOpis();
-            $model->sendAt = $buffer->getDataNadania();
-            $model->dispatchOfficeId = $buffer->getUrzadNadania();
-            $model->isActive = $buffer->getActive();
-            $model->profilId = $buffer->getProfil() ? $buffer->getProfil()->getIdProfil() : null;
-            $models[] = $model;
-        }
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $buffers,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['name',
+                    'sendAt',
+                    'dispatchOfficeId',
+                    'isActive',
+                    //'profilId'
+                ],
+            ]
+        ]);
 
         return $this->render('index', [
-            'models' => $models,
+            'models' => $dataProvider->getModels(),
         ]);
     }
 

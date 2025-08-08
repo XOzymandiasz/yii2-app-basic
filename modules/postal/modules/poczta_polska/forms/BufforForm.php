@@ -2,7 +2,7 @@
 
 namespace app\modules\postal\modules\poczta_polska\forms;
 
-use app\modules\postal\Module;
+use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\repositories\BufforRepository;
 use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
@@ -42,14 +42,14 @@ class BufforForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'idBuffor' => Module::t('poczta-polska', 'ID Buffor'),
-            'sendAt' => Module::t('poczta-polska', 'Send at'),
-            'dispatchOfficeId' => Module::t('poczta-polska', 'Dispatch Office'),
-            'isActive' => Module::t('poczta-polska', 'Is active'),
-            'name' => Module::t('poczta-polska', 'Name'),
-            'profile' => Module::t('poczta-polska', 'Profile'),
-            'profilId' => Module::t('poczta-polska', 'Profil'),
-            'regionId' => Module::t('poczta-polska', 'Region'),
+            'idBuffor' => PostalModule::t('poczta-polska', 'ID Buffor'),
+            'sendAt' => PostalModule::t('poczta-polska', 'Send at'),
+            'dispatchOfficeId' => PostalModule::t('poczta-polska', 'Dispatch Office'),
+            'isActive' => PostalModule::t('poczta-polska', 'Is active'),
+            'name' => PostalModule::t('poczta-polska', 'Name'),
+            'profile' => PostalModule::t('poczta-polska', 'Profile'),
+            'profilId' => PostalModule::t('poczta-polska', 'Profil'),
+            'regionId' => PostalModule::t('poczta-polska', 'Region'),
         ];
     }
 

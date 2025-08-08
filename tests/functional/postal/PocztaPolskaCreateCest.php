@@ -8,7 +8,7 @@ class PocztaPolskaCreateCest
 {
 
     /**
-     * @see PocztaPolskaShipmentController::actionCreate()
+     * @see ShipmentController::actionCreate()
      */
     public const ROUTE_CREATE = 'postal/poczta-polska-shipment/create';
 

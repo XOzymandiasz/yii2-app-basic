@@ -76,7 +76,7 @@ class BufforRepository extends BaseRepository
 
     }
 
-    public function send(int $idBufor, int $urzadNadania, ?array $pakiet = null): bool
+    public function send(int $idBufor, ?int $urzadNadania = null, ?array $pakiet = null): bool
     {
         $response = $this->getService()->send($idBufor, $urzadNadania, $pakiet);
 

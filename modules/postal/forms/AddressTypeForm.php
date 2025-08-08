@@ -31,7 +31,7 @@ class AddressTypeForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'city', 'postal_code', 'option'], 'required'],
+            [['name', 'city', 'postal_code', 'house_number', 'option'], 'required'],
             ['!direction', 'string'],
             [['name', 'name_2'], 'string', 'max' => 60],
             [['street'], 'string', 'max' => 255],

@@ -1,26 +1,16 @@
 <?php
 
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\forms\BufforForm;
-use yii\data\ArrayDataProvider;
+use yii\data\DataProviderInterface;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var BufforForm[] $models */
+/** @var DataProviderInterface $dataProvider */
 
 $this->title = Module::t('poczta-polska', 'Buffors');
 $this->params['breadcrumbs'][] = $this->title;
 
-$dataProvider = new ArrayDataProvider([
-    'allModels' => $models,
-    'pagination' => [
-        'pageSize' => 20,
-    ],
-    'sort' => [
-        'attributes' => ['name', 'sendAt', 'dispatchOfficeId', 'isActive', 'profilId'],
-    ],
-]);
 ?>
 
 <div class="buffor-index">

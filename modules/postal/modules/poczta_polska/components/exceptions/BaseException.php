@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\postal\components\exceptions;
+namespace app\modules\postal\modules\poczta_polska\components\exceptions;
 
 use yii\base\Exception;
 use yii\httpclient\Response;

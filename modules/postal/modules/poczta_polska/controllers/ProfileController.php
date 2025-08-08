@@ -12,7 +12,7 @@ use yii\web\Response;
  * @property Module $module
  */
 
-class PocztaPolskaProfileController extends Controller
+class ProfileController extends Controller
 {
 
     public function actionCreate():string|Response

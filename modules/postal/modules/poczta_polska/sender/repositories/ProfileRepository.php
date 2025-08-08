@@ -47,6 +47,7 @@ class ProfileRepository extends BaseRepository
             if (!$response) {
                 $this->warning(__METHOD__, 'response is null');
             }
+
             $this->profiles = ArrayHelper::index($response->getProfil(),
                 function (ProfilType $profile) {
                     return $profile->getIdProfil();

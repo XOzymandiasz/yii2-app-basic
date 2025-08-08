@@ -2,13 +2,13 @@
 
 use app\modules\postal\Module;
 use app\modules\postal\modules\poczta_polska\entities\Mail;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentCheckForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentCheckForm;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /** @var View $this */
-/** @var PocztaPolskaShipmentCheckForm $model */
+/** @var ShipmentCheckForm $model */
 /** @var Mail|null $mail */
 
 

@@ -3,7 +3,7 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
-use app\modules\postal\Module;
+use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
@@ -37,10 +37,10 @@ class ProfileForm extends AddressTypeForm
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
-            'idProfil' => Module::t('postal', 'Profile ID'),
-            'profileName' => Module::t('postal', 'Profile name'),
-            'fax' => Module::t('postal', 'Fax'),
-            'mpk' => Module::t('postal', 'MPK'),
+            'idProfil' => PostalModule::t('postal', 'Profile ID'),
+            'profileName' => PostalModule::t('postal', 'Profile name'),
+            'fax' => PostalModule::t('postal', 'Fax'),
+            'mpk' => PostalModule::t('postal', 'MPK'),
         ]);
     }
 

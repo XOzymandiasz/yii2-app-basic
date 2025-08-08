@@ -2,13 +2,13 @@
 
 namespace app\modules\postal\modules\poczta_polska\builders;
 
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPoleconaKrajowaType;
 
 class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
 {
-    private PocztaPolskaShipmentForm $model;
-    public function __construct(PocztaPolskaShipmentForm $model) {
+    private ShipmentForm $model;
+    public function __construct(ShipmentForm $model) {
         $this->model = $model;
     }
 

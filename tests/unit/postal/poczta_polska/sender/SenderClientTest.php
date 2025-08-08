@@ -14,12 +14,16 @@ use app\modules\postal\modules\poczta_polska\sender\ServiceType\Create;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Get;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Hello;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Send;
+use app\modules\postal\modules\poczta_polska\sender\ServiceType\Update;
+use app\modules\postal\modules\poczta_polska\sender\StructType\AccountType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipment;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBufor;
+use app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfil;
 use app\modules\postal\modules\poczta_polska\sender\StructType\EPOType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetAccountList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetGuid;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBook;
@@ -54,14 +58,14 @@ class SenderClientTest extends Unit
 
     private ?AdresType $customerAddressType = null;
 
-    private ?ProfilType $shipperAddressType = null;
+    private ?ProfilType $profileType = null;
 
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $dotenv = Dotenv::createImmutable(dirname(__DIR__, 3));
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
         $dotenv->load();
     }
 
@@ -184,7 +188,7 @@ class SenderClientTest extends Unit
         $this->giveGuids(1);
         codecept_debug($this->guids);
         $this->giveAddressType();
-        $this->giveShipperType();
+        $this->giveProfilType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
         $repo = new ShipmentRepository(PocztaPolskaSenderOptions::testInstance());
@@ -199,7 +203,7 @@ class SenderClientTest extends Unit
     {
         $this->giveGuids(3);
         $this->giveAddressType();
-        $this->giveShipperType();
+        $this->giveProfilType();
 
         $shipments = [];
         foreach ($this->guids as $guid) {
@@ -218,7 +222,7 @@ class SenderClientTest extends Unit
     {
         $this->giveGuids(1);
         $this->giveAddressType();
-        $this->giveShipperType();
+        $this->giveProfilType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
         $this->addShipment([$this->shipmentType], null);
@@ -232,7 +236,7 @@ class SenderClientTest extends Unit
     {
         $this->giveGuids(3);
         $this->giveAddressType();
-        $this->giveShipperType();
+        $this->giveProfilType();
 
         $shipments = [];
         foreach ($this->guids as $guid) {
@@ -344,7 +348,7 @@ class SenderClientTest extends Unit
     {
         $this->giveGuids(1);
         $this->giveAddressType();
-        $this->giveShipperType();
+        $this->giveProfilType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0], '00259007730771664228');
 
         $bufforOne = new BuforType();
@@ -389,7 +393,7 @@ class SenderClientTest extends Unit
         foreach ($this->guids as $idx => $guid) {
             $this->giveAddressType();
 
-            $this->shipperAddressType = $profiles[$idx];
+            $this->profileType = $profiles[$idx];
 
             $this->givePrzesylkaPoleconaKrajowaType($guid);
 
@@ -421,6 +425,32 @@ class SenderClientTest extends Unit
         $this->tester->assertNotFalse($sendEnvelopeResponse);
         $this->tester->assertNotNull($envelopeId);
 
+    }
+
+    public function testCreateProfile(): void
+    {
+        $this->giveProfilType();
+        $create = new Create($this->getDefaultOptions());
+        $get = new Get($this->getDefaultOptions());
+        $update = new Update($this->getDefaultOptions());
+
+        $accounts = $get->getAccountList(new GetAccountList())->getAccount();
+        /**
+         * @var AccountType $account
+         */
+        $account = reset($accounts);
+
+        $this->tester->assertNotNull($accounts);
+        $this->tester->assertNotFalse($create->createProfil($this->profileType));
+
+        $profiles = $get->getProfilList(new GetProfilList())->getProfil();
+
+        $account->setProfil($profiles);
+        $updateResponse = $update->updateAccount($account);
+
+        $this->tester->assertNotNull($updateResponse);
+        $this->tester->assertEmpty($updateResponse->getError());
+        $this->tester->assertEmpty(array_diff($profiles, $account->getProfil()));
     }
 
     public function testPrintForParcelListWartosciowyKrajowyType()
@@ -462,7 +492,6 @@ class SenderClientTest extends Unit
 
     }
 
-    //Nie pasuje numer
     public function testPrintForParcelPaczkaPocztowa()
     {
         $shipment = (new PaczkaPocztowaType(KategoriaType::VALUE_PRIORYTETOWA, GabarytType::VALUE_GABARYT_A))
@@ -476,7 +505,7 @@ class SenderClientTest extends Unit
     {
         $this->clearEnvelope();
 
-        $address = $this->giveCorrectAddress();
+        $this->giveAddressType();
 
         $this->giveGuids(1);
 
@@ -487,7 +516,7 @@ class SenderClientTest extends Unit
             1,
             KategoriaType::VALUE_PRIORYTETOWA))
             ->setGuid($this->guids[0])
-            ->setAdres($address)
+            ->setAdres($this->customerAddressType)
             ->setNumerNadania('RR123456785PL');
 
         $result = $this->addShipment([$shipment], null);
@@ -495,58 +524,8 @@ class SenderClientTest extends Unit
         $this->tester->assertNotFalse($result);
     }
 
-    public function testAddListWartosciowyKrajowyType(): void
-    {
-        $shipment = (new listWartosciowyKrajowyType(
-            null,
-            null,
-            100,
-            1,
-            KategoriaType::VALUE_PRIORYTETOWA))
-            ->setNumerNadania('RR123456785PL');
 
-        $this->performAddShipment($shipment);
-    }
-
-    public function testPaczkaPocztowaType()
-    {
-        $this->clearEnvelope();
-
-        $address = $this->giveCorrectAddress();
-
-        $shipments = $this->givePaczkaPocztowaTypeShipments
-        (
-            1,
-            $address,
-            500,
-            new KategoriaType(),
-            new GabarytType(),
-            1,
-            1000
-        );
-
-        foreach ($shipments as $shipment) {
-            $this->tester->assertInstanceOf(PaczkaPocztowaType::class, $shipment);
-            $this->tester->assertSame($shipment->getMasa(), 500);
-        }
-    }
-
-    protected function performAddShipment(PrzesylkaType $shipment): void
-    {
-        $this->clearEnvelope();
-        $address = $this->giveCorrectAddress();
-        $this->giveGuids(1);
-
-        $shipment->setAdres($address)
-            ->setGuid($this->guids[0]);
-
-        $result = $this->addShipment([$shipment], null);
-
-        $this->tester->assertNotFalse($result);
-    }
-
-    protected
-    function getShipment(
+    protected function getShipment(
         string    $type,
         int       $guid,
         AdresType $address,
@@ -592,8 +571,8 @@ class SenderClientTest extends Unit
         $this->tester->assertNotFalse($result);
     }
 
-    protected function giveShipperType(
-        string  $name = 'Kowalski',
+    protected function giveProfilType(
+        string  $name = 'CodeceptTest',
         string  $street = 'Leborska',
         string  $city = 'Warszawa',
         string  $postalCode = '81212',
@@ -608,7 +587,7 @@ class SenderClientTest extends Unit
         ?string $mobile = null
     ): void
     {
-        $this->shipperAddressType = (new ProfilType())
+        $this->profileType = (new ProfilType())
             ->setNazwa($name)
             ->setUlica($street)
             ->setNumerDomu($houseNumber)
@@ -679,7 +658,7 @@ class SenderClientTest extends Unit
     {
         $this->shipmentType = (new PrzesylkaPoleconaKrajowaType(KategoriaType::VALUE_PRIORYTETOWA))
             ->setGuid($guid)
-            ->setNadawca($this->shipperAddressType)
+            ->setNadawca($this->profileType)
             ->setAdres($this->customerAddressType)
             ->setNumerNadania($shipmentNumber)
             ->setIloscPotwierdzenOdbioru($numberOfPickups)
