@@ -3,7 +3,7 @@
 
 namespace tracker;
 
-use app\modules\postal\components\exceptions\BaseException;
+use app\modules\postal\modules\poczta_polska\components\exceptions\BaseException;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTrackerClient;
 use app\modules\postal\modules\poczta_polska\entities\Mail;
