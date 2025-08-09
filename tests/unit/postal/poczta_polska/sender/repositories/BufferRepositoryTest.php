@@ -3,8 +3,9 @@
 namespace unit\postal\poczta_polska\sender\repositories;
 
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\BufforRepository;
+use app\modules\postal\modules\poczta_polska\sender\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
+use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use Codeception\Test\Unit;
 use edzima\teryt\models\Region;
@@ -14,15 +15,16 @@ use UnitTester;
 /**
  * @property UnitTester $tester
  */
-class BufforRepositoryTest extends Unit
+class BufferRepositoryTest extends Unit
 {
-    private BufforRepository $repository;
+    private BufferRepository $repository;
     private ?ProfileRepository $profileRepository = null;
 
+    private ?ShipmentRepository $shipmentRepository = null;
     public function _before(): void
     {
         parent::_before();
-        $this->repository = new BufforRepository(
+        $this->repository = new BufferRepository(
             PocztaPolskaSenderOptions::testInstance()
         );
     }
@@ -74,7 +76,20 @@ class BufforRepositoryTest extends Unit
         $this->tester->assertTrue($clearResponse);
     }
 
+    public function testSend(): void
+    {
+        $address = ShipmentRepositoryTest::getAddress();
+        $shipment = ShipmentRepositoryTest::getShipment($address);
+        $buffers = $this->repository->getAll();
+        $firstBuffer = reset($buffers);
 
+        $addResponse = $this->getShipmentRepository()->add($shipment, $firstBuffer->getIdBufor());
+
+        $sendResponse = $this->repository->send($firstBuffer->getIdBufor());
+
+        $this->tester->assertNotFalse($addResponse);
+        $this->tester->assertNotFalse($sendResponse);
+    }
 
 
     protected function getBuffor(
@@ -105,6 +120,15 @@ class BufforRepositoryTest extends Unit
             $this->profileRepository = new ProfileRepository($options);
         }
         return $this->profileRepository;
+    }
+
+    private function getShipmentRepository(): ?ShipmentRepository
+    {
+        $options = PocztaPolskaSenderOptions::testInstance();
+        if (null === $this->shipmentRepository) {
+            $this->shipmentRepository = new ShipmentRepository($options);
+        }
+        return $this->shipmentRepository;
     }
 
 }

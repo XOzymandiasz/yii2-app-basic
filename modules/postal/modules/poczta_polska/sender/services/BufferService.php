@@ -15,7 +15,7 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelopeResponseType;
 use SoapFault;
 
-class BufforService extends BaseService
+class BufferService extends BaseService
 {
 
     public function clearEnvelope(?int $buforId = null): ?ClearEnvelopeResponse

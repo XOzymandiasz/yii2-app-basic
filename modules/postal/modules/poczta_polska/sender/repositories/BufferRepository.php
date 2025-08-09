@@ -3,15 +3,15 @@
 namespace app\modules\postal\modules\poczta_polska\sender\repositories;
 
 
-use app\modules\postal\modules\poczta_polska\sender\services\BufforService;
+use app\modules\postal\modules\poczta_polska\sender\services\BufferService;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
 
-class BufforRepository extends BaseRepository
+class BufferRepository extends BaseRepository
 {
 
     protected $serviceConfig = [
-        'class' => BufforService::class,
+        'class' => BufferService::class,
     ];
 
 
@@ -103,7 +103,7 @@ class BufforRepository extends BaseRepository
         return false;
     }
 
-    protected function getService(): BufforService
+    protected function getService(): BufferService
     {
         return parent::getService();
     }
