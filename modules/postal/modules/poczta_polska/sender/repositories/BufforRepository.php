@@ -26,7 +26,7 @@ class BufforRepository extends BaseRepository
     }
 
     /*
-     * @return BuforType[]
+     * @var return BuforType[]
      */
     public function getAll(): array
     {
