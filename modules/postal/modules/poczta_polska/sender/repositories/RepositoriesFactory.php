@@ -16,7 +16,7 @@ class RepositoriesFactory extends Component
 
     public array $classMap = [
         self::REPOSITORY_BUFFOR => [
-            'class' => BufforRepository::class,
+            'class' => BufferRepository::class,
         ],
         self::REPOSITORY_SHIPMENT => [
             'class' => ShipmentRepository::class,
@@ -51,7 +51,7 @@ class RepositoriesFactory extends Component
     }
 
 
-    public function getBufforRepository(): BufforRepository
+    public function getBufforRepository(): BufferRepository
     {
         $config = $this->classMap[self::REPOSITORY_BUFFOR];
         return Yii::createObject($config, [$this->senderOptions]);
