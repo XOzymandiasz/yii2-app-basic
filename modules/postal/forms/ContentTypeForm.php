@@ -55,6 +55,7 @@ class ContentTypeForm extends Model
 
     public function setModel(ShipmentContent $model): void
     {
+        $this->model = $model;
         $this->name = $model->name;
         $this->is_active = $model->is_active;
     }
