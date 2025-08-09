@@ -21,7 +21,6 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentRespon
 use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBufor;
-use app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfil;
 use app\modules\postal\modules\poczta_polska\sender\StructType\EPOType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetAccountList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeList;
@@ -451,6 +450,18 @@ class SenderClientTest extends Unit
         $this->tester->assertNotNull($updateResponse);
         $this->tester->assertEmpty($updateResponse->getError());
         $this->tester->assertEmpty(array_diff($profiles, $account->getProfil()));
+    }
+
+    public function testGetShipments():void
+    {
+        $get = new Get($this->getDefaultOptions());
+        $bufferList = $get->getEnvelopeBuforList()->getBufor();
+        $buffer = reset($bufferList);
+
+        $shipments = $get->getEnvelopeBufor($buffer->getIdBufor())->getPrzesylka();
+
+        $this->tester->assertIsArray($shipments);
+        $this->tester->assertNotNull($shipments);
     }
 
     public function testPrintForParcelListWartosciowyKrajowyType()
