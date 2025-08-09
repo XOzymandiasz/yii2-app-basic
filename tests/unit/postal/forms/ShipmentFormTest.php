@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\shipment\forms;
+namespace tests\unit\postal\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\ShipmentForm;
@@ -16,13 +16,14 @@ use unit\fixtures\ShipmentContentFixture;
 use unit\fixtures\ShipmentFixture;
 use UnitTester;
 use yii\base\Model;
+
 /**
  * @property UnitTester $tester
  */
-
 class ShipmentFormTest extends Unit
 {
     use UnitModelTrait;
+
     private ShipmentForm $model;
 
     protected function _before(): void
@@ -30,7 +31,29 @@ class ShipmentFormTest extends Unit
         $this->model = new ShipmentForm();
     }
 
-    public function testValidationRequiredFields(): void
+    public function _fixtures(): array
+    {
+        return [
+            'shipment' => [
+                'class' => ShipmentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment.php'
+            ],
+            'content' => [
+                'class' => ShipmentContentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_content.php'
+            ],
+            'shipment_address' => [
+                'class' => ShipmentAddressFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_address.php',
+            ],
+            'shipment_address_link' => [
+                'class' => ShipmentAddressLinkFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_address_link.php',
+            ],
+        ];
+    }
+
+    public function testCorrectValidation(): void
     {
         $this->model->direction = 'OUT';
         $this->model->number = 'XYZ123456';
@@ -41,23 +64,18 @@ class ShipmentFormTest extends Unit
         $this->model->receiver_id = 2;
         $this->model->guid = '12345678901234567890123456789012';
 
-        $this->thenSuccessValidate(['direction','number','provider','content_id','creator_id','created_at','updated_at',
-                                    'guid']);
+        $this->thenSuccessValidate();
     }
 
     public function testEmpty(): void
     {
-        $this->thenUnsuccessValidate(['direction','number','provider','content_id','creator_id','created_at',
-            'updated_at', 'guid'],false);
+        $this->thenUnsuccessValidate();
 
-        $this->thenSeeError('Direction cannot be blank.','direction');
-        $this->thenSeeError('Number cannot be blank.','number');
-        $this->thenSeeError('Provider cannot be blank.','provider');
-        $this->thenSeeError('Content ID is invalid.','content_id');
-        $this->thenSeeError('Creator ID is invalid.','creator_id');
-        $this->thenSeeError('Created At cannot be blank.','created_at');
-        $this->thenSeeError('Updated At cannot be blank.','updated_at');
-        $this->thenSeeError('Guid cannot be blank.','guid');
+        $this->thenSeeError('Direction cannot be blank.', 'direction');
+        $this->thenSeeError('Provider cannot be blank.', 'provider');
+        $this->thenSeeError('Content ID cannot be blank.', 'content_id');
+        $this->thenSeeError('Sender ID cannot be blank.', 'sender_id');
+        $this->thenSeeError('Receiver ID cannot be blank.', 'receiver_id');
 
     }
 
@@ -67,11 +85,37 @@ class ShipmentFormTest extends Unit
         $this->model->provider = str_repeat('B', 7);
         $this->model->guid = str_repeat('C', 33);
 
-        $this->thenUnsuccessValidate(['number','provider','created_at', 'updated_at', 'guid']);
+        $this->thenUnsuccessValidate(['number', 'provider', 'created_at', 'updated_at', 'guid']);
 
-        $this->thenSeeError('Number should contain at most 40 characters.','number');
-        $this->thenSeeError('Provider should contain at most 6 characters.','provider');
-        $this->thenSeeError('Guid should contain at most 32 characters.','guid');
+        $this->thenSeeError('Number should contain at most 40 characters.', 'number');
+        $this->thenSeeError('Provider is invalid.', 'provider');
+        $this->thenSeeError('Guid should contain at most 32 characters.', 'guid');
+    }
+
+
+
+    public function testSave(): void
+    {
+        $this->model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
+        $this->model->number = 'TEST123456789';
+        $this->model->provider = ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA;
+        $this->model->guid = 'abcdefabcdefabcdefabcdefabcd';
+        $this->model->content_id = 1;
+        $this->model->creator_id = 1;
+        $this->model->sender_id = 1;
+        $this->model->receiver_id = 2;
+        $this->model->setSenderAddress(ShipmentAddress::findOne($this->model->sender_id));
+        $this->model->setSenderAddress(ShipmentAddress::findOne($this->model->receiver_id));
+
+        $this->tester->assertNotNull($this->getModel());
+        $this->thenSuccessValidate();
+        $this->thenSuccessSave();
+
+        $this->tester->seeRecord(Shipment::class, [
+            'number' => $this->model->number,
+            'provider' => $this->model->provider,
+            'content_id' => $this->model->content_id,
+        ]);
     }
 
     public function testSetModel()

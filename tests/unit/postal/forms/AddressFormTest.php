@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\shipment\forms;
+namespace tests\unit\postal\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\AddressTypeForm;
@@ -9,7 +9,6 @@ use app\modules\postal\models\ShipmentDirectionInterface;
 use Codeception\Test\Unit;
 use Throwable;
 use unit\fixtures\ShipmentAddressFixture;
-use unit\fixtures\ShipmentContentFixture;
 use UnitTester;
 use yii\base\Model;
 use yii\db\StaleObjectException;
