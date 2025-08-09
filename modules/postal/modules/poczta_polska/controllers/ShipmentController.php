@@ -9,6 +9,7 @@ use app\modules\postal\modules\poczta_polska\Module;
 use app\modules\postal\Module as PostalModule;
 use Throwable;
 use Yii;
+use yii\data\ArrayDataProvider;
 use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -48,7 +49,8 @@ class ShipmentController extends Controller
             if($returnUrl){
                 return $this->redirect($returnUrl);
             }
-            return $this->redirect(['download-label', 'id' => $id]);
+            return $this->redirect(['index', 'idBuffer' => $model->idBuffer]);
+            //return $this->redirect(['download-label', 'id' => $id]);
         }
 
         return $this->render('create-from-shipment', [
@@ -70,6 +72,23 @@ class ShipmentController extends Controller
         return Yii::$app->response->sendContentAsFile($label, $filename, [
             'mimeType' => 'application/pdf',
             'inline' => true,
+        ]);
+    }
+
+    public function actionIndex(int $idBuffer): string|Response
+    {
+        $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
+        $shipments = $repository->getList($idBuffer);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $shipments,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
         ]);
     }
 
