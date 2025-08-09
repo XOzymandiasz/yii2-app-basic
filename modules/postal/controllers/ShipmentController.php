@@ -6,7 +6,6 @@ use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\models\PostSearch;
 use app\modules\postal\models\ShipmentDirectionInterface;
-use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
 use Throwable;
 use Yii;
@@ -39,7 +38,7 @@ class ShipmentController extends Controller
                 ],
                 'access' => [
                     'class' => AccessControl::class,
-                    'only' => ['create', 'update', 'delete'],
+                    'only' => ['create-out', 'create-in', 'update', 'delete'],
                     'rules' => [
                         [
                             'actions' => ['create-out', 'create-in', 'update', 'delete'],
@@ -95,7 +94,8 @@ class ShipmentController extends Controller
         $model->creator_id = Yii::$app->user->id;
         if ($model->load($this->request->post())) {
             if ($model->save()) {
-                return $this->redirect(['after-create-out', 'id' => $model->getModel()->id]);
+                $this->module->afterCreateOutShipment($model->getModel());
+                return $this->redirect(['view', 'id' => $model->getModel()->id]);
             }
         }
 
@@ -108,23 +108,6 @@ class ShipmentController extends Controller
         ]);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function actionAfterCreateOut(int $id): Response
-    {
-        $model = $this->findModel($id);
-        Yii::debug([
-            'id' => $id,
-            'provider' => $model->provider,
-        ], __METHOD__);
-        switch ($model->provider) {
-            case ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA:
-                return $this->redirect(['poczta_polska/poczta-polska-shipment/create-from-shipment', 'id' => $id]);
-            default:
-                throw new NotFoundHttpException();
-        }
-    }
 
     /**
      * @throws Exception
