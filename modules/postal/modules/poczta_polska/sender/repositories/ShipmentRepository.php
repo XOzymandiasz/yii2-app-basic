@@ -19,6 +19,28 @@ class ShipmentRepository extends BaseRepository
         'class' => ShipmentService::class,
     ];
 
+    /*
+     * @var return PrzesylkaType[]
+     */
+    public function getList(int $idBuffer): array
+    {
+        $response = $this->getService()->getList($idBuffer);
+
+        if ($response) {
+            if(empty($response->getError())){
+                $shipmentsList = $response->getPrzesylka();
+                if ($shipmentsList){
+                    return $response->getPrzesylka();
+                }
+                $this->warning(__METHOD__, 'empty buffer');
+            }
+            $this->warning(__METHOD__, null, $response);
+        }
+
+        $this->warning(__METHOD__, 'response is null', $response);
+        return [];
+    }
+
     public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
     {
         $response = $this->getService()->add(new AddShipment([$shipment], $idBuffor));
