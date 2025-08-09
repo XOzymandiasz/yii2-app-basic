@@ -67,14 +67,6 @@ class BufferController extends Controller
             'pagination' => [
                 'pageSize' => 20,
             ],
-            'sort' => [
-                'attributes' => ['name',
-                    'sendAt',
-                    'dispatchOfficeId',
-                    'isActive',
-                    //'profilId'
-                ],
-            ]
         ]);
 
         return $this->render('index', [

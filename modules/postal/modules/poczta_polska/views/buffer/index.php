@@ -20,9 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Create Buffor'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Create Buffer'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -52,11 +51,27 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::class,
-                'template' => '{view} {delete}',
+                'template' => '{view} {delete} {shipment}',
                 'urlCreator' => function ($action, $model, $key) {
+                    if ($action === 'shipment') {
+                        return Url::to(['shipment/index', 'idBuffer' => $key]);
+                    }
                     return Url::to([$action, 'id' => $key]);
                 },
-
+                'buttons' => [
+                    'shipment' => function ($url) {
+                        return Html::a(
+                            '<i class="fa fa-envelope"></i>',
+                            $url,
+                            [
+                                'title' => Module::t('poczta-polska', 'Shipments'),
+                                'aria-label' => Module::t('poczta-polska', 'Shipments'),
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-xs btn-primary',
+                            ]
+                        );
+                    },
+                ],
                 'contentOptions' => ['style' => 'white-space:nowrap;'],
                 'headerOptions' => ['style' => 'width:1%'],
             ],
