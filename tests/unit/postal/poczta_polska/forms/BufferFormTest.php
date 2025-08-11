@@ -33,18 +33,9 @@ class BufferFormTest extends Unit
 
     public function testEmpty(): void
     {
-        $response = $this->model->validate();
-        $this->tester->assertFalse($response);
-    }
-
-    public function testAssignIntegerToName(): void
-    {
-        $this->model->name = 123;
-        $this->model->sendAt = 321;
-
-        $response = $this->model->validate();
-
-        $this->tester->assertFalse($response);
+        $this->thenUnsuccessValidate();
+        $this->thenSeeError('Dispatch Office cannot be blank.', 'dispatchOfficeId');
+        $this->thenSeeError('Profil cannot be blank.', 'profilId');
     }
 
     public function testGetProfilNames(): void
@@ -64,19 +55,15 @@ class BufferFormTest extends Unit
         $profile = reset($profiles);
         $this->model->profilId = $profile->getIdProfil();
 
-        $response = $this->model->validate();
-
-        $this->tester->assertTrue($response);
+        $this->thenSuccessValidate();
     }
 
     public function testCreateEmpty(): void
     {
-
-        $validationResponse = $this->model->validate();
-        $createResponse = $this->model->create($this->repository, $this->getProfileRepository());
-
-        $this->tester->assertFalse($validationResponse);
-        $this->tester->assertTrue($createResponse);
+        $this->thenUnsuccessValidate();
+        $this->thenSeeError('Dispatch Office cannot be blank.', 'dispatchOfficeId');
+        $this->thenSeeError('Profil cannot be blank.', 'profilId');
+        $this->tester->assertTrue($this->model->create($this->repository, $this->getProfileRepository()));
     }
 
     public function testCreate(): void
@@ -89,11 +76,8 @@ class BufferFormTest extends Unit
         $profile = reset($profiles);
         $this->model->profilId = $profile->getIdProfil();
 
-        $validationResponse = $this->model->validate();
-        $createResponse = $this->model->create($this->repository, $this->getProfileRepository());
-
-        $this->tester->assertTrue($validationResponse);
-        $this->tester->assertTrue($createResponse);
+        $this->thenSuccessValidate();
+        $this->tester->assertTrue($this->model->create($this->repository, $this->getProfileRepository()));
     }
 
     private function getProfileRepository(): ProfileRepository
