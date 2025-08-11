@@ -4,6 +4,7 @@ namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
@@ -15,14 +16,6 @@ class ProfileForm extends AddressTypeForm
     public ?string $profileName = null;
     public ?string $fax = null;
     public ?string $mpk = null;
-
-    private ?ProfileRepository $profileRepository = null;
-
-    public function init(): void
-    {
-        parent::init();
-        $this->profileRepository = $this->getProfileRepository();
-    }
 
     public function rules(): array
     {
@@ -44,9 +37,13 @@ class ProfileForm extends AddressTypeForm
         ]);
     }
 
-    public function create(): bool
+    public function create(BaseRepository $repository): bool
     {
-        return $this->getProfileRepository()->create($this->createType());
+        /**
+         * @var ProfileRepository $repository
+         */
+
+        return $repository->create($this->createType());
     }
 
     protected function createType(): ProfilType

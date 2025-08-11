@@ -6,6 +6,7 @@ use app\modules\postal\forms\ShipmentForm as PostalShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
+use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
@@ -69,8 +70,11 @@ class ShipmentForm extends PostalShipmentForm
      * @throws Throwable
      * @throws StaleObjectException
      */
-    public function addShipment(ShipmentRepository $repository): bool
+    public function addShipment(BaseRepository $repository): bool
     {
+        /**
+         * @var ShipmentRepository $repository
+         */
 
         $response = $repository->add($this->createShipment(), $this->idBuffer);
 
@@ -92,8 +96,12 @@ class ShipmentForm extends PostalShipmentForm
         return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
-    public function send(int $idBuffer, BufferRepository $repository): bool
+    public function send(int $idBuffer, BaseRepository $repository): bool
     {
+        /**
+         * @var BufferRepository $repository
+         */
+
         return $repository->send($idBuffer);
     }
 
@@ -111,7 +119,7 @@ class ShipmentForm extends PostalShipmentForm
                 return $buffer->getIdBufor();
             },
             function (BuforType $buffer) {
-                return $this->getBufforFullName($buffer);
+                return $this->getBufferFullName($buffer);
             }
         );
     }
@@ -134,7 +142,7 @@ class ShipmentForm extends PostalShipmentForm
     }
 
 
-    public static function getBufforFullName(BuforType $buffer): string
+    public static function getBufferFullName(BuforType $buffer): string
     {
         return $buffer->getOpis() . ' ' . $buffer->getDataNadania();
     }

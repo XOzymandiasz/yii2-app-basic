@@ -7,6 +7,9 @@ use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\Module;
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use Throwable;
 use Yii;
 use yii\data\ArrayDataProvider;
@@ -32,10 +35,16 @@ class ShipmentController extends Controller
     {
         $shipment = $this->findModel($id);
         $model = new ShipmentForm(['model' => $shipment]);
-        $model->buffors = $this->module
-            ->getRepositoriesFactory()
-            ->getBufforRepository()
-            ->getAll();
+
+        /**
+         * @var BufferRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+
+        $model->buffors = $repository->getAll();
 
         if (empty($model->buffors)) {
             Yii::$app->session->setFlash(
@@ -45,7 +54,7 @@ class ShipmentController extends Controller
 
         if ($model->load(Yii::$app->request->post())
             && $model->validate()
-            && $model->addShipment($this->module->getRepositoriesFactory()->getShipmentRepository())) {
+            && $model->addShipment($this->module->getRepositoryFactory()->getShipmentRepository())) {
             if($returnUrl){
                 return $this->redirect($returnUrl);
             }
@@ -62,7 +71,14 @@ class ShipmentController extends Controller
      */
     public function actionDownloadLabel(string $guid): Response
     {
-        $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
+        /**
+         * @var ShipmentRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
+
         $label = $repository->getLabel($guid);
 
         $filename = 'label' . $guid . '.pdf';
@@ -74,7 +90,14 @@ class ShipmentController extends Controller
 
     public function actionIndex(int $idBuffer): string|Response
     {
-        $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
+        /**
+         * @var ShipmentRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
+
         $shipments = $repository->getList($idBuffer);
 
         $dataProvider = new ArrayDataProvider([
@@ -97,7 +120,9 @@ class ShipmentController extends Controller
     {
         $model = new ShipmentForm();
 
-        if ($model->send($idBuffer, $this->module->getRepositoriesFactory()->getBufforRepository())) {
+        if ($model->send($idBuffer,
+            $this->module->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER))) {
             return $this->redirect(['buffer/index']);
         }
 

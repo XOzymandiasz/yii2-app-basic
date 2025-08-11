@@ -2,8 +2,11 @@
 
 namespace app\modules\postal\modules\poczta_polska\controllers;
 
-use app\modules\postal\modules\poczta_polska\forms\BufforForm;
+use app\modules\postal\modules\poczta_polska\forms\BufferForm;
 use app\modules\postal\modules\poczta_polska\Module;
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
@@ -17,10 +20,24 @@ class BufferController extends Controller
 {
     public function actionCreate(): string|Response
     {
-        $model = new BufforForm();
+        $model = new BufferForm();
+
+        /**
+         * @var BufferRepository $bufferRepository
+         * @var ProfileRepository $profileRepository
+         */
+
+        $bufferRepository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+
+        $profileRepository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_PROFILE);
 
 
-        if ($model->load(Yii::$app->request->post()) && $model->create()) {
+        if ($model->load(Yii::$app->request->post())
+            && $model->create($bufferRepository, $profileRepository)) {
                 return $this->redirect(['index']);
         }
 
@@ -38,15 +55,23 @@ class BufferController extends Controller
         if (empty($params)) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-
         $regionId = reset($params);
-        $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
+
+        /**
+         * @var BufferRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+
         $models = $repository->getDispatchOffices($regionId);
+
         $output = [];
         foreach ($models as $model) {
             $output[] = [
                 'id' => $model->getId(),
-                'name' => BufforForm::getDispatchOfficeName($model),
+                'name' => BufferForm::getDispatchOfficeName($model),
             ];
         }
         return $this->asJson([
@@ -56,7 +81,14 @@ class BufferController extends Controller
 
     public function actionIndex(): string
     {
-        $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
+        /**
+         * @var BufferRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+
         $buffers = $repository->getAll();
 
         $dataProvider = new ArrayDataProvider([
@@ -79,8 +111,15 @@ class BufferController extends Controller
      */
     public function actionView(int $id): string
     {
-        $repo = $this->module->getRepositoriesFactory()->getBufforRepository();
-        $model = $repo->getById($id);
+        /**
+         * @var BufferRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+
+        $model = $repository->getById($id);
 
         if (!$model) {
             throw new NotFoundHttpException();
@@ -91,7 +130,13 @@ class BufferController extends Controller
 
     public function actionDelete(int $id): Response
     {
-        $repository = $this->module->getRepositoriesFactory()->getBufforRepository();
+        /**
+         * @var BufferRepository $repository
+         */
+
+        $repository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
 
         $repository->clear($id);
 

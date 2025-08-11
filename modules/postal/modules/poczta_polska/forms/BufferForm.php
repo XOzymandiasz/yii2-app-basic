@@ -3,6 +3,7 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
@@ -11,7 +12,7 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaT
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use yii\base\Model;
 
-class BufforForm extends Model
+class BufferForm extends Model
 {
     public ?string $regionId = null;
     public ?string $sendAt = null;
@@ -19,16 +20,6 @@ class BufforForm extends Model
     public ?int $profilId = null;
     public ?int $dispatchOfficeId = null;
     public ?string $name = null;
-
-    private ?BufferRepository $bufforRepository = null;
-    private ?ProfileRepository $profileRepository = null;
-
-    public function init(): void
-    {
-        parent::init();
-        $this->bufforRepository = $this->getBufforRepository();
-        $this->profileRepository = $this->getProfileRepository();
-    }
 
     public function rules(): array
     {
@@ -53,9 +44,13 @@ class BufforForm extends Model
         ];
     }
 
-    public function getProfilesNames(): array
+    public function getProfilesNames(BaseRepository $repository): array
     {
-        $models = $this->getProfileRepository()->getList();
+        /**
+         * @var ProfileRepository $repository
+         */
+
+        $models = $repository->getList();
         $names = [];
 
         foreach ($models as $model) {
@@ -64,42 +59,32 @@ class BufforForm extends Model
         return $names;
     }
 
-    public function create(): bool
+    public function create(BaseRepository $bufferRepository, BaseRepository $profileRepository): bool
     {
-        return $this->getBufforRepository()->create($this->createType());
+        /**
+         * @var BufferRepository $bufferRepository
+         */
+
+        return $bufferRepository->create($this->createType($profileRepository));
     }
 
-    public function createType(): BuforType
+    protected function createType(BaseRepository $repository): BuforType
     {
-        $buffor = (new BuforType())
+        $buffer = (new BuforType())
             ->setActive($this->isActive)
             ->setUrzadNadania($this->dispatchOfficeId)
             ->setOpis($this->name)
             ->setDataNadania($this->sendAt);
 
+        /**
+         * @var ProfileRepository $repository
+         */
+
         if ($this->profilId !== null) {
-            $buffor->setProfil($this->getProfileRepository()->getList()[$this->profilId]);
+            $buffer->setProfil($repository->getList()[$this->profilId]);
         }
 
-        return $buffor;
-    }
-
-    protected function getBufforRepository(): BufferRepository
-    {
-        $options = PocztaPolskaSenderOptions::testInstance();
-        if (null === $this->bufforRepository) {
-            $this->bufforRepository = new BufferRepository($options);
-        }
-        return $this->bufforRepository;
-    }
-
-    private function getProfileRepository(): ?ProfileRepository
-    {
-        $options = PocztaPolskaSenderOptions::testInstance();
-        if (null === $this->profileRepository) {
-            $this->profileRepository = new ProfileRepository($options);
-        }
-        return $this->profileRepository;
+        return $buffer;
     }
 
     public static function getProfileName(ProfilType $model): string
