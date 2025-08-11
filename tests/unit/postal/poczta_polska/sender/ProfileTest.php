@@ -4,8 +4,8 @@ namespace unit\postal\poczta_polska\sender;
 
 use _support\UnitModelTrait;
 use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
 use Codeception\Test\Unit;
 use UnitTester;
 use yii\base\Model;

@@ -2,10 +2,10 @@
 
 namespace unit\postal\poczta_polska\sender\repositories;
 
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\BufferRepository;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use Codeception\Test\Unit;
 use edzima\teryt\models\Region;

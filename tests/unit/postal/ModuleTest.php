@@ -3,8 +3,8 @@
 namespace unit\postal;
 
 use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
 use Codeception\Test\Unit;
 use UnitTester;
 use Yii;

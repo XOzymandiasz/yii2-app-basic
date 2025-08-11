@@ -3,11 +3,11 @@
 namespace unit\postal\poczta_polska\sender;
 
 
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\GabarytType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderClassMap;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Add;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Clear;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Create;
