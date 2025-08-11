@@ -18,7 +18,7 @@ class ProfileFormTest extends Unit
     use UnitModelTrait;
     protected ProfileForm $model;
 
-    public ProfileRepository $repository;
+    private ProfileRepository $repository;
 
     public function _before(): void
     {
@@ -26,6 +26,7 @@ class ProfileFormTest extends Unit
         $this->repository = new ProfileRepository(PocztaPolskaSenderOptions::testInstance());
         $this->model = new ProfileForm();
     }
+
     public function testValidationRequiredFields(): void
     {
         $this->model->name = "Firma";
