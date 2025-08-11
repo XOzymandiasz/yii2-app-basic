@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
 
 class ShipmentForm extends Model implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
+    public const EVENT_HELLO = 'hello';
     public const SCENARIO_DIRECTION_IN = ShipmentDirectionInterface::DIRECTION_IN;
     public const SCENARIO_DIRECTION_OUT = ShipmentDirectionInterface::DIRECTION_OUT;
 
@@ -35,7 +36,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public ?int $receiver_id = null;
     private ?ShipmentAddress $receiverAddress = null;
     private ?ShipmentAddress $senderAddress = null;
-
 
     public function rules(): array
     {
@@ -103,6 +103,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
             return false;
         }
         $this->saveAddresses();
+
 
         return true;
     }
