@@ -5,7 +5,7 @@ namespace app\modules\postal\modules\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
-use app\modules\postal\modules\services\BufferService;
+use app\modules\postal\modules\poczta_polska\services\BufferService;
 
 class BufferRepository extends BaseRepository
 {

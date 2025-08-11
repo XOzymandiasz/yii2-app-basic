@@ -3,9 +3,9 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\BufforRepository;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
@@ -20,7 +20,7 @@ class BufforForm extends Model
     public ?int $dispatchOfficeId = null;
     public ?string $name = null;
 
-    private ?BufforRepository $bufforRepository = null;
+    private ?BufferRepository $bufforRepository = null;
     private ?ProfileRepository $profileRepository = null;
 
     public function init(): void
@@ -84,11 +84,11 @@ class BufforForm extends Model
         return $buffor;
     }
 
-    protected function getBufforRepository(): BufforRepository
+    protected function getBufforRepository(): BufferRepository
     {
         $options = PocztaPolskaSenderOptions::testInstance();
         if (null === $this->bufforRepository) {
-            $this->bufforRepository = new BufforRepository($options);
+            $this->bufforRepository = new BufferRepository($options);
         }
         return $this->bufforRepository;
     }

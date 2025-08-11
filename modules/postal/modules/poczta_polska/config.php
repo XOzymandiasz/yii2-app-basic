@@ -2,8 +2,8 @@
 
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTrackerClient;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoriesFactory;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\RepositoriesFactory;
 
 return [
     'components' => [

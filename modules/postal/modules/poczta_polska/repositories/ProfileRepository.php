@@ -3,7 +3,7 @@
 namespace app\modules\postal\modules\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
-use app\modules\postal\modules\services\ProfileService;
+use app\modules\postal\modules\poczta_polska\services\ProfileService;
 use yii\helpers\ArrayHelper;
 
 class ProfileRepository extends BaseRepository

@@ -4,8 +4,8 @@ namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 
 
