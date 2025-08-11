@@ -50,7 +50,6 @@ class ShipmentController extends Controller
                 return $this->redirect($returnUrl);
             }
             return $this->redirect(['index', 'idBuffer' => $model->idBuffer]);
-            //return $this->redirect(['download-label', 'id' => $id]);
         }
 
         return $this->render('create-from-shipment', [
@@ -59,16 +58,14 @@ class ShipmentController extends Controller
     }
 
     /**
-     * @throws NotFoundHttpException
      * @throws RangeNotSatisfiableHttpException
      */
-    public function actionDownloadLabel(int $id): Response
+    public function actionDownloadLabel(string $guid): Response
     {
-        $model = $this->findModel($id);
         $repository = $this->module->getRepositoriesFactory()->getShipmentRepository();
-        $label = $repository->getLabel($model->guid);
+        $label = $repository->getLabel($guid);
 
-        $filename = 'label' . $model->guid . '.pdf';
+        $filename = 'label' . $guid . '.pdf';
         return Yii::$app->response->sendContentAsFile($label, $filename, [
             'mimeType' => 'application/pdf',
             'inline' => true,
@@ -82,6 +79,9 @@ class ShipmentController extends Controller
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $shipments,
+            'key' => function($shipments) {
+                return $shipments->getGuid();
+            },
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -89,7 +89,19 @@ class ShipmentController extends Controller
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'idBuffer' => $idBuffer,
         ]);
+    }
+
+    public function actionSend(int $idBuffer): Response
+    {
+        $model = new ShipmentForm();
+
+        if ($model->send($idBuffer, $this->module->getRepositoriesFactory()->getBufforRepository())) {
+            return $this->redirect(['buffer/index']);
+        }
+
+        return $this->redirect(['index', 'idBuffer' => $idBuffer]);
     }
 
     /**
@@ -101,6 +113,22 @@ class ShipmentController extends Controller
             ->andWhere([
                 'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
                 'id' => $id
+            ])->one();
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+        return $model;
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    private function findModelByGuid(string $guid): Shipment
+    {
+        $model = Shipment::find()
+            ->andWhere([
+                'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+                'guid' => $guid
             ])->one();
         if (!$model) {
             throw new NotFoundHttpException();

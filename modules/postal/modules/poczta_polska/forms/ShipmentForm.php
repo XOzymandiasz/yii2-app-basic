@@ -6,9 +6,10 @@ use app\modules\postal\forms\ShipmentForm as PostalShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
-use app\modules\postal\modules\poczta_polska\sender\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use Throwable;
@@ -22,11 +23,9 @@ class ShipmentForm extends PostalShipmentForm
     protected const FORMAT_DEFAULT = FormatType::VALUE_S;
     protected const MASS_DEFAULT = 500;
 
-
     public bool $isRegistered = true;
     public ?int $idBuffer = null;
     public ?string $description = null;
-
 
     public ?int $mass = self::MASS_DEFAULT;
     public string $category = self::CATEGORY_DEFAULT;
@@ -93,6 +92,10 @@ class ShipmentForm extends PostalShipmentForm
         return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
+    public function send(int $idBuffer, BufferRepository $repository): bool
+    {
+        return $repository->send($idBuffer);
+    }
 
     public function setModel(Shipment $model): void
     {

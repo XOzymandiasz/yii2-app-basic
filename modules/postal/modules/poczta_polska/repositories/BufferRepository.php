@@ -87,9 +87,9 @@ class BufferRepository extends BaseRepository
 
     }
 
-    public function send(int $idBufor, ?int $urzadNadania = null, ?array $pakiet = null): bool
+    public function send(int $idBuffer, ?int $urzadNadania = null, ?array $pakiet = null): bool
     {
-        $response = $this->getService()->send($idBufor, $urzadNadania, $pakiet);
+        $response = $this->getService()->send($idBuffer, $urzadNadania, $pakiet);
 
         if($response){
             if (empty($response->getError())){
