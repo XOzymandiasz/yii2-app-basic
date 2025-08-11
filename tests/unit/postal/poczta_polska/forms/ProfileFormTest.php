@@ -18,6 +18,8 @@ class ProfileFormTest extends Unit
     use UnitModelTrait;
     protected ProfileForm $model;
 
+    public ProfileRepository $repository;
+
     public function _before(): void
     {
         parent::_before();
@@ -84,10 +86,7 @@ class ProfileFormTest extends Unit
 
         $this->thenSuccessValidate();
 
-        $this->tester->assertTrue($this->model->create());
-
-
-
+        $this->tester->assertTrue($this->model->create($this->repository));
     }
 
     public function getModel(): Model

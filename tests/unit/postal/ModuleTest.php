@@ -20,7 +20,7 @@ class ModuleTest extends Unit
     public function testGetModuleFromApp(): void
     {
         $this->module = Yii::$app->getModule('postal');
-        $repositories = $this->module->getRepositoriesFactory();
+        $repositories = $this->module->getRepositoryFactory();
         $add = $repositories->getAddRepository();
         $this->tester->assertInstanceOf(ShipmentRepository::class, $add);
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace forms;
+namespace tests\unit\postal\poczta_polska\forms;
 
 use _support\UnitModelTrait;
-use app\modules\postal\modules\poczta_polska\forms\PocztaPolskaShipmentForm;
+use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use Codeception\Test\Unit;
@@ -13,16 +13,16 @@ use yii\base\Model;
 /**
  * @property UnitTester $tester
  */
-class PocztaPolskaShipmentFormTest extends Unit
+class ShipmentFormTest extends Unit
 {
     use UnitModelTrait;
 
-    protected PocztaPolskaShipmentForm $model;
+    protected ShipmentForm $model;
 
 
     protected function _before(): void
     {
-        $this->model = new PocztaPolskaShipmentForm();
+        $this->model = new ShipmentForm();
     }
 
     public function testValidationRequiredFields(): void
