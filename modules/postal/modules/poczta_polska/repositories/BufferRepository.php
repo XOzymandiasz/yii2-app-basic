@@ -10,7 +10,7 @@ use app\modules\postal\modules\poczta_polska\services\BufferService;
 class BufferRepository extends BaseRepository
 {
 
-    protected $serviceConfig = [
+    protected array $serviceConfig = [
         'class' => BufferService::class,
     ];
 
