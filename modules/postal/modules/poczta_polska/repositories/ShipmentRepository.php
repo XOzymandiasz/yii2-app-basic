@@ -11,35 +11,18 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentRespon
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrintType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use app\modules\postal\modules\poczta_polska\services\ShipmentService;
+use yii\base\InvalidConfigException;
+use yii\caching\CacheInterface;
 
 class ShipmentRepository extends BaseRepository
 {
+    private const KEY_SHIPMENT_LIST = 'shipments:list';
 
-    protected $serviceConfig = [
+    public string|array|CacheInterface $cache = 'cache';
+
+    protected array $serviceConfig = [
         'class' => ShipmentService::class,
     ];
-
-    /*
-     * @var return PrzesylkaType[]
-     */
-    public function getList(int $idBuffer): array
-    {
-        $response = $this->getService()->getList($idBuffer);
-
-        if ($response) {
-            if(empty($response->getError())){
-                $shipmentsList = $response->getPrzesylka();
-                if ($shipmentsList){
-                    return $response->getPrzesylka();
-                }
-                $this->warning(__METHOD__, 'empty buffer');
-            }
-            $this->warning(__METHOD__, null, $response);
-        }
-
-        $this->warning(__METHOD__, 'response is null', $response);
-        return [];
-    }
 
     public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
     {
@@ -60,16 +43,54 @@ class ShipmentRepository extends BaseRepository
         return null;
     }
 
+
+    /*
+     * @var return PrzesylkaType[]
+     */
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getList(int $idBuffer, bool $refresh = false, int $ttl = null): array
+    {
+        if (!$refresh){
+            $cachedResponse = $this->getCacheValue(self::KEY_SHIPMENT_LIST, null, ['buffer'=>$idBuffer]);
+
+            if ($cachedResponse) {
+                return $cachedResponse;
+            }
+
+            $this->warning(__METHOD__, 'cache is null');
+        }
+
+        $response = $this->getService()->getList($idBuffer);
+
+        if ($response) {
+            if (empty($response->getError())) {
+                $shipmentsList = $response->getPrzesylka();
+                if ($shipmentsList) {
+                    $this->setCacheValue(self::KEY_SHIPMENT_LIST, $shipmentsList, $ttl, ['buffer' => $idBuffer]);
+                    return $response->getPrzesylka();
+                }
+                $this->warning(__METHOD__, 'empty buffer');
+            }
+            $this->warning(__METHOD__, null, $response);
+        }
+
+        $this->warning(__METHOD__, 'response is null', $response);
+        return [];
+    }
+
+
     public function getLabel(string $guid, ?PrintType $type = null): string|null
     {
-        if ($type == null){
+        if ($type == null) {
             $type = $this->createPrintType();
         }
 
         $response = $this->getService()->printForParcel([$guid], $type);
 
         if ($response) {
-            if(empty($response->getError())){
+            if (empty($response->getError())) {
                 $printResult = $response->getPrintResult();
                 $labelResponse = reset($printResult);
                 if ($labelResponse !== false) {
@@ -88,7 +109,8 @@ class ShipmentRepository extends BaseRepository
         ?string $kind = PrintKindEnum::VALUE_ADDRESS_LABEL_BY_GUID,
         ?string $method = PrintMethodEnum::VALUE_EACH_PARCEL_SEPARATELY,
         ?string $resolution = PrintResolutionEnum::VALUE_DPI_300
-    ): PrintType{
+    ): PrintType
+    {
         return (new PrintType())
             ->setFormat($format)
             ->setKind($kind)
