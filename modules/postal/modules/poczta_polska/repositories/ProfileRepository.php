@@ -15,7 +15,7 @@ class ProfileRepository extends BaseRepository
     private array $profiles = [];
 
 
-    protected $serviceConfig = [
+    protected array $serviceConfig = [
         'class' => ProfileService::class,
     ];
 
