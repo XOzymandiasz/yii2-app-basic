@@ -17,6 +17,7 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPolecona
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use Codeception\Test\Unit;
 use UnitTester;
+use yii\base\InvalidConfigException;
 
 /**
  * @property UnitTester $tester
@@ -34,20 +35,6 @@ class ShipmentRepositoryTest extends Unit
         );
     }
 
-    public function testGetList(): void
-    {
-        $this->bufferRepository = $this->getBufferRepository();
-        /**
-         * @var BuforType[] $buffers
-         */
-        $buffers = $this->bufferRepository->getAll();
-        $firstBuffer = reset($buffers);
-
-        $response = $this->repository->getList($firstBuffer->getIdBufor());
-
-        $this->tester->assertIsArray($response);
-    }
-
     public function testAdd(): void
     {
         $address = $this->getAddress();
@@ -60,6 +47,40 @@ class ShipmentRepositoryTest extends Unit
         $this->tester->assertEmpty($response->getError());
         $this->tester->assertIsString($response->getGuid());
         $this->tester->assertIsString($response->getNumerNadania());
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function testGetListWithRefresh(): void
+    {
+        $this->bufferRepository = $this->getBufferRepository();
+        /**
+         * @var BuforType[] $buffers
+         */
+        $buffers = $this->bufferRepository->getAll();
+        $firstBuffer = reset($buffers);
+
+        $response = $this->repository->getList($firstBuffer->getIdBufor(), true);
+
+        $this->tester->assertIsArray($response);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function testGetListWithNoRefresh(): void
+    {
+        $this->bufferRepository = $this->getBufferRepository();
+        /**
+         * @var BuforType[] $buffers
+         */
+        $buffers = $this->bufferRepository->getAll();
+        $firstBuffer = reset($buffers);
+
+        $response = $this->repository->getList($firstBuffer->getIdBufor());
+
+        $this->tester->assertIsArray($response);
     }
 
     public function testGetLabel(): void
