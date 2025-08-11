@@ -9,6 +9,7 @@ use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var DataProviderInterface $dataProvider */
+/** @var int $idBuffer */
 
 $this->title = Module::t('poczta-polska', 'Shipments');
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Send Buffor'), ['send'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Send Buffor'), ['send', 'idBuffer' => $idBuffer], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Module::t('poczta-polska', 'Create Buffor'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
@@ -50,12 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::class,
-                'template' => '{view} {delete} {downloadLabel}',
+                'template' => '{view} {delete} {download-label}',
                 'urlCreator' => function ($action, $model, $key) {
-                    return Url::to([$action, 'id' => $key]);
+                    return Url::to([$action, 'guid' => $key]);
                 },
                 'buttons' => [
-                    'downloadLabel' => function ($url) {
+                    'download-label' => function ($url) {
                         return Html::a(
                             '<i class="fa fa-envelope"></i>',
                             $url,
