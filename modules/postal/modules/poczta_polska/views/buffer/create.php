@@ -1,11 +1,11 @@
 <?php
 
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\forms\BufforForm;
+use app\modules\postal\modules\poczta_polska\forms\BufferForm;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var BufforForm $model */
+/** @var BufferForm $model */
 
 $this->title = Module::t('poczta-polska', 'Create Poczta Polska Buffor');
 $this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];

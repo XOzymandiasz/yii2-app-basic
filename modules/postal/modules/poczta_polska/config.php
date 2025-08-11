@@ -2,7 +2,7 @@
 
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTrackerClient;
-use app\modules\postal\modules\poczta_polska\repositories\RepositoriesFactory;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 
 return [
@@ -25,7 +25,7 @@ return [
             //'isTest' => YII_ENV_TEST,
         ],
         'repositoriesFactory' => [
-            'class' => RepositoriesFactory::class,
+            'class' => RepositoryFactory::class,
         ],
     ],
 ];
