@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\poczta_polska\sender\repositories;
+namespace tests\unit\postal\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;

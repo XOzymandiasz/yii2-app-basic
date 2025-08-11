@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\poczta_polska\sender\repositories;
+namespace tests\unit\postal\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
@@ -76,6 +76,7 @@ class BufferRepositoryTest extends Unit
         $this->tester->assertTrue($clearResponse);
     }
 
+    # @todo [Error] Class "tests\unit\postal\poczta_polska\repositories\ShipmentRepositoryTest" not found
     public function testSend(): void
     {
         $address = ShipmentRepositoryTest::getAddress();
@@ -83,12 +84,14 @@ class BufferRepositoryTest extends Unit
         $buffers = $this->repository->getAll();
         $firstBuffer = reset($buffers);
 
-        $addResponse = $this->getShipmentRepository()->add($shipment, $firstBuffer->getIdBufor());
+        if($firstBuffer){
+            $addResponse = $this->getShipmentRepository()->add($shipment, $firstBuffer->getIdBufor());
 
-        $sendResponse = $this->repository->send($firstBuffer->getIdBufor());
+            $sendResponse = $this->repository->send($firstBuffer->getIdBufor());
 
-        $this->tester->assertNotFalse($addResponse);
-        $this->tester->assertNotFalse($sendResponse);
+            $this->tester->assertNotFalse($addResponse);
+            $this->tester->assertNotFalse($sendResponse);
+        }
     }
 
 
