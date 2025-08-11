@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\postal\modules\services;
+namespace app\modules\postal\modules\poczta_polska\services;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelope;
