@@ -33,18 +33,19 @@ class ShipmentController extends Controller
      */
     public function actionCreateFromShipment(int $id): string|Response
     {
+        /**
+         * @var BufferRepository $bufferRepository
+         * @var ShipmentRepository $shipmentRepository
+         */
+
         $shipment = $this->findModel($id);
         $model = new ShipmentForm(['model' => $shipment]);
 
-        /**
-         * @var BufferRepository $repository
-         */
-
-        $repository = $this->module
+        $bufferRepository = $this->module
             ->getRepositoryFactory()
             ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
 
-        $model->buffors = $repository->getAll();
+        $model->buffors = $bufferRepository->getAll();
 
         if (empty($model->buffors)) {
             Yii::$app->session->setFlash(
@@ -52,9 +53,13 @@ class ShipmentController extends Controller
             return $this->redirect(['buffer/create']);
         }
 
+        $shipmentRepository = $this->module
+            ->getRepositoryFactory()
+            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
+
         if ($model->load(Yii::$app->request->post())
             && $model->validate()
-            && $model->addShipment($this->module->getRepositoryFactory()->getShipmentRepository())) {
+            && $model->addShipment($shipmentRepository)) {
             if($returnUrl){
                 return $this->redirect($returnUrl);
             }
