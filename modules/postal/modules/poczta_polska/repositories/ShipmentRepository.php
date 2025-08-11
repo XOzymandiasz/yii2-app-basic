@@ -1,16 +1,16 @@
 <?php
 
-namespace app\modules\postal\modules\poczta_polska\sender\repositories;
+namespace app\modules\postal\modules\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintFormatEnum;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintKindEnum;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintMethodEnum;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintResolutionEnum;
-use app\modules\postal\modules\poczta_polska\sender\services\ShipmentService;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipment;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentResponseItemType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrintType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
+use app\modules\postal\modules\services\ShipmentService;
 
 class ShipmentRepository extends BaseRepository
 {

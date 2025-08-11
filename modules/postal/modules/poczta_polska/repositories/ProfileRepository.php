@@ -1,9 +1,9 @@
 <?php
 
-namespace app\modules\postal\modules\poczta_polska\sender\repositories;
+namespace app\modules\postal\modules\poczta_polska\repositories;
 
-use app\modules\postal\modules\poczta_polska\sender\services\ProfileService;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
+use app\modules\postal\modules\services\ProfileService;
 use yii\helpers\ArrayHelper;
 
 class ProfileRepository extends BaseRepository

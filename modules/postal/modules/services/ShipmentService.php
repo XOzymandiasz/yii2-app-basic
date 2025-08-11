@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\postal\modules\poczta_polska\sender\services;
+namespace app\modules\postal\modules\services;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipment;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentResponse;

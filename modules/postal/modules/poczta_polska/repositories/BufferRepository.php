@@ -1,11 +1,11 @@
 <?php
 
-namespace app\modules\postal\modules\poczta_polska\sender\repositories;
+namespace app\modules\postal\modules\poczta_polska\repositories;
 
 
-use app\modules\postal\modules\poczta_polska\sender\services\BufferService;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
+use app\modules\postal\modules\services\BufferService;
 
 class BufferRepository extends BaseRepository
 {
