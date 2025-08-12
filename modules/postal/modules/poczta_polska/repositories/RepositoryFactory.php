@@ -38,7 +38,26 @@ class RepositoryFactory extends Component
         parent::__construct($config);
     }
 
-    public function createRepository(string $type, array $config = []): BaseRepository
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function getBufferRepository(array $config = []): BufferRepository
+    {
+        return $this->createRepository(self::REPOSITORY_BUFFER, $config);
+
+    }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function getShipmentRepository(array $config = []): ShipmentRepository
+    {
+        return $this->createRepository(self::REPOSITORY_SHIPMENT, $config);
+    }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function getProfileRepository(array $config = []): ProfileRepository
+    {
+        return $this->createRepository(self::REPOSITORY_PROFILE, $config);
+    }
+
+    protected function createRepository(string $type, array $config = []): BaseRepository
     {
 
         if (!isset($this->classMap[$type]['class'])) {

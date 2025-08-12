@@ -7,11 +7,9 @@ use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\Module;
 use app\modules\postal\Module as PostalModule;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
-use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
-use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\db\StaleObjectException;
 use yii\web\Controller;
@@ -33,33 +31,25 @@ class ShipmentController extends Controller
      */
     public function actionCreateFromShipment(int $id): string|Response
     {
-        /**
-         * @var BufferRepository $bufferRepository
-         * @var ShipmentRepository $shipmentRepository
-         */
-
         $shipment = $this->findModel($id);
         $model = new ShipmentForm(['model' => $shipment]);
 
-        $bufferRepository = $this->module
-            ->getRepositoryFactory()
-            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER);
+        $model->buffers = $this->module
+                ->getRepositoryFactory()
+                ->getBufferRepository()
+                ->getAll();
 
-        $model->buffors = $bufferRepository->getAll();
-
-        if (empty($model->buffors)) {
+        if (empty($model->buffers)) {
             Yii::$app->session->setFlash(
                 'danger', PostalModule::t('poczta-polska', 'Not found buffor. Create before Add Shipment'));
             return $this->redirect(['buffer/create']);
         }
 
-        $shipmentRepository = $this->module
-            ->getRepositoryFactory()
-            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
-
         if ($model->load(Yii::$app->request->post())
             && $model->validate()
-            && $model->addShipment($shipmentRepository)) {
+            && $model->addShipment($this->module->getRepositoryFactory()->getShipmentRepository()
+            )
+        ) {
             if($returnUrl){
                 return $this->redirect($returnUrl);
             }
@@ -76,17 +66,13 @@ class ShipmentController extends Controller
      */
     public function actionDownloadLabel(string $guid): Response
     {
-        /**
-         * @var ShipmentRepository $repository
-         */
-
-        $repository = $this->module
+        $label = $this->module
             ->getRepositoryFactory()
-            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
-
-        $label = $repository->getLabel($guid);
+            ->getShipmentRepository()
+            ->getLabel($guid);
 
         $filename = 'label' . $guid . '.pdf';
+
         return Yii::$app->response->sendContentAsFile($label, $filename, [
             'mimeType' => 'application/pdf',
             'inline' => true,
@@ -125,9 +111,7 @@ class ShipmentController extends Controller
     {
         $model = new ShipmentForm();
 
-        if ($model->send($idBuffer,
-            $this->module->getRepositoryFactory()
-            ->createRepository(RepositoryFactory::REPOSITORY_BUFFER))) {
+        if ($model->send($idBuffer, $this->module->getRepositoryFactory()->getBufferRepository())){
             return $this->redirect(['buffer/index']);
         }
 
