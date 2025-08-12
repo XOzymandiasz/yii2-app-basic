@@ -4,7 +4,6 @@ namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\Module as PostalModule;
-use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
@@ -37,12 +36,8 @@ class ProfileForm extends AddressTypeForm
         ]);
     }
 
-    public function create(BaseRepository $repository): bool
+    public function create(ProfileRepository $repository): bool
     {
-        /**
-         * @var ProfileRepository $repository
-         */
-
         return $repository->create($this->createType());
     }
 
@@ -67,15 +62,5 @@ class ProfileForm extends AddressTypeForm
             ->setOsobaKontaktowa($this->contact_person)
             ->setNip($this->taxID);
     }
-
-    private function getProfileRepository(): ?ProfileRepository
-    {
-        $options = PocztaPolskaSenderOptions::testInstance();
-        if (null === $this->profileRepository) {
-            $this->profileRepository = new ProfileRepository($options);
-        }
-        return $this->profileRepository;
-    }
-
 
 }

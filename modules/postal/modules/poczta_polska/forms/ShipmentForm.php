@@ -96,11 +96,6 @@ class ShipmentForm extends PostalShipmentForm
         return $repository->send($idBuffer);
     }
 
-    public function clear($guid, $bufferId, ShipmentRepository $repository): bool
-    {
-        return $repository->clear($guid, $bufferId);
-    }
-
     public function setModel(Shipment $model): void
     {
         parent::setModel($model);
