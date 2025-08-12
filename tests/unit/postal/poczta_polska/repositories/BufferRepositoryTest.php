@@ -5,8 +5,12 @@ namespace tests\unit\postal\poczta_polska\repositories;
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPoleconaKrajowaType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use Codeception\Test\Unit;
 use edzima\teryt\models\Region;
 use InvalidArgumentException;
@@ -31,7 +35,7 @@ class BufferRepositoryTest extends Unit
 
     public function testGetAll(): void
     {
-        $response = $this->repository->getAll();
+        $response = $this->repository->getList();
 
         $this->tester->assertIsArray($response);
     }
@@ -64,7 +68,6 @@ class BufferRepositoryTest extends Unit
     public function testCreateAndClear(): void
     {
         $profiles = $this->getProfileRepository()->getList();
-
         $firstProfile = reset($profiles);
 
         $bufor = $this->getBuffor(profileId:$firstProfile->getIdProfil());
@@ -76,24 +79,55 @@ class BufferRepositoryTest extends Unit
         $this->tester->assertTrue($clearResponse);
     }
 
-    # @todo [Error] Class "tests\unit\postal\poczta_polska\repositories\ShipmentRepositoryTest" not found
-    public function testSend(): void
+    public function testUpdate(): void
     {
-        $address = ShipmentRepositoryTest::getAddress();
-        $shipment = ShipmentRepositoryTest::getShipment($address);
-        $buffers = $this->repository->getAll();
+        /**
+         * @var BuforType[] $buffers
+         */
+        $buffers = $this->repository->getList();
         $firstBuffer = reset($buffers);
 
-        if($firstBuffer){
-            $addResponse = $this->getShipmentRepository()->add($shipment, $firstBuffer->getIdBufor());
+        $bufferId = $firstBuffer->getIdBufor();
+        $bufferName = $firstBuffer->getOpis();
 
-            $sendResponse = $this->repository->send($firstBuffer->getIdBufor());
+        $firstBuffer->setOpis('Codecept test');
 
-            $this->tester->assertNotFalse($addResponse);
-            $this->tester->assertNotFalse($sendResponse);
-        }
+        $response = $this->repository->update($firstBuffer);
+
+        $updatedBuffer = $this->repository->getById($bufferId);
+
+        $this->tester->assertTrue($response);
+        $this->tester->assertNotEquals($bufferName, $updatedBuffer->getOpis());
     }
 
+    public function testSend(): void
+    {
+        $name = 'SendEnvelopeTest';
+        $address = $this->getAddress();
+        $shipment = $this->getShipment($address);
+        $profiles = $this->getProfileRepository()->getList();
+        $firstProfile = reset($profiles);
+
+        $bufferType = $this->getBuffor( profileId:$firstProfile->getIdProfil(), name:$name);
+        $createResponse = $this->repository->create($bufferType);
+
+        $buffers = $this->repository->getList();
+        $idBuffer = 0;
+        foreach ($buffers as $buffer) {
+            if ($buffer->getOpis() == $name) {
+                $idBuffer = $buffer->getIdBufor();
+                break;
+            }
+        }
+
+        $addResponse = $this->getShipmentRepository()->add($shipment, $idBuffer);
+        $sendResponse = $this->repository->send($idBuffer);
+
+        $this->tester->assertNotFalse($addResponse);
+        $this->tester->assertNotFalse($createResponse);
+        $this->tester->assertNotFalse($sendResponse);
+
+    }
 
     protected function getBuffor(
         bool $isActive = false,
@@ -114,6 +148,29 @@ class BufferRepositoryTest extends Unit
         }
 
         return $bufor;
+    }
+
+    public static function getShipment(
+        AdresType $address,
+        string $kategoria = KategoriaType::VALUE_PRIORYTETOWA
+    ): PrzesylkaType
+    {
+        return (new PrzesylkaPoleconaKrajowaType($kategoria))
+            ->setAdres($address);
+    }
+
+    public static function getAddress(
+        string $name = 'Test name',
+        string $street = 'Test street',
+        string $city = 'Test city',
+        string $postalCode = '88888',
+    ): AdresType
+    {
+        return (new AdresType())
+            ->setNazwa($name)
+            ->setKodPocztowy($postalCode)
+            ->setUlica($street)
+            ->setMiejscowosc($city);
     }
 
     private function getProfileRepository(): ?ProfileRepository
