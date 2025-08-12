@@ -18,7 +18,6 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
 
         $shipment->setFormat($this->model->format)
                  ->setKategoria($this->model->category)
-                 ->setFormat($this->model->format)
                  ->setMasa($this->model->mass)
                  ->setAdres($this->model->getReceiverAddress()->getAdresType())
                  ->setNadawca($this->model->getSenderAddress()->getAdresType())
