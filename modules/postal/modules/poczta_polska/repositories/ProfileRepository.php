@@ -30,6 +30,29 @@ class ProfileRepository extends BaseRepository
         $response = $this->getService()->create($model);
         if ($response) {
             if (empty($response->getError())) {
+                $key = $this->buildCacheKey(self::KEY_PROFILE_LIST);
+                $this->deleteCacheValue($key);
+                return true;
+            }
+
+            $this->warning(__METHOD__, null, $response);
+        }
+
+        $this->warning(__METHOD__, 'response is null');
+
+        return false;
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function update(ProfilType $model): bool
+    {
+        $response = $this->getService()->update($model);
+        if ($response) {
+            if (empty($response->getError())) {
+                $key = $this->buildCacheKey(self::KEY_PROFILE_LIST);
+                $this->deleteCacheValue($key);
                 return true;
             }
             $this->warning(__METHOD__, null, $response);

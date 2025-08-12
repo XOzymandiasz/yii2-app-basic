@@ -37,6 +37,19 @@ class ProfileService extends BaseService
         return null;
     }
 
+    public function update(ProfilType $profile): UpdateProfilResponse|null
+    {
+        try {
+            $this->setResult($resultUpdateProfil = $this->getSoapClient()->__soapCall('updateProfil', [
+                new UpdateProfil($profile),
+            ], [], [], $this->outputHeaders));
+
+            return $resultUpdateProfil;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
 
     public function getList(): ?GetProfilListResponse
     {
