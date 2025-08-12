@@ -7,6 +7,8 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\CreateProfilRespo
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetProfilList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetProfilListResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfilResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
