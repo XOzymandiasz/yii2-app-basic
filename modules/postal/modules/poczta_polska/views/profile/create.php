@@ -1,10 +1,11 @@
 <?php
 
 use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var \app\modules\postal\modules\poczta_polska\forms\ProfileForm $model */
+/** @var ProfileForm $model */
 
 $this->title = Module::t('poczta-polska', 'Create Poczta Polska Profile');
 $this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Shipment Addresses'), 'url' => ['index']];
