@@ -20,8 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Send Buffor'), ['send', 'idBuffer' => $idBuffer], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Module::t('poczta-polska', 'Create Buffor'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Send Buffer'), ['send', 'idBuffer' => $idBuffer], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Create Buffer'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Refresh Buffer'), ['index', 'idBuffer' => $idBuffer, 'refresh' => 1], ['class' => 'btn btn-success']) ?>
     </p>
 
 
@@ -52,7 +53,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::class,
                 'template' => '{view} {delete} {download-label}',
-                'urlCreator' => function ($action, $model, $key) {
+                'urlCreator' => function ($action, $model, $key) use ($idBuffer) {
+                    if($action === 'delete') {
+                        return Url::to([$action, 'guid' => $key, 'idBuffer' => $idBuffer]);
+                    }
                     return Url::to([$action, 'guid' => $key]);
                 },
                 'buttons' => [
