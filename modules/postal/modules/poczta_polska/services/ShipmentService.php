@@ -4,6 +4,8 @@ namespace app\modules\postal\modules\poczta_polska\services;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipment;
 use app\modules\postal\modules\poczta_polska\sender\StructType\AddShipmentResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuids;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuidsResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBufor;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPrintForParcel;
@@ -28,6 +30,34 @@ class ShipmentService extends BaseService
         return null;
     }
 
+    public function clear(string $guid, int $bufferId): ClearEnvelopeByGuidsResponse|null
+    {
+        try {
+            $this->setResult($resultClearEnvelopeByGuids = $this->getSoapClient()->__soapCall('clearEnvelopeByGuids', [
+                new ClearEnvelopeByGuids([$guid], $bufferId),
+            ], [], [], $this->outputHeaders));
+
+            return $resultClearEnvelopeByGuids;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
+
+    public function getList(int $idBufor): GetEnvelopeBuforResponse|null
+    {
+        try {
+            $this->setResult($resultGetEnvelopeBufor = $this->getSoapClient()->__soapCall('getEnvelopeBufor', [
+                new GetEnvelopeBufor($idBufor),
+            ], [], [], $this->outputHeaders));
+
+            return $resultGetEnvelopeBufor;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
+
     public function printForParcel(?array $guid, ?PrintType $type): GetPrintForParcelResponse|null
     {
         try {
@@ -41,21 +71,6 @@ class ShipmentService extends BaseService
 
         }
 
-        return null;
-    }
-
-
-    public function getList(int $idBufor): GetEnvelopeBuforResponse|null
-    {
-        try {
-            $this->setResult($resultGetEnvelopeBufor = $this->getSoapClient()->__soapCall('getEnvelopeBufor', [
-                new GetEnvelopeBufor($idBufor),
-            ], [], [], $this->outputHeaders));
-
-            return $resultGetEnvelopeBufor;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
         return null;
     }
 

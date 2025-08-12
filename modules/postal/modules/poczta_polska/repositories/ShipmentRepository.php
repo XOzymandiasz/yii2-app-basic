@@ -26,23 +26,48 @@ class ShipmentRepository extends BaseRepository
 
     public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
     {
-        $response = $this->getService()->add(new AddShipment([$shipment], $idBuffor));
+        $response = $this->getService()->add(new AddShipment([$shipment], $bufferId));
+
         if (!$response) {
             $this->warning(__METHOD__, 'response is null');
             return null;
         }
         $value = $response->getRetval();
         /**
-         * @var AddShipmentResponseItemType|false $shipmentResponse
+         * @var AddShipmentResponseItemType|null $shipmentResponse
          */
         $shipmentResponse = reset($value);
-        if ($shipmentResponse !== false) {
+        if ($shipmentResponse) {
+            $key = $this->buildCacheKey(self::KEY_SHIPMENT_LIST, [
+                'buffer' => $bufferId
+            ]);
+            $this->deleteCacheValue($key);
             return $shipmentResponse;
         }
         $this->warning(__METHOD__, 'empty retval', $response);
         return null;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    public function clear(string $guid, int $bufferId): bool
+    {
+        $response = $this->getService()->clear($guid, $bufferId);
+        if ($response) {
+            if (empty($response->getError())){
+                $key = $this->buildCacheKey(self::KEY_SHIPMENT_LIST, [
+                    'buffer' => $bufferId
+                ]);
+                $this->deleteCacheValue($key);
+                return true;
+            }
+            $this->warning(__METHOD__, null, $response);
+        }
+        $this->warning(__METHOD__, 'response is null');
+        return false;
+
+    }
 
     /*
      * @var return PrzesylkaType[]
@@ -50,7 +75,7 @@ class ShipmentRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function getList(int $idBuffer, bool $refresh = false, int $ttl = null): array
+    public function getList(int $bufferId, bool $refresh = false, ?int $ttl = null): array
     {
         if (!$refresh){
             $cachedResponse = $this->getCacheValue(self::KEY_SHIPMENT_LIST, null, ['buffer'=>$idBuffer]);
@@ -62,14 +87,17 @@ class ShipmentRepository extends BaseRepository
             $this->warning(__METHOD__, 'cache is null');
         }
 
-        $response = $this->getService()->getList($idBuffer);
+        $response = $this->getService()->getList($bufferId);
 
         if ($response) {
             if (empty($response->getError())) {
                 $shipmentsList = $response->getPrzesylka();
                 if ($shipmentsList) {
-                    $this->setCacheValue(self::KEY_SHIPMENT_LIST, $shipmentsList, $ttl, ['buffer' => $idBuffer]);
-                    return $response->getPrzesylka();
+                    $key = $this->buildCacheKey(self::KEY_SHIPMENT_LIST, [
+                        'buffer' => $bufferId
+                    ]);
+                    $this->setCacheValue($key, $shipmentsList, $ttl);
+                    return $shipmentsList;
                 }
                 $this->warning(__METHOD__, 'empty buffer');
             }

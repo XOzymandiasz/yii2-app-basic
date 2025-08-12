@@ -16,6 +16,7 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\PrintType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPoleconaKrajowaType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use Codeception\Test\Unit;
+use InvalidArgumentException;
 use UnitTester;
 use yii\base\InvalidConfigException;
 
@@ -35,18 +36,41 @@ class ShipmentRepositoryTest extends Unit
         );
     }
 
-    public function testAdd(): void
+    public function testAddAndClear(): void
     {
+        /**
+         * @var BuforType[] $buffers
+         */
+
+        $buffers = $this->getBufferRepository()->getAll();
+        $buffer = reset($buffers);
+
         $address = $this->getAddress();
         $shipment = $this->getShipment($address);
 
-        $response = $this->repository->add($shipment);
+        $addResponse = $this->repository->add($shipment, $buffer->getIdBufor());
 
-        codecept_debug($response->getError());
+        $clearResponse = $this->repository->clear($addResponse->getGuid(), $buffer->getIdBufor());
 
-        $this->tester->assertEmpty($response->getError());
-        $this->tester->assertIsString($response->getGuid());
-        $this->tester->assertIsString($response->getNumerNadania());
+        $this->tester->assertTrue($clearResponse);
+        $this->tester->assertNotNull($addResponse);
+        $this->tester->assertEmpty($addResponse->getError());
+        $this->tester->assertIsString($addResponse->getGuid());
+        $this->tester->assertIsString($addResponse->getNumerNadania());
+    }
+
+    public function testClearInvalidGuidAndBuffer(): void
+    {
+        $guid = '123';
+
+        $this->expectExceptionObject(
+            new InvalidArgumentException(
+                "Invalid length for value(s) '". $guid ."', the number of characters/octets contained by the literal must be equal to 32",
+                120
+            )
+        );
+
+        $this->repository->clear($guid, 123);
     }
 
     /**
@@ -85,15 +109,21 @@ class ShipmentRepositoryTest extends Unit
 
     public function testGetLabel(): void
     {
-        $address = $this->getAddress();
-        $shipment = $this->getShipment($address);
+        $buffers = $this->getBufferRepository()->getAll();
+        $buffer = reset($buffers);
         $printType = $this->getPrintType();
 
-        $addResponse = $this->repository->add($shipment);
-        $guid = $addResponse->getGuid();
+        $address = $this->getAddress();
+        $shipment = $this->getShipment($address);
+        $addResponse = $this->repository->add($shipment, $buffer->getIdBufor());
 
-        $getLabelResponse = $this->repository->getLabel($guid, $printType);
+        $getLabelResponse = $this->repository->getLabel($addResponse->getGuid(), $printType);
 
+        $clearResponse = $this->repository->clear($addResponse->getGuid(), $buffer->getIdBufor());
+
+        $this->tester->assertTrue($clearResponse);
+        $this->tester->assertNotNull($addResponse);
+        $this->tester->assertNotNull($getLabelResponse);
         $this->tester->assertIsString($addResponse->getGuid());
         $this->tester->assertIsString($addResponse->getNumerNadania());
         $this->tester->assertEmpty($addResponse->getError());
