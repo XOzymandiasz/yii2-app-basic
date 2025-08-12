@@ -75,7 +75,7 @@ class ShipmentRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function getList(int $bufferId, bool $refresh = false, ?int $ttl = null): array
+    public function getList(int $bufferId, bool $refresh = false, ?int $duration = null): array
     {
         if (!$refresh){
             $cachedResponse = $this->getCacheValue(self::KEY_SHIPMENT_LIST, null, ['buffer'=>$idBuffer]);
@@ -83,12 +83,9 @@ class ShipmentRepository extends BaseRepository
             if ($cachedResponse) {
                 return $cachedResponse;
             }
-
-            $this->warning(__METHOD__, 'cache is null');
         }
 
         $response = $this->getService()->getList($bufferId);
-
         if ($response) {
             if (empty($response->getError())) {
                 $shipmentsList = $response->getPrzesylka();
@@ -96,7 +93,7 @@ class ShipmentRepository extends BaseRepository
                     $key = $this->buildCacheKey(self::KEY_SHIPMENT_LIST, [
                         'buffer' => $bufferId
                     ]);
-                    $this->setCacheValue($key, $shipmentsList, $ttl);
+                    $this->setCacheValue($key, $shipmentsList, $duration);
                     return $shipmentsList;
                 }
                 $this->warning(__METHOD__, 'empty buffer');
