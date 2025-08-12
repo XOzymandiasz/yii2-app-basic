@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\AccountType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccount;
 use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateAccountResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfilResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -18,25 +23,26 @@ class Update extends AbstractSoapClientBase
 {
     /**
      * Method to call the operation originally named updateEnvelopeBufor
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse|bool
+     * @param UpdateEnvelopeBufor $parameters
+     * @return UpdateEnvelopeBuforResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function updateEnvelopeBufor(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor $parameters)
+    public function updateEnvelopeBufor(?array $buffer): UpdateEnvelopeBuforResponse|null
     {
         try {
             $this->setResult($resultUpdateEnvelopeBufor = $this->getSoapClient()->__soapCall('updateEnvelopeBufor', [
-                $parameters,
+                new UpdateEnvelopeBufor($buffer),
             ], [], [], $this->outputHeaders));
         
             return $resultUpdateEnvelopeBufor;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
+
         }
+
+        return null;
     }
     /**
      * Method to call the operation originally named updateAccount
@@ -62,25 +68,24 @@ class Update extends AbstractSoapClientBase
     }
     /**
      * Method to call the operation originally named updateProfil
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfilResponse|bool
+     * @param UpdateProfil $parameters
+     * @return UpdateProfilResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function updateProfil(\app\modules\postal\modules\poczta_polska\sender\StructType\UpdateProfil $parameters)
+    public function updateProfil(ProfilType $profile): UpdateProfilResponse|null
     {
         try {
             $this->setResult($resultUpdateProfil = $this->getSoapClient()->__soapCall('updateProfil', [
-                $parameters,
+                new UpdateProfil($profile),
             ], [], [], $this->outputHeaders));
         
             return $resultUpdateProfil;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
         }
+        return null;
     }
     /**
      * Method to call the operation originally named updateShopEZwroty

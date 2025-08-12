@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
 use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelope;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuids;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuidsResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
@@ -41,25 +43,24 @@ class Clear extends AbstractSoapClientBase
 
     /**
      * Method to call the operation originally named clearEnvelopeByGuids
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuids $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuidsResponse|bool
+     * @param ClearEnvelopeByGuids $parameters
+     * @return ClearEnvelopeByGuidsResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function clearEnvelopeByGuids(\app\modules\postal\modules\poczta_polska\sender\StructType\ClearEnvelopeByGuids $parameters)
+    public function clearEnvelopeByGuids(?array $guids, ?int $bufferId): ClearEnvelopeByGuidsResponse|null
     {
         try {
             $this->setResult($resultClearEnvelopeByGuids = $this->getSoapClient()->__soapCall('clearEnvelopeByGuids', [
-                $parameters,
+                new ClearEnvelopeByGuids($guids, $bufferId),
             ], [], [], $this->outputHeaders));
 
             return $resultClearEnvelopeByGuids;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-
-            return false;
         }
+        return null;
     }
 
     /**

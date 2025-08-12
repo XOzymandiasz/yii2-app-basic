@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\modules\postal\modules\poczta_polska\sender\ServiceType;
 
+use app\modules\postal\modules\poczta_polska\sender\StructType\DeleteReturnDocumentsProfile;
+use app\modules\postal\modules\poczta_polska\sender\StructType\DeleteReturnDocumentsProfileResponse;
 use SoapFault;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
@@ -57,27 +59,28 @@ class Delete extends AbstractSoapClientBase
             return false;
         }
     }
+
     /**
      * Method to call the operation originally named deleteReturnDocumentsProfile
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\DeleteReturnDocumentsProfile $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\DeleteReturnDocumentsProfileResponse|bool
+     * @param int|null $profileId
+     * @return DeleteReturnDocumentsProfileResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function deleteReturnDocumentsProfile(\app\modules\postal\modules\poczta_polska\sender\StructType\DeleteReturnDocumentsProfile $parameters)
+    public function deleteReturnDocumentsProfile(?int $profileId): ?DeleteReturnDocumentsProfileResponse
     {
         try {
             $this->setResult($resultDeleteReturnDocumentsProfile = $this->getSoapClient()->__soapCall('deleteReturnDocumentsProfile', [
-                $parameters,
+                new DeleteReturnDocumentsProfile($profileId),
             ], [], [], $this->outputHeaders));
         
             return $resultDeleteReturnDocumentsProfile;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-        
-            return false;
         }
+
+        return null;
     }
     /**
      * Method to call the operation originally named deleteChecklistTemplate
