@@ -79,22 +79,20 @@ class ShipmentController extends Controller
         ]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionIndex(int $idBuffer): string|Response
     {
-        /**
-         * @var ShipmentRepository $repository
-         */
+        $refresh = (bool) Yii::$app->request->get('refresh', 0);
+        $ttl = Yii::$app->params['shipmentListTtl'] ?? null;
 
-        $repository = $this->module
-            ->getRepositoryFactory()
-            ->createRepository(RepositoryFactory::REPOSITORY_SHIPMENT);
-
-        $shipments = $repository->getList($idBuffer);
+        $shipments = $this->getShipmentsList($idBuffer, $refresh, $ttl);
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $shipments,
-            'key' => function($shipments) {
-                return $shipments->getGuid();
+            'key' => static function($shipment) {
+                return $shipment->getGuid();
             },
             'pagination' => [
                 'pageSize' => 20,
@@ -103,8 +101,19 @@ class ShipmentController extends Controller
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
-            'idBuffer' => $idBuffer,
+            'idBuffer'     => $idBuffer,
         ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    private function getShipmentsList(int $idBuffer, bool $refresh = false, ?int $ttl = null): array
+    {
+        return $this->module
+            ->getRepositoryFactory()
+            ->getShipmentRepository()
+            ->getList($idBuffer, $refresh, $ttl);
     }
 
     public function actionSend(int $idBuffer): Response
@@ -114,6 +123,15 @@ class ShipmentController extends Controller
         if ($model->send($idBuffer, $this->module->getRepositoryFactory()->getBufferRepository())){
             return $this->redirect(['buffer/index']);
         }
+
+        return $this->redirect(['index', 'idBuffer' => $idBuffer]);
+    }
+
+    public function actionDelete(string $guid, int $idBuffer): Response
+    {
+        $model = new ShipmentForm();
+
+        $model->clear($guid, $idBuffer, $this->module->getRepositoryFactory()->getShipmentRepository());
 
         return $this->redirect(['index', 'idBuffer' => $idBuffer]);
     }
