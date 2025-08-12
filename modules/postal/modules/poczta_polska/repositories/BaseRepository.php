@@ -13,12 +13,13 @@ use yii\caching\CacheInterface;
 
 abstract class BaseRepository extends Component
 {
-    protected const DEFAULT_TTL = 3600;
+    protected const DEFAULT_DURATION = 3600;
     /**
      * @var string|array|CacheInterface
      */
     public string|array|CacheInterface $cache = 'cache';
 
+    public int $cacheDuration = self::DEFAULT_DURATION;
     protected array $serviceConfig = [];
 
     private ?BaseService $service = null;
@@ -45,7 +46,7 @@ abstract class BaseRepository extends Component
         return Yii::createObject($config, [$this->senderOptions->getSoapOptions()]);
     }
 
-    protected function warning(string $category, $extraMessage = null, AbstractStructBase $response = null): void
+    protected function warning(string $category, $extraMessage = null, ?AbstractStructBase $response = null): void
     {
         $message = [];
         if ($extraMessage) {
@@ -69,7 +70,7 @@ abstract class BaseRepository extends Component
     /**
      * @throws InvalidConfigException
      */
-    protected function cache(): CacheInterface
+    protected function getCache(): CacheInterface
     {
         if(is_string($this->cache)){
             /**
@@ -104,10 +105,12 @@ abstract class BaseRepository extends Component
     /**
      * @throws InvalidConfigException
      */
-    protected function setCacheValue(string $key, $value, ?int $ttl = null, array $params = []): void {
-        $cacheKey = $this->buildCacheKey($key, $params);
-
-        $this->cache()->set($cacheKey, $value, $ttl ?? self::DEFAULT_TTL);
+    protected function setCacheValue(array $key, $value, ?int $cacheDuration = null): void
+    {
+        if ($cacheDuration) {
+            $this->cacheDuration = $cacheDuration;
+        }
+        $this->getCache()->set($key, $value, $this->cacheDuration);
     }
 
     /**
