@@ -40,6 +40,21 @@ class ProfileRepositoryTest extends Unit
         $this->tester->assertTrue($response);
     }
 
+    public function testUpdate(): void
+    {
+        $profiles = $this->repository->getList();
+        $profile = reset($profiles);
+        $profileName = $profile->getNazwa();
+        $profileId = $profile->getIdProfil();
+
+        $profile->setNazwa('ProfileNameUpdateTest');
+        $response = $this->repository->update($profile);
+
+        $updatedProfile = $this->repository->getById($profileId);
+
+        $this->tester->assertTrue($response);
+        $this->tester->assertNotEquals($profileName, $updatedProfile->getNazwa());
+    }
 
     protected function getProfilType(
         string $shortName = 'Test short name',
