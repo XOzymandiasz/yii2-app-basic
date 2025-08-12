@@ -39,7 +39,7 @@ class ShipmentFormTest extends Unit
 
     public function testValidationRequiredFields(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getAll();
+        $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
         $this->model->idBuffer = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
@@ -68,7 +68,7 @@ class ShipmentFormTest extends Unit
 
     public function testValidationOutsideAllowedScope(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getAll();
+        $this->model->buffers = $this->getBufferRepository()->getList();
         $this->model->format = "XXXXXL";
         $this->model->category = "Szybka";
         $this->model->idBuffer = 0;
@@ -81,7 +81,7 @@ class ShipmentFormTest extends Unit
      */
     public function testCreate(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getAll();
+        $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
         $this->model->idBuffer = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
@@ -104,7 +104,7 @@ class ShipmentFormTest extends Unit
      */
     public function testAddAndClear(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getAll();
+        $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
         $this->model->idBuffer = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
