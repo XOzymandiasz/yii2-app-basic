@@ -6,7 +6,6 @@ use app\modules\postal\forms\ShipmentForm as PostalShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
-use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
@@ -36,7 +35,7 @@ class ShipmentForm extends PostalShipmentForm
     /**
      * @var BuforType[]
      */
-    public array $buffors = [];
+    public array $buffers = [];
 
 
     public function rules(): array
@@ -46,9 +45,9 @@ class ShipmentForm extends PostalShipmentForm
             [['category', 'format'], 'string'],
             [['isRegistered'], 'boolean'],
             [['idBuffer', 'mass'], 'integer'],
-            ['idBuffer', 'in', 'range' => array_keys($this->getBufforsNames())],
-            ['category', 'in', 'range' => array_keys(self::getCategoriesNames())],
-            ['format', 'in', 'range' => array_keys(self::getFormatTypes())],
+            [['idBuffer'], 'in', 'range' => array_keys($this->getBufforsNames())],
+            [['category'], 'in', 'range' => array_keys(self::getCategoriesNames())],
+            [['format'], 'in', 'range' => array_keys(self::getFormatTypes())],
             [['description'], 'string', 'max' => 500],
         ];
     }
@@ -70,12 +69,8 @@ class ShipmentForm extends PostalShipmentForm
      * @throws Throwable
      * @throws StaleObjectException
      */
-    public function addShipment(BaseRepository $repository): bool
+    public function addShipment(ShipmentRepository $repository): bool
     {
-        /**
-         * @var ShipmentRepository $repository
-         */
-
         $response = $repository->add($this->createShipment(), $this->idBuffer);
 
         if ($response === null) {
@@ -83,9 +78,9 @@ class ShipmentForm extends PostalShipmentForm
         }
 
         $model = $this->getModel();
-
         $model->guid = $response->getGuid();
         $model->number = $response->getNumerNadania();
+
         $model->update(false);
 
         return true;
@@ -96,13 +91,14 @@ class ShipmentForm extends PostalShipmentForm
         return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
-    public function send(int $idBuffer, BaseRepository $repository): bool
+    public function send(int $idBuffer, BufferRepository $repository): bool
     {
-        /**
-         * @var BufferRepository $repository
-         */
-
         return $repository->send($idBuffer);
+    }
+
+    public function clear($guid, $bufferId, ShipmentRepository $repository): bool
+    {
+        return $repository->clear($guid, $bufferId);
     }
 
     public function setModel(Shipment $model): void
@@ -114,7 +110,7 @@ class ShipmentForm extends PostalShipmentForm
     public function getBufforsNames(): array
     {
         return ArrayHelper::map(
-            $this->buffors,
+            $this->buffers,
             function (BuforType $buffer) {
                 return $buffer->getIdBufor();
             },
