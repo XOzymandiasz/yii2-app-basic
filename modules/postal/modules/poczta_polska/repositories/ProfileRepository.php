@@ -46,6 +46,7 @@ class ProfileRepository extends BaseRepository
             $response = $this->getService()->getList();
             if (!$response) {
                 $this->warning(__METHOD__, 'response is null');
+                return [];
             }
 
             $this->profiles = ArrayHelper::index($response->getProfil(),
