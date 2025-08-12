@@ -66,7 +66,7 @@ class BufferController extends Controller
         $buffers = $this->module
                 ->getRepositoryFactory()
                 ->getBufferRepository()
-                ->getAll();
+                ->getList();
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $buffers,

@@ -13,6 +13,8 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPoczto
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztoweResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelopeResponseType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse;
 use SoapFault;
 
 class BufferService extends BaseService
@@ -32,7 +34,7 @@ class BufferService extends BaseService
         return null;
     }
 
-    public function getEnvelopeBuforList(): ?GetEnvelopeBuforListResponse
+    public function getList(): ?GetEnvelopeBuforListResponse
     {
         try {
             $this->setResult($resultGetEnvelopeBuforList = $this->getSoapClient()->__soapCall('getEnvelopeBuforList', [
@@ -62,11 +64,11 @@ class BufferService extends BaseService
         return null;
     }
 
-    public function create(BuforType $bufor): CreateEnvelopeBuforResponse|null
+    public function create(BuforType $buffer): CreateEnvelopeBuforResponse|null
     {
         try {
             $this->setResult($resultCreateEnvelopeBufor = $this->getSoapClient()->__soapCall('createEnvelopeBufor', [
-                new CreateEnvelopeBufor([$bufor]),
+                new CreateEnvelopeBufor([$buffer]),
             ], [], [], $this->outputHeaders));
 
             return $resultCreateEnvelopeBufor;

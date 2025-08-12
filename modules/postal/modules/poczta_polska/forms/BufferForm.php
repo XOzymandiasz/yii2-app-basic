@@ -76,10 +76,6 @@ class BufferForm extends Model
             ->setOpis($this->name)
             ->setDataNadania($this->sendAt);
 
-        /**
-         * @var ProfileRepository $repository
-         */
-
         if ($this->profilId !== null) {
             $buffer->setProfil($repository->getList()[$this->profilId]);
         }
