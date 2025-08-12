@@ -42,7 +42,7 @@ class ShipmentRepositoryTest extends Unit
          * @var BuforType[] $buffers
          */
 
-        $buffers = $this->getBufferRepository()->getAll();
+        $buffers = $this->getBufferRepository()->getList();
         $buffer = reset($buffers);
 
         $address = $this->getAddress();
@@ -82,7 +82,7 @@ class ShipmentRepositoryTest extends Unit
         /**
          * @var BuforType[] $buffers
          */
-        $buffers = $this->bufferRepository->getAll();
+        $buffers = $this->bufferRepository->getList();
         $firstBuffer = reset($buffers);
 
         $response = $this->repository->getList($firstBuffer->getIdBufor(), true);
@@ -99,7 +99,7 @@ class ShipmentRepositoryTest extends Unit
         /**
          * @var BuforType[] $buffers
          */
-        $buffers = $this->bufferRepository->getAll();
+        $buffers = $this->bufferRepository->getList();
         $firstBuffer = reset($buffers);
 
         $response = $this->repository->getList($firstBuffer->getIdBufor());
@@ -109,7 +109,7 @@ class ShipmentRepositoryTest extends Unit
 
     public function testGetLabel(): void
     {
-        $buffers = $this->getBufferRepository()->getAll();
+        $buffers = $this->getBufferRepository()->getList();
         $buffer = reset($buffers);
         $printType = $this->getPrintType();
 
