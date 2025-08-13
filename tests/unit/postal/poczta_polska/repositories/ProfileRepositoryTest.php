@@ -7,6 +7,7 @@ use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use Codeception\Test\Unit;
 use UnitTester;
+use yii\base\InvalidConfigException;
 
 /**
  * @property UnitTester $tester
@@ -24,7 +25,7 @@ class ProfileRepositoryTest extends Unit
         );
     }
 
-    public function testGetAll(): void
+    public function testGetList(): void
     {
         $response = $this->repository->getList();
 

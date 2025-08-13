@@ -10,10 +10,10 @@ use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use Codeception\Test\Unit;
-use unit\fixtures\ShipmentAddressFixture;
-use unit\fixtures\ShipmentAddressLinkFixture;
-use unit\fixtures\ShipmentContentFixture;
-use unit\fixtures\ShipmentFixture;
+use tests\fixtures\ShipmentAddressFixture;
+use tests\fixtures\ShipmentAddressLinkFixture;
+use tests\fixtures\ShipmentContentFixture;
+use tests\fixtures\ShipmentFixture;
 use UnitTester;
 use yii\base\Model;
 
