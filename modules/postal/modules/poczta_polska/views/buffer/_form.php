@@ -12,6 +12,7 @@ use yii\widgets\ActiveForm;
 /** @var View $this */
 /** @var BufferForm $model */
 /** @var ActiveForm $form */
+/** @var array $profiles */
 ?>
 
 <div class="postal-poczta-polska-buffor-form">
@@ -38,7 +39,7 @@ use yii\widgets\ActiveForm;
     ]) ?>
 
     <?= $form->field($model, 'profilId')->widget(Select2::class, [
-        'data' => $model->getProfilesNames(),
+        'data' => $profiles,
         'options' => ['placeholder' => Module::t('postal', 'Choose sender profile')],
         'pluginOptions' => [
             'allowClear' => true,
