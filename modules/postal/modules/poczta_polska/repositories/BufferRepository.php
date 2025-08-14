@@ -103,6 +103,71 @@ class BufferRepository extends BaseRepository
         return false;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getById(int $id): BuforType|null
+    {
+        foreach ($this->getList() as $buffer) {
+            if ($buffer->getIdBufor() == $id) {
+                return $buffer;
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * @var return BuforType[]
+     */
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getList(bool $refresh = false, ?int $duration = null): array
+    {
+        if (!$refresh) {
+            $key = $this->buildCacheKey(self::KEY_BUFFER_LIST);
+
+            $cachedResponse = $this->getCacheValue($key);
+            if ($cachedResponse) {
+                return $cachedResponse;
+            }
+        }
+
+        $response = $this->getService()->getList();
+        if ($response) {
+            if(empty($response->getError())){
+                $buffers = $response->getBufor();
+                if($buffers){
+                    $key = $this->buildCacheKey(self::KEY_BUFFER_LIST);
+                    $this->setCacheValue($key, $buffers, $duration);
+                    return $response->getBufor();
+                }
+            }
+            $this->warning(__METHOD__, null, $response);
+        }
+        $this->warning(__METHOD__, 'response is null', $response);
+        return [];
+    }
+
+    /**
+     * @return PlacowkaPocztowaType[]
+     */
+    public function getDispatchOffices(string $regionId): array
+    {
+
+        $response = $this->getService()->getPostOffices($regionId);
+        if ($response) {
+            return array_filter($response->getPlacowka(), function (PlacowkaPocztowaType $model): bool {
+                return $model->getIdZPO() === null;
+            });
+        }
+
+        $this->warning(__METHOD__);
+
+        return [];
+    }
+
     protected function getService(): BufferService
     {
         return parent::getService();
