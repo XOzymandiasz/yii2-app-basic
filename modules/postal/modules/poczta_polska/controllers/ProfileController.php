@@ -4,9 +4,12 @@ namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
 use app\modules\postal\modules\poczta_polska\Module;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
@@ -16,31 +19,25 @@ use yii\web\Response;
 class ProfileController extends Controller
 {
 
-    public function actionCreate():string|Response
+    public ?ProfileRepository $profileRepository = null;
+
+    public function init(): void
     {
-        $model = new ProfileForm();
+        parent::init();
 
-        if ($model->load(Yii::$app->request->post())
-            && $model->create(
-                $this->module->getRepositoryFactory()->getProfileRepository()
-            )
-        ) {
-            return $this->redirect(['index',
-                'model'=>$model]
-            );
+        if ($this->profileRepository === null) {
+            $this->profileRepository = $this->module
+                ->getRepositoryFactory()
+                ->getProfileRepository();
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionIndex():string|Response
     {
-        $profiles = $this->module
-                ->getRepositoryFactory()
-                ->getProfileRepository()
-                ->getList();
+        $profiles = $this->profileRepository->getList();
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $profiles,
