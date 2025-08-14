@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /** @var app\modules\postal\modules\poczta_polska\sender\StructType\BuforType $model */
 
 $this->title = $model->getOpis();
-$this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Buffors'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Buffers'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="buffor-view">
@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?= Html::a(Module::t('common', 'Update'), ['update', 'id' => $model->getIdBufor()], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Module::t('common', 'Delete'), ['delete', 'id' => $model->getIdBufor()], [
             'class' => 'btn btn-danger',
             'data' => [

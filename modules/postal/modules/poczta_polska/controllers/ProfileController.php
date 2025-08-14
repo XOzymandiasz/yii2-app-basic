@@ -58,6 +58,39 @@ class ProfileController extends Controller
     }
 
     /**
+     * @throws InvalidConfigException|NotFoundHttpException
+     */
+    public function actionView(int $id):string|Response
+    {
+        $model = $this->profileRepository->getById($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('view', ['model' => $model]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionCreate():string|Response
+    {
+        $model = new ProfileForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->create($this->profileRepository)) {
+
+            return $this->redirect(['index',
+                    'model'=>$model]
+            );
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * @throws InvalidConfigException
      */
     public function actionUpdate(int $id):string|Response
