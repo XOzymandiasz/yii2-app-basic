@@ -79,6 +79,22 @@ class BufferService extends BaseService
         return null;
     }
 
+    public function update(BuforType $buffer): UpdateEnvelopeBuforResponse|null
+    {
+        try {
+            $this->setResult($resultUpdateEnvelopeBufor = $this->getSoapClient()->__soapCall('updateEnvelopeBufor', [
+                new UpdateEnvelopeBufor([$buffer]),
+            ], [], [], $this->outputHeaders));
+
+            return $resultUpdateEnvelopeBufor;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+
+        }
+
+        return null;
+    }
+
     public function send(?int $idBufor, ?int $urzadNadania, ?array $pakiet): SendEnvelopeResponseType|null
     {
         try {
