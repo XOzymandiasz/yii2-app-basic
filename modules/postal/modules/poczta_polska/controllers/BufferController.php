@@ -30,6 +30,27 @@ class BufferController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'profiles' => $profiles,
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionUpdate($id): string|Response
+    {
+        $model = new BufferForm();
+        $model->setBuforType($this->bufferRepository->getById($id));
+        $profiles = $model->getProfilesNames($this->profileRepository);
+
+        if ($model->load(Yii::$app->request->post())
+            && $model->update($this->bufferRepository, $this->profileRepository)){
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+            'profiles' => $profiles
         ]);
     }
 
