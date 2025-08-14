@@ -1,11 +1,12 @@
 <?php
 
 use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\forms\ProfileForm;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\modules\postal\models\ShipmentAddress $model */
+/** @var ProfileForm $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
