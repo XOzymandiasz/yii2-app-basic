@@ -6,9 +6,9 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var BufferForm $model */
-
+/** @var array $profiles */
 $this->title = Module::t('poczta-polska', 'Create Poczta Polska Buffor');
-$this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Poczta Polska Buffer'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="postal-poczta-polska-buffor-create">
@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'profiles' => $profiles,
     ]) ?>
 
 </div>
