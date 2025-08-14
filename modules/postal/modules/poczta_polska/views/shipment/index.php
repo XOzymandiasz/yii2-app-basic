@@ -9,7 +9,7 @@ use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var DataProviderInterface $dataProvider */
-/** @var int $idBuffer */
+/** @var int $bufferId */
 
 $this->title = Module::t('poczta-polska', 'Shipments');
 $this->params['breadcrumbs'][] = $this->title;
@@ -20,9 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('poczta-polska', 'Send Buffer'), ['send', 'idBuffer' => $idBuffer], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Module::t('poczta-polska', 'Create Buffer'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Module::t('poczta-polska', 'Refresh Buffer'), ['index', 'idBuffer' => $idBuffer, 'refresh' => 1], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Send Buffer'), ['send', 'bufferId' => $bufferId], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('poczta-polska', 'Refresh Buffer'), ['index', 'bufferId' => $bufferId, 'refresh' => 1], ['class' => 'btn btn-success']) ?>
     </p>
 
 
@@ -53,11 +52,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::class,
                 'template' => '{view} {delete} {download-label}',
-                'urlCreator' => function ($action, $model, $key) use ($idBuffer) {
-                    if($action === 'delete') {
-                        return Url::to([$action, 'guid' => $key, 'idBuffer' => $idBuffer]);
+                'urlCreator' => function ($action, $model, $key) use ($bufferId) {
+                    if($action === 'download-label') {
+                        return Url::to([$action, 'guid' => $key]);
                     }
-                    return Url::to([$action, 'guid' => $key]);
+                    return Url::to([$action,'bufferId' => $bufferId, 'guid' => $key]);
                 },
                 'buttons' => [
                     'download-label' => function ($url) {

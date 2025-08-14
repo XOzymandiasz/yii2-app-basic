@@ -51,10 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::class,
-                'template' => '{view} {delete} {shipment}',
+                'template' => '{view} {delete} {shipment} {update}',
                 'urlCreator' => function ($action, $model, $key) {
                     if ($action === 'shipment') {
-                        return Url::to(['shipment/index', 'idBuffer' => $key]);
+                        return Url::to(['shipment/index', 'bufferId' => $key]);
                     }
                     return Url::to([$action, 'id' => $key]);
                 },
