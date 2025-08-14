@@ -3,13 +3,12 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\Module as PostalModule;
-use app\modules\postal\modules\poczta_polska\repositories\BaseRepository;
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
-use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 class BufferForm extends Model
@@ -18,13 +17,15 @@ class BufferForm extends Model
     public ?string $sendAt = null;
     public bool $isActive = false;
     public ?int $profilId = null;
+    public ?int $bufferId = null;
     public ?int $dispatchOfficeId = null;
     public ?string $name = null;
 
     public function rules(): array
     {
         return [
-            [['idBuffor', 'dispatchOfficeId', 'isActive', 'profilId'], 'integer'],
+            [['dispatchOfficeId', 'profilId'], 'required'],
+            [['!bufferId', 'dispatchOfficeId', 'profilId'], 'integer'],
             [['sendAt', 'name'], 'string'],
             [['isActive'], 'boolean'],
         ];
@@ -33,7 +34,6 @@ class BufferForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'idBuffor' => PostalModule::t('poczta-polska', 'ID Buffor'),
             'sendAt' => PostalModule::t('poczta-polska', 'Send at'),
             'dispatchOfficeId' => PostalModule::t('poczta-polska', 'Dispatch Office'),
             'isActive' => PostalModule::t('poczta-polska', 'Is active'),
@@ -44,12 +44,11 @@ class BufferForm extends Model
         ];
     }
 
-    public function getProfilesNames(BaseRepository $repository): array
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getProfilesNames(ProfileRepository $repository): array
     {
-        /**
-         * @var ProfileRepository $repository
-         */
-
         $models = $repository->getList();
         $names = [];
 
@@ -59,22 +58,43 @@ class BufferForm extends Model
         return $names;
     }
 
-    public function create(BaseRepository $bufferRepository, BaseRepository $profileRepository): bool
+    /**
+     * @throws InvalidConfigException
+     */
+    public function create(BufferRepository $bufferRepository, ProfileRepository $profileRepository): bool
     {
-        /**
-         * @var BufferRepository $bufferRepository
-         */
-
         return $bufferRepository->create($this->createType($profileRepository));
     }
 
-    protected function createType(BaseRepository $repository): BuforType
+    /**
+     * @throws InvalidConfigException
+     */
+    public function update(BufferRepository $bufferRepository, ProfileRepository $profileRepository): bool
+    {
+        return $bufferRepository->update($this->createType($profileRepository));
+    }
+
+    public function setBuforType(BuforType $buforType): void
+    {
+        $this->profilId = $buforType->getProfil()->getIdProfil();
+        $this->sendAt = $buforType->getDataNadania();
+        $this->dispatchOfficeId = $buforType->getUrzadNadania();
+        $this->isActive = $buforType->getActive();
+        $this->name = $buforType->getOpis();
+        $this->bufferId = $buforType->getIdBufor();
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    protected function createType(ProfileRepository $repository): BuforType
     {
         $buffer = (new BuforType())
             ->setActive($this->isActive)
             ->setUrzadNadania($this->dispatchOfficeId)
             ->setOpis($this->name)
-            ->setDataNadania($this->sendAt);
+            ->setDataNadania($this->sendAt)
+            ->setIdBufor($this->bufferId);
 
         if ($this->profilId !== null) {
             $buffer->setProfil($repository->getList()[$this->profilId]);
