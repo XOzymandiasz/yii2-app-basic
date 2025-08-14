@@ -105,6 +105,18 @@ class ShipmentRepository extends BaseRepository
         return [];
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getOne(string $guid, int $bufferId): ?PrzesylkaType
+    {
+        foreach ($this->getList($bufferId) as $shipment) {
+            if ($shipment->getGuid() === $guid) {
+                return $shipment;
+            }
+        }
+        return null;
+    }
 
     public function getLabel(string $guid, ?PrintType $type = null): string|null
     {
