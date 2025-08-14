@@ -2,8 +2,10 @@
 
 use app\modules\postal\Module;
 use yii\data\DataProviderInterface;
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var DataProviderInterface $dataProvider */
@@ -38,18 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'label' => Module::t('poczta-polska', 'Street'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getUlica();
-                }
-            ],
-            [
-                'label' => Module::t('poczta-polska', 'Apartment Number'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getNumerLokalu();
-                }
-            ],
-            [
                 'label' => Module::t('poczta-polska', 'Postal Code'),
                 'value' => function($dataProvider) {
                     return $dataProvider->getKodPocztowy();
@@ -62,10 +52,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'label' => Module::t('poczta-polska', 'Street'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getUlica();
+                }
+            ],
+            [
+                'label' => Module::t('poczta-polska', 'House Number'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getNumerDomu();
+                }
+            ],
+            [
+                'label' => Module::t('poczta-polska', 'Apartment Number'),
+                'value' => function($dataProvider) {
+                    return $dataProvider->getNumerLokalu();
+                }
+            ],
+            [
                 'label' => Module::t('poczta-polska', 'Country'),
                 'value' => function($dataProvider) {
                     return $dataProvider->getKraj();
                 }
+            ],
+            [
+                'class' => ActionColumn::class,
+                'template' => '{view} {update}',
+                'urlCreator' => function ($action, $model, $key) {
+                    return Url::to([$action, 'id' => $key]);
+                },
+                'contentOptions' => ['style' => 'white-space:nowrap;'],
+                'headerOptions' => ['style' => 'width:1%'],
             ],
         ],
     ]); ?>
