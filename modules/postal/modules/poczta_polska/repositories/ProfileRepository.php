@@ -20,8 +20,6 @@ class ProfileRepository extends BaseRepository
         'class' => ProfileService::class,
     ];
 
-    // #todo: add delete method
-
     /**
      * @throws InvalidConfigException
      */
