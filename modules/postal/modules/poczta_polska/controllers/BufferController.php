@@ -4,7 +4,10 @@ namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\modules\poczta_polska\forms\BufferForm;
 use app\modules\postal\modules\poczta_polska\Module;
+use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -15,18 +18,59 @@ use yii\web\Response;
  */
 class BufferController extends Controller
 {
+    public ?BufferRepository $bufferRepository = null;
+    public ?ProfileRepository $profileRepository = null;
+
+    public function init(): void
+    {
+        parent::init();
+        if ($this->bufferRepository === null) {
+            $this->bufferRepository = $this->module
+                ->getRepositoryFactory()
+                ->getBufferRepository();
+        }
+        if ($this->profileRepository === null) {
+            $this->profileRepository = $this->module
+                ->getRepositoryFactory()
+                ->getProfileRepository();
+        }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionIndex(): string
+    {
+        $buffers = $this->bufferRepository->getList();
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $buffers,
+            'key' => static function($model) {
+                return $model->getIdBufor();
+            },
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionCreate(): string|Response
     {
         $model = new BufferForm();
+        $profiles = $model->getProfilesNames($this->profileRepository);
 
         if ($model->load(Yii::$app->request->post())
-            && $model->create(
-                $this->module->getRepositoryFactory()->getBufferRepository(),
-                $this->module->getRepositoryFactory()->getProfileRepository()
-            )
-        ) {
+            && $model->create($this->bufferRepository, $this->profileRepository)) {
                 return $this->redirect(['index']);
         }
+
 
         return $this->render('create', [
             'model' => $model,
@@ -65,10 +109,7 @@ class BufferController extends Controller
         }
         $regionId = reset($params);
 
-        $models = $this->module
-                ->getRepositoryFactory()
-                ->getBufferRepository()
-                ->getDispatchOffices($regionId);
+        $models = $this->bufferRepository->getDispatchOffices($regionId);
 
         $output = [];
         foreach ($models as $model) {
@@ -82,37 +123,12 @@ class BufferController extends Controller
         ]);
     }
 
-    public function actionIndex(): string
-    {
-        $buffers = $this->module
-                ->getRepositoryFactory()
-                ->getBufferRepository()
-                ->getList();
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $buffers,
-            'key' => static function($model) {
-                return $model->getIdBufor();
-            },
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
     /**
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|InvalidConfigException
      */
     public function actionView(int $id): string
     {
-        $model = $this->module
-                ->getRepositoryFactory()
-                ->getBufferRepository()
-                ->getById($id);
+        $model = $this->bufferRepository->getById($id);
 
         if (!$model) {
             throw new NotFoundHttpException();
@@ -124,9 +140,7 @@ class BufferController extends Controller
     public function actionDelete(int $id): Response
     {
 
-        $this->module->getRepositoryFactory()
-            ->getBufferRepository()
-            ->clear($id);
+        $this->bufferRepository->clear($id);
 
         return $this->redirect(['index']);
     }
