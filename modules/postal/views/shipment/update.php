@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\modules\postal\models\Shipment $model */
 
-$this->title = Module::t('common', 'Update Postal Shipment: {name}', [
+$this->title = Module::t('postal', 'Update Postal Shipment: {name}', [
     'name' => $model->id,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Module::t('common', 'Postal Shipments'), 'url' => ['index']];
