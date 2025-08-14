@@ -2,14 +2,15 @@
 
 namespace app\modules\postal\models;
 
-use app\models\User;
 use app\modules\postal\Module;
+use app\modules\postal\ModuleEnsureTrait;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "shipment".
@@ -32,13 +33,14 @@ use yii\helpers\ArrayHelper;
  * @property ShipmentAddressLink[] $addressLinks
  * @property ShipmentAddress[] $addresses
  * @property ShipmentContent $content
- * @property-read User $creator
+ * @property-read IdentityInterface $creator
  * @property-read string $directionName
  * @property-read string $contentName
  * @property-read string $providerName
  */
 class Shipment extends ActiveRecord implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
+    use ModuleEnsureTrait;
 
     public function behaviors(): array
     {
@@ -95,7 +97,14 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
 
     public function getCreator(): ActiveQuery
     {
-        return $this->hasOne(User::class, ['id' => 'creator_id']);
+        $module = static::getModule();
+        /**
+         * @var ActiveRecord $userClass
+         */
+        $userClass = $module->userClass;
+        return $this->hasOne($module->userClass, [
+            'creator_id' => $userClass::primaryKey()[0]
+        ]);
     }
 
     public function getContent(): ActiveQuery

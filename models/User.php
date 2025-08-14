@@ -4,17 +4,16 @@ namespace app\models;
 
 
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
- * //@todo check model and database name for geneneral shipments
- *
  * This is the model class for table "shipment".
  *
  * @property int $id
  * @property string $name
  * @property $auth_key
  */
-class User extends ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
 //    public $id;
 //    public $username;
