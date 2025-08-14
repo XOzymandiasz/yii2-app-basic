@@ -57,4 +57,24 @@ class ProfileController extends Controller
         ]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionUpdate(int $id):string|Response
+    {
+        $model = new ProfileForm();
+        $model->setProfilType($this->profileRepository->getById($id));
+
+        if ($model->load(Yii::$app->request->post()) && $model->update($this->profileRepository)) {
+
+            return $this->redirect(['index',
+                    'model'=>$model]
+            );
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
 }
