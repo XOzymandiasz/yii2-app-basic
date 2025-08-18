@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 /** @var array $profiles */
 ?>
 
-<div class="postal-poczta-polska-buffor-form">
+<div class="postal-poczta-polska-envelope-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
