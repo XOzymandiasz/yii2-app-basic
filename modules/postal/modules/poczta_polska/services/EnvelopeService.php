@@ -21,80 +21,8 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuf
 use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBuforResponse;
 use SoapFault;
 
-class BufferService extends BaseService
+class EnvelopeService extends BaseService
 {
-
-    public function clearEnvelope(?int $buforId = null): ?ClearEnvelopeResponse
-    {
-        try {
-            $this->setResult($resultClearEnvelope = $this->getSoapClient()->__soapCall('clearEnvelope', [
-                new ClearEnvelope($buforId),
-            ], [], [], $this->outputHeaders));
-
-            return $resultClearEnvelope;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
-        return null;
-    }
-
-    public function getList(): ?GetEnvelopeBuforListResponse
-    {
-        try {
-            $this->setResult($resultGetEnvelopeBuforList = $this->getSoapClient()->__soapCall('getEnvelopeBuforList', [
-                new GetEnvelopeBuforList(),
-            ], [], [], $this->outputHeaders));
-
-            return $resultGetEnvelopeBuforList;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
-        return null;
-
-    }
-
-    public function getList(string $startDate, string $endDate): ?GetEnvelopeListResponse
-    {
-        try {
-            $this->setResult($result = $this->getSoapClient()->__soapCall('getEnvelopeList', [
-                new GetEnvelopeList($startDate, $endDate),
-            ], [], [], $this->outputHeaders));
-
-            return $result;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
-        return null;
-
-    }
-
-    public function getBook(int $idEnvelope, bool $includeUnregistered): ?GetOutboxBookResponse
-    {
-        try {
-            $this->setResult($resultGetOutboxBook = $this->getSoapClient()->__soapCall('getOutboxBook', [
-                new GetOutboxBook($idEnvelope, $includeUnregistered),
-            ], [], [], $this->outputHeaders));
-
-            return $resultGetOutboxBook;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
-        return null;
-    }
-
-    public function getPostOffices(string $regionId): ?GetPlacowkiPocztoweResponse
-    {
-        try {
-            $this->setResult($resultGetUrzedyNadania = $this->getSoapClient()->__soapCall('getPlacowkiPocztowe', [
-                new GetPlacowkiPocztowe($regionId),
-            ], [], [], $this->outputHeaders));
-
-            return $resultGetUrzedyNadania;
-        } catch (SoapFault $soapFault) {
-            $this->saveLastError(__METHOD__, $soapFault);
-        }
-        return null;
-    }
 
     public function create(BuforType $buffer): CreateEnvelopeBuforResponse|null
     {
@@ -139,6 +67,77 @@ class BufferService extends BaseService
             $this->saveLastError(__METHOD__, $soapFault);
         }
 
+        return null;
+    }
+
+    public function clearEnvelope(?int $buforId = null): ?ClearEnvelopeResponse
+    {
+        try {
+            $this->setResult($resultClearEnvelope = $this->getSoapClient()->__soapCall('clearEnvelope', [
+                new ClearEnvelope($buforId),
+            ], [], [], $this->outputHeaders));
+
+            return $resultClearEnvelope;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
+
+    public function getBufferList(): ?GetEnvelopeBuforListResponse
+    {
+        try {
+            $this->setResult($resultGetEnvelopeBuforList = $this->getSoapClient()->__soapCall('getEnvelopeBuforList', [
+                new GetEnvelopeBuforList(),
+            ], [], [], $this->outputHeaders));
+
+            return $resultGetEnvelopeBuforList;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
+
+    public function getList(string $startDate, string $endDate): ?GetEnvelopeListResponse
+    {
+        try {
+            $this->setResult($result = $this->getSoapClient()->__soapCall('getEnvelopeList', [
+                new GetEnvelopeList($startDate, $endDate),
+            ], [], [], $this->outputHeaders));
+
+            return $result;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+
+    }
+
+    public function getBook(int $idEnvelope, bool $includeUnregistered): ?GetOutboxBookResponse
+    {
+        try {
+            $this->setResult($resultGetOutboxBook = $this->getSoapClient()->__soapCall('getOutboxBook', [
+                new GetOutboxBook($idEnvelope, $includeUnregistered),
+            ], [], [], $this->outputHeaders));
+
+            return $resultGetOutboxBook;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
+
+    public function getPostOffices(string $regionId): ?GetPlacowkiPocztoweResponse
+    {
+        try {
+            $this->setResult($resultGetUrzedyNadania = $this->getSoapClient()->__soapCall('getPlacowkiPocztowe', [
+                new GetPlacowkiPocztowe($regionId),
+            ], [], [], $this->outputHeaders));
+
+            return $resultGetUrzedyNadania;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
         return null;
     }
 
