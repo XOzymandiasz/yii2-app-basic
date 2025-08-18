@@ -3,7 +3,7 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\Module as PostalModule;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\StructType\BuforType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PlacowkaPocztowaType;
@@ -61,7 +61,7 @@ class BufferForm extends Model
     /**
      * @throws InvalidConfigException
      */
-    public function create(BufferRepository $bufferRepository, ProfileRepository $profileRepository): bool
+    public function create(EnvelopeRepository $bufferRepository, ProfileRepository $profileRepository): bool
     {
         return $bufferRepository->create($this->createType($profileRepository));
     }
@@ -69,7 +69,7 @@ class BufferForm extends Model
     /**
      * @throws InvalidConfigException
      */
-    public function update(BufferRepository $bufferRepository, ProfileRepository $profileRepository): bool
+    public function update(EnvelopeRepository $bufferRepository, ProfileRepository $profileRepository): bool
     {
         return $bufferRepository->update($this->createType($profileRepository));
     }
