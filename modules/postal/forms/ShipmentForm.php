@@ -16,7 +16,6 @@ use yii\helpers\ArrayHelper;
 
 class ShipmentForm extends Model implements ShipmentDirectionInterface, ShipmentProviderInterface
 {
-    public const EVENT_HELLO = 'hello';
     public const SCENARIO_DIRECTION_IN = ShipmentDirectionInterface::DIRECTION_IN;
     public const SCENARIO_DIRECTION_OUT = ShipmentDirectionInterface::DIRECTION_OUT;
 
@@ -159,9 +158,9 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $this->senderAddress = $senderAddressLink;
         $this->sender_id = $senderAddressLink->id;
 
-        $receiverAddressLink = $model->getReceiverAddress()->one();
-        $this->receiverAddress = $receiverAddressLink;
-        $this->receiver_id = $receiverAddressLink->id;
+        $receiverAddress = $model->receiverAddress;
+        $this->receiverAddress = $receiverAddress;
+        $this->receiver_id = $receiverAddress->id ?? null;
 
     }
 
