@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'idBuffer')->widget(Select2::class, [
+    <?= $form->field($model, 'bufferId')->widget(Select2::class, [
         'data' => $model->getBufforsNames(),
         'options' => ['placeholder' => Module::t('poczta-polska', 'Choose buffer')],
         'pluginOptions' => [
