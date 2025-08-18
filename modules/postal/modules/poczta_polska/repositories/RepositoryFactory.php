@@ -20,7 +20,7 @@ class RepositoryFactory extends Component
 
     public array $classMap = [
         self::REPOSITORY_BUFFER => [
-            'class' => BufferRepository::class,
+            'class' => EnvelopeRepository::class,
         ],
         self::REPOSITORY_SHIPMENT => [
             'class' => ShipmentRepository::class,
@@ -39,7 +39,7 @@ class RepositoryFactory extends Component
     }
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
-    public function getBufferRepository(array $config = []): BufferRepository
+    public function getBufferRepository(array $config = []): EnvelopeRepository
     {
         return $this->createRepository(self::REPOSITORY_BUFFER, $config);
 
