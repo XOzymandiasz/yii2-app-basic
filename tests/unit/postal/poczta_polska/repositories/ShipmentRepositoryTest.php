@@ -2,7 +2,7 @@
 
 namespace tests\unit\postal\poczta_polska\repositories;
 
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
@@ -27,7 +27,7 @@ use yii\base\InvalidConfigException;
 class ShipmentRepositoryTest extends Unit
 {
     private ShipmentRepository $repository;
-    private ?BufferRepository $bufferRepository = null;
+    private ?EnvelopeRepository $bufferRepository = null;
 
     public function _before(): void
     {
@@ -113,7 +113,7 @@ class ShipmentRepositoryTest extends Unit
         /**
          * @var BuforType[] $buffers
          */
-        $buffers = $this->bufferRepository->getList();
+        $buffers = $this->bufferRepository->getBuffersList();
         $firstBuffer = reset($buffers);
 
         $response = $this->repository->getList($firstBuffer->getIdBufor(), true);
@@ -130,7 +130,7 @@ class ShipmentRepositoryTest extends Unit
         /**
          * @var BuforType[] $buffers
          */
-        $buffers = $this->bufferRepository->getList();
+        $buffers = $this->bufferRepository->getBuffersList();
         $firstBuffer = reset($buffers);
 
         $response = $this->repository->getList($firstBuffer->getIdBufor());
@@ -140,7 +140,7 @@ class ShipmentRepositoryTest extends Unit
 
     public function testGetLabel(): void
     {
-        $buffers = $this->getBufferRepository()->getList();
+        $buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($buffers);
         $printType = $this->getPrintType();
 
@@ -197,11 +197,11 @@ class ShipmentRepositoryTest extends Unit
             ->setMiejscowosc($city);
     }
 
-    private function getBufferRepository(): ?BufferRepository
+    private function getBufferRepository(): ?EnvelopeRepository
     {
         $options = PocztaPolskaSenderOptions::testInstance();
         if (null === $this->bufferRepository) {
-            $this->bufferRepository = new BufferRepository($options);
+            $this->bufferRepository = new EnvelopeRepository($options);
         }
         return $this->bufferRepository;
     }

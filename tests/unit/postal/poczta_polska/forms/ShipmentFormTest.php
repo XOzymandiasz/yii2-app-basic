@@ -6,7 +6,7 @@ use _support\UnitModelTrait;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
@@ -28,7 +28,7 @@ class ShipmentFormTest extends Unit
     protected ShipmentForm $model;
 
     private ShipmentRepository $repository;
-    private ?BufferRepository $bufferRepository = null;
+    private ?EnvelopeRepository $bufferRepository = null;
 
     protected function _before(): void
     {
@@ -39,7 +39,7 @@ class ShipmentFormTest extends Unit
 
     public function testValidationRequiredFields(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getList();
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($this->model->buffers);
         $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
@@ -68,7 +68,7 @@ class ShipmentFormTest extends Unit
 
     public function testValidationOutsideAllowedScope(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getList();
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $this->model->format = "XXXXXL";
         $this->model->category = "Szybka";
         $this->model->bufferId = 0;
@@ -81,7 +81,7 @@ class ShipmentFormTest extends Unit
      */
     public function testCreate(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getList();
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($this->model->buffers);
         $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
@@ -104,7 +104,7 @@ class ShipmentFormTest extends Unit
      */
     public function testAddAndClear(): void
     {
-        $this->model->buffers = $this->getBufferRepository()->getList();
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($this->model->buffers);
         $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
@@ -171,10 +171,10 @@ class ShipmentFormTest extends Unit
         return $address;
     }
 
-    public function getBufferRepository(): BufferRepository
+    public function getBufferRepository(): EnvelopeRepository
     {
         if($this->bufferRepository === null) {
-            $this->bufferRepository = new BufferRepository(PocztaPolskaSenderOptions::testInstance());
+            $this->bufferRepository = new EnvelopeRepository(PocztaPolskaSenderOptions::testInstance());
         }
         return $this->bufferRepository;
     }
