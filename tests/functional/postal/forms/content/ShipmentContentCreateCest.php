@@ -50,7 +50,7 @@ class ShipmentContentCreateCest
         $I->amLoggedInAs($user);
         $I->amOnRoute(static::ROUTE_CREATE);
 
-        $I->submitForm('form[action*="postal/shipment-content/create"]', [
+        $I->submitForm('#shipment-content-form', [
             'ContentTypeForm[name]' => 'Documents',
             'ContentTypeForm[is_active]' => 1,
         ]);
@@ -75,7 +75,7 @@ class ShipmentContentCreateCest
         $I->amLoggedInAs($user);
         $I->amOnRoute(static::ROUTE_CREATE);
 
-        $I->submitForm('form[action*="postal/shipment-content/create"]', [
+        $I->submitForm('#shipment-content-form', [
             'ContentTypeForm[name]' => '',
         ]);
 
