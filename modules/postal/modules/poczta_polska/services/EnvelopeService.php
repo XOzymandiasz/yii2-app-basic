@@ -9,6 +9,10 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBuf
 use app\modules\postal\modules\poczta_polska\sender\StructType\CreateEnvelopeBuforResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforList;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforListResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeList;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeListResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBook;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBookResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztowe;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztoweResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
@@ -49,6 +53,34 @@ class BufferService extends BaseService
 
     }
 
+    public function getList(string $startDate, string $endDate): ?GetEnvelopeListResponse
+    {
+        try {
+            $this->setResult($result = $this->getSoapClient()->__soapCall('getEnvelopeList', [
+                new GetEnvelopeList($startDate, $endDate),
+            ], [], [], $this->outputHeaders));
+
+            return $result;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+
+    }
+
+    public function getBook(int $idEnvelope, bool $includeUnregistered): ?GetOutboxBookResponse
+    {
+        try {
+            $this->setResult($resultGetOutboxBook = $this->getSoapClient()->__soapCall('getOutboxBook', [
+                new GetOutboxBook($idEnvelope, $includeUnregistered),
+            ], [], [], $this->outputHeaders));
+
+            return $resultGetOutboxBook;
+        } catch (SoapFault $soapFault) {
+            $this->saveLastError(__METHOD__, $soapFault);
+        }
+        return null;
+    }
 
     public function getPostOffices(string $regionId): ?GetPlacowkiPocztoweResponse
     {
