@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Module::t('common', 'Update'), ['update', 'guid' => $model->getGuid()], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Module::t('common', 'Delete'), ['delete', 'guid' => $model->getGuid(), 'bufferId' => $bufferId], [
+        <?= Html::a(Module::t('common', 'Update'), ['update', 'bufferId' => $bufferId, 'guid' => $model->getGuid()], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Module::t('common', 'Delete'), ['delete', 'bufferId' => $bufferId, 'guid' => $model->getGuid()], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Module::t('poczta-polska', 'Are you sure you want to delete this item?'),
