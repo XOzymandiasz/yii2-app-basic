@@ -23,7 +23,7 @@ class PoleconaKrajowaBuilder implements ShipmentBuilderInterface
                  ->setNadawca($this->model->getSenderAddress()->getAdresType())
                  ->setOpis($this->model->description);
 
-        if ($this->model->number){
+        if ($this->model->number != ''){
             $shipment->setNumerNadania($this->model->number);
         }
 
