@@ -9,7 +9,9 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforL
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforListResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeBuforResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeList;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetOutBoxBook;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetEnvelopeListResponse;
+use app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBookResponse;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPlacowkiPocztowe;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPrintForParcel;
 use app\modules\postal\modules\poczta_polska\sender\StructType\GetPrintForParcelResponse;
@@ -212,25 +214,24 @@ class Get extends AbstractSoapClientBase
 
     /**
      * Method to call the operation originally named getOutboxBook
-     * @param \app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBook $parameters
-     * @return \app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBookResponse|bool
+     * @param GetOutboxBook $parameters
+     * @return GetOutboxBookResponse|null
      * @uses AbstractSoapClientBase::saveLastError()
      * @uses AbstractSoapClientBase::getSoapClient()
      * @uses AbstractSoapClientBase::setResult()
      */
-    public function getOutboxBook(\app\modules\postal\modules\poczta_polska\sender\StructType\GetOutboxBook $parameters)
+    public function getOutboxBook(?int $idEnvelope, ?bool $includeNierejestrowane): ?GetOutboxBookResponse
     {
         try {
             $this->setResult($resultGetOutboxBook = $this->getSoapClient()->__soapCall('getOutboxBook', [
-                $parameters,
+                new GetOutboxBook($idEnvelope, $includeNierejestrowane),
             ], [], [], $this->outputHeaders));
 
             return $resultGetOutboxBook;
         } catch (SoapFault $soapFault) {
             $this->saveLastError(__METHOD__, $soapFault);
-
-            return false;
         }
+        return null;
     }
 
     /**
@@ -262,7 +263,7 @@ class Get extends AbstractSoapClientBase
      * @param string $endDate
      * @return GetEnvelopeListResponse|null
      */
-    public function getEnvelopeList(string $startDate, string $endDate): ?GetEnvelopeListResponse
+    public function getEnvelopeList(?string $startDate, ?string $endDate): ?GetEnvelopeListResponse
     {
         try {
             $this->setResult($resultGetEnvelopeList = $this->getSoapClient()->__soapCall('getEnvelopeList', [
