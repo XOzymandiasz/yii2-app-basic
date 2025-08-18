@@ -7,6 +7,8 @@ use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\Module;
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
+use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -23,37 +25,93 @@ use yii\web\Response;
 class ShipmentController extends Controller
 {
 
+    public ?ShipmentRepository $shipmentRepository = null;
+    public ?EnvelopeRepository $bufferRepository = null;
+
+    public function init(): void
+    {
+        parent::init();
+        if ($this->shipmentRepository === null) {
+            $this->shipmentRepository = $this->module
+                ->getRepositoryFactory()
+                ->getShipmentRepository();
+        }
+
+        if ($this->bufferRepository === null) {
+            $this->bufferRepository = $this->module
+                ->getRepositoryFactory()
+                ->getBufferRepository();
+        }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionIndex(int $bufferId, bool $refresh = false): string|Response
+    {
+        $shipments = $this->shipmentRepository->getList($bufferId, $refresh);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $shipments,
+            'key' => static function ($shipment) {
+                return $shipment->getGuid();
+            },
+
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'bufferId' => $bufferId,
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException|NotFoundHttpException
+     */
+    public function actionView(int $bufferId, string $guid): string
+    {
+        $model = $this->shipmentRepository->getOne($bufferId,$guid);
+
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+            'bufferId' => $bufferId,
+        ]);
+    }
+
 
     /**
      * @throws Throwable
      * @throws StaleObjectException
      * @throws NotFoundHttpException
      */
-    public function actionCreateFromShipment(int $id): string|Response
+    public function actionCreateFromShipment(int $id, ?string $returnUrl = null): string|Response
     {
-        $shipment = $this->findModel($id);
-        $model = new ShipmentForm(['model' => $shipment]);
-
-        $model->buffers = $this->module
-                ->getRepositoryFactory()
-                ->getBufferRepository()
-                ->getAll();
+        $model = new ShipmentForm();
+        $model->setModel($this->findModel($id));
+        $model->buffers = $this->bufferRepository->getBuffersList();
 
         if (empty($model->buffers)) {
             Yii::$app->session->setFlash(
-                'danger', PostalModule::t('poczta-polska', 'Not found buffor. Create before Add Shipment'));
+                'danger', PostalModule::t('poczta-polska', 'Not found buffor. Create before Add Shipment attemp'));
             return $this->redirect(['buffer/create']);
         }
 
         if ($model->load(Yii::$app->request->post())
             && $model->validate()
-            && $model->addShipment($this->module->getRepositoryFactory()->getShipmentRepository()
-            )
+            && $model->add($this->shipmentRepository)
         ) {
-            if($returnUrl){
+
+            if ($returnUrl) {
                 return $this->redirect($returnUrl);
             }
-            return $this->redirect(['index', 'idBuffer' => $model->idBuffer]);
+            return $this->redirect(['index', 'bufferId' => $model->bufferId]);
         }
 
         return $this->render('create-from-shipment', [
@@ -61,15 +119,13 @@ class ShipmentController extends Controller
         ]);
     }
 
+
     /**
      * @throws RangeNotSatisfiableHttpException
      */
     public function actionDownloadLabel(string $guid): Response
     {
-        $label = $this->module
-            ->getRepositoryFactory()
-            ->getShipmentRepository()
-            ->getLabel($guid);
+        $label = $this->shipmentRepository->getLabel($guid);
 
         $filename = 'label' . $guid . '.pdf';
 
@@ -79,61 +135,32 @@ class ShipmentController extends Controller
         ]);
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function actionIndex(int $idBuffer): string|Response
-    {
-        $refresh = (bool) Yii::$app->request->get('refresh', 0);
-        $ttl = Yii::$app->params['shipmentListTtl'] ?? null;
 
-        $shipments = $this->getShipmentsList($idBuffer, $refresh, $ttl);
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $shipments,
-            'key' => static function($shipment) {
-                return $shipment->getGuid();
-            },
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'idBuffer'     => $idBuffer,
-        ]);
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    private function getShipmentsList(int $idBuffer, bool $refresh = false, ?int $ttl = null): array
-    {
-        return $this->module
-            ->getRepositoryFactory()
-            ->getShipmentRepository()
-            ->getList($idBuffer, $refresh, $ttl);
-    }
-
-    public function actionSend(int $idBuffer): Response
+    public function actionSend(int $bufferId): Response
     {
         $model = new ShipmentForm();
 
-        if ($model->send($idBuffer, $this->module->getRepositoryFactory()->getBufferRepository())){
+        if ($model->send($bufferId, $this->bufferRepository)) {
             return $this->redirect(['buffer/index']);
         }
 
-        return $this->redirect(['index', 'idBuffer' => $idBuffer]);
+        return $this->redirect(['index', 'bufferId' => $bufferId]);
     }
 
-    public function actionDelete(string $guid, int $idBuffer): Response
+    /**
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws StaleObjectException
+     * @throws NotFoundHttpException
+     */
+    public function actionDelete(int $bufferId, string $guid): Response
     {
-        $model = new ShipmentForm();
+        $model = $this->findModelByGuid($guid);
+        if ($this->shipmentRepository->clear($bufferId, $guid)) {
+            $model->delete();
+        }
 
-        $model->clear($guid, $idBuffer, $this->module->getRepositoryFactory()->getShipmentRepository());
-
-        return $this->redirect(['index', 'idBuffer' => $idBuffer]);
+        return $this->redirect(['index', 'idBuffer' => $bufferId]);
     }
 
     /**
