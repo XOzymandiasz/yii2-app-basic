@@ -24,7 +24,10 @@ class ShipmentRepository extends BaseRepository
         'class' => ShipmentService::class,
     ];
 
-    public function add(PrzesylkaType $shipment, ?int $idBuffor = null): AddShipmentResponseItemType|null
+    /**
+     * @throws InvalidConfigException
+     */
+    public function add(PrzesylkaType $shipment, int $bufferId): ?AddShipmentResponseItemType
     {
         $response = $this->getService()->add(new AddShipment([$shipment], $bufferId));
 
@@ -51,7 +54,7 @@ class ShipmentRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function clear(string $guid, int $bufferId): bool
+    public function clear(int $bufferId, string $guid): bool
     {
         $response = $this->getService()->clear($guid, $bufferId);
         if ($response) {
@@ -66,7 +69,6 @@ class ShipmentRepository extends BaseRepository
         }
         $this->warning(__METHOD__, 'response is null');
         return false;
-
     }
 
     /*
@@ -108,7 +110,7 @@ class ShipmentRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function getOne(string $guid, int $bufferId): ?PrzesylkaType
+    public function getOne(int $bufferId, string $guid): ?PrzesylkaType
     {
         foreach ($this->getList($bufferId) as $shipment) {
             if ($shipment->getGuid() === $guid) {
