@@ -10,11 +10,6 @@ use yii\helpers\ArrayHelper;
 class ProfileRepository extends BaseRepository
 {
     private const KEY_PROFILE_LIST = 'profiles:list';
-    /**
-     * @var ProfilType[]
-     */
-    private array $profiles = [];
-
 
     protected array $serviceConfig = [
         'class' => ProfileService::class,
@@ -76,21 +71,22 @@ class ProfileRepository extends BaseRepository
             }
         }
 
-        if ($refresh || empty($this->profiles)) {
-            $response = $this->getService()->getList();
-            if (!$response) {
-                $this->warning(__METHOD__, 'response is null');
-                return [];
-            }
-            $this->profiles = ArrayHelper::index($response->getProfil(),
-                function (ProfilType $profile) {
-                    return $profile->getIdProfil();
-                }
-            );
-            $key = $this->buildCacheKey(self::KEY_PROFILE_LIST);
-            $this->setCacheValue($key, $this->profiles, $duration);
+        $response = $this->getService()->getList();
+        if (!$response) {
+            $this->warning(__METHOD__, 'response is null');
+            return [];
         }
-        return $this->profiles;
+
+        $profiles = ArrayHelper::index($response->getProfil(),
+            function (ProfilType $profile) {
+                return $profile->getIdProfil();
+            }
+        );
+
+        $key = $this->buildCacheKey(self::KEY_PROFILE_LIST);
+        $this->setCacheValue($key, $profiles, $duration);
+
+        return $profiles;
     }
 
     /**
