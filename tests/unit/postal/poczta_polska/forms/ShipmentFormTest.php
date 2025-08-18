@@ -41,7 +41,7 @@ class ShipmentFormTest extends Unit
     {
         $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
-        $this->model->idBuffer = $buffer->getIdBufor();
+        $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
         $this->model->format = FormatType::VALUE_S;
         $this->model->mass = 100;
@@ -71,7 +71,7 @@ class ShipmentFormTest extends Unit
         $this->model->buffers = $this->getBufferRepository()->getList();
         $this->model->format = "XXXXXL";
         $this->model->category = "Szybka";
-        $this->model->idBuffer = 0;
+        $this->model->bufferId = 0;
         $this->thenUnsuccessValidate();
     }
 
@@ -83,7 +83,7 @@ class ShipmentFormTest extends Unit
     {
         $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
-        $this->model->idBuffer = $buffer->getIdBufor();
+        $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
         $this->model->format = FormatType::VALUE_S;
         $this->model->mass = 100;
@@ -106,7 +106,7 @@ class ShipmentFormTest extends Unit
     {
         $this->model->buffers = $this->getBufferRepository()->getList();
         $buffer = reset($this->model->buffers);
-        $this->model->idBuffer = $buffer->getIdBufor();
+        $this->model->bufferId = $buffer->getIdBufor();
         $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
         $this->model->format = FormatType::VALUE_S;
         $this->model->mass = 100;
@@ -114,8 +114,8 @@ class ShipmentFormTest extends Unit
         $this->model->setReceiverAddress($this->getShipmentAddress());
         $this->model->setSenderAddress($this->getShipmentAddress());
 
-        $addResponse = $this->model->addShipment($this->repository);
-        $clearResponse = $this->model->clear($this->model->getModel()->guid, $this->model->idBuffer, $this->repository);
+        $addResponse = $this->model->add($this->repository);
+        $clearResponse = $this->repository->clear($this->model->bufferId, $this->model->getModel()->guid);
 
         $this->thenSuccessValidate();
         $this->tester->assertTrue($addResponse);
@@ -123,6 +123,33 @@ class ShipmentFormTest extends Unit
         $this->tester->assertIsString($this->model->getModel()->guid);
         $this->tester->assertIsString($this->model->getModel()->number);
     }
+
+    public function testUpdate(): void
+    {
+        $description = "Other text";
+
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
+        $buffer = reset($this->model->buffers);
+        $this->model->bufferId = $buffer->getIdBufor();
+        $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
+        $this->model->format = FormatType::VALUE_S;
+        $this->model->mass = 100;
+        $this->model->description = "Some text";
+        $this->model->setReceiverAddress($this->getShipmentAddress());
+        $this->model->setSenderAddress($this->getShipmentAddress());
+
+        $addResponse = $this->model->add($this->repository);
+        $this->model->description = $description;
+
+        $updateResponse = $this->model->update($this->repository, $buffer->getIdBufor());
+
+        $updatedShipment = $this->repository->getOne($buffer->getIdBufor(), $this->model->getModel()->guid);
+
+        $this->tester->assertTrue($addResponse);
+        $this->tester->assertTrue($updateResponse);
+        $this->tester->assertSame($updatedShipment->getOpis(), $description);
+    }
+
 
     public function getModel(): Model
     {

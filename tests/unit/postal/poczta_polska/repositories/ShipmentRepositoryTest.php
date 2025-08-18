@@ -4,6 +4,7 @@ namespace tests\unit\postal\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
+use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintFormatEnum;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\PrintKindEnum;
@@ -42,7 +43,7 @@ class ShipmentRepositoryTest extends Unit
          * @var BuforType[] $buffers
          */
 
-        $buffers = $this->getBufferRepository()->getList();
+        $buffers = $this->getBufferRepository()->getBufferList();
         $buffer = reset($buffers);
 
         $address = $this->getAddress();
@@ -50,13 +51,43 @@ class ShipmentRepositoryTest extends Unit
 
         $addResponse = $this->repository->add($shipment, $buffer->getIdBufor());
 
-        $clearResponse = $this->repository->clear($addResponse->getGuid(), $buffer->getIdBufor());
+        $clearResponse = $this->repository->clear($buffer->getIdBufor(), $addResponse->getGuid());
 
         $this->tester->assertTrue($clearResponse);
         $this->tester->assertNotNull($addResponse);
         $this->tester->assertEmpty($addResponse->getError());
         $this->tester->assertIsString($addResponse->getGuid());
         $this->tester->assertIsString($addResponse->getNumerNadania());
+    }
+
+    public function testUpdate(): void
+    {
+        $otherMass = 700;
+        $buffers = $this->getBufferRepository()->getBuffersList(true);
+        $buffer = reset($buffers);
+        $address = $this->getAddress();
+        $shipment = $this->getShipment($address);
+
+
+        $addResponse = $this->repository->add($shipment, $buffer->getIdBufor());
+
+        /**
+         * @var PrzesylkaPoleconaKrajowaType $shipment
+         */
+        $shipment = $this->repository->getOne($buffer->getIdBufor(), $addResponse->getGuid());
+        $shipment->setMasa($otherMass);
+        $shipment->setFormat(FormatType::VALUE_M);
+        $shipment->setNumerNadania();
+
+        $updateResponse = $this->repository->add($shipment, $buffer->getIdBufor());
+        $updatedShipment = $this->repository->getOne($buffer->getIdBufor(), $updateResponse->getGuid());
+
+
+        $this->tester->assertNotNull($addResponse);
+        $this->tester->assertNotNull($updateResponse);
+        $this->tester->assertSame($addResponse->getGuid(), $updateResponse->getGuid());
+        $this->tester->assertSame($otherMass, $updatedShipment->getMasa());
+
     }
 
     public function testClearInvalidGuidAndBuffer(): void
@@ -70,7 +101,7 @@ class ShipmentRepositoryTest extends Unit
             )
         );
 
-        $this->repository->clear($guid, 123);
+        $this->repository->clear(123, $guid);
     }
 
     /**
@@ -119,7 +150,7 @@ class ShipmentRepositoryTest extends Unit
 
         $getLabelResponse = $this->repository->getLabel($addResponse->getGuid(), $printType);
 
-        $clearResponse = $this->repository->clear($addResponse->getGuid(), $buffer->getIdBufor());
+        $clearResponse = $this->repository->clear($buffer->getIdBufor(), $addResponse->getGuid());
 
         $this->tester->assertTrue($clearResponse);
         $this->tester->assertNotNull($addResponse);
