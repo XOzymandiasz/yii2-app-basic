@@ -36,7 +36,7 @@ class ShipmentFormTest extends Unit
         $this->repository = new ShipmentRepository(PocztaPolskaSenderOptions::testInstance());
     }
 
-    public function testValidationRequiredFields(): void
+    public function testValidateRequiredFields(): void
     {
         $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($this->model->buffers);
@@ -49,7 +49,7 @@ class ShipmentFormTest extends Unit
         $this->thenSuccessValidate();
     }
 
-    public function testValidationWithoutRequiredFields(): void
+    public function testEmpty(): void
     {
         $this->model->category = '';
 
@@ -57,7 +57,7 @@ class ShipmentFormTest extends Unit
         $this->thenSeeError('Category cannot be blank.', 'category');
     }
 
-    public function testValidationWithTooLong(): void
+    public function testTooLong(): void
     {
         $this->model->description = str_repeat('a', 501);
 
@@ -65,7 +65,7 @@ class ShipmentFormTest extends Unit
         $this->thenSeeError('Description should contain at most 500 characters.', 'description');
     }
 
-    public function testValidationOutsideAllowedScope(): void
+    public function testOutsideAllowedScope(): void
     {
         $this->model->buffers = $this->getBufferRepository()->getBuffersList();
         $this->model->format = "XXXXXL";
@@ -74,9 +74,22 @@ class ShipmentFormTest extends Unit
         $this->thenUnsuccessValidate();
     }
 
+    public function testToHighMass(): void
+    {
+        $this->model->buffers = $this->getBufferRepository()->getBuffersList();
+        $buffer = reset($this->model->buffers);
+        $this->model->bufferId = $buffer->getIdBufor();
+        $this->model->category = KategoriaType::VALUE_PRIORYTETOWA;
+        $this->model->format = FormatType::VALUE_S;
+        $this->model->mass = 1000;
+        $this->model->description = "Some text";
+
+        $this->thenUnsuccessValidate();
+        $this->thenSeeError('Mass cannot exceed 500 g for the selected format.', 'mass');
+    }
+
     /**
      * @throws Throwable
-     * @throws StaleObjectException
      */
     public function testCreate(): void
     {
@@ -94,7 +107,6 @@ class ShipmentFormTest extends Unit
         $shipment = $this->model->createShipment();
 
         $this->tester->assertInstanceOf(PrzesylkaType::class, $shipment);
-
     }
 
     /**
