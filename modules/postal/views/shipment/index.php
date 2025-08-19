@@ -90,6 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at',
             //'updated_at',
             'guid',
+            'buffer_id',
             //'finished_at',
             //'shipment_at',
             //'api_data',
