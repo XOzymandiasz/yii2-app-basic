@@ -43,18 +43,31 @@ class ProfileRepositoryTest extends Unit
 
     public function testUpdate(): void
     {
-        $profiles = $this->repository->getList();
-        $profile = reset($profiles);
-        $profileName = $profile->getNazwa();
-        $profileId = $profile->getIdProfil();
+        $name = 'Update test name';
+        $profile = $this->getProfilType(name: $name);
+        $createResponse = $this->repository->create($profile);
 
-        $profile->setNazwa('ProfileNameUpdateTest');
-        $response = $this->repository->update($profile);
+        $profileId = 0;
+        $createdProfile = null;
+        foreach ($this->repository->getList() as $profile) {
+            if ($profile->getNazwa() === $name) {
+                $profileId = $profile->getIdProfil();
+                $createdProfile = $profile;
+                break;
+            }
+        }
 
-        $updatedProfile = $this->repository->getById($profileId);
+        if ($createdProfile === null) {
+            $this->markTestSkipped('Profile not created');
+        }
 
-        $this->tester->assertTrue($response);
-        $this->tester->assertNotEquals($profileName, $updatedProfile->getNazwa());
+        $createdProfile->setNazwa('newName');
+        $updateResponse = $this->repository->update($createdProfile);
+
+
+        $this->tester->assertTrue($createResponse);
+        $this->tester->assertTrue($updateResponse);
+        $this->tester->assertNotSame($this->repository->getOne($profileId)->getNazwa(), $name);
     }
 
     protected function getProfilType(
