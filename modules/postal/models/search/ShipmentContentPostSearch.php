@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\postal\models\search;
 
+use app\modules\postal\models\ShipmentContent;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\postal\models\ShipmentContent;
 
 /**
  * ShipmentContentPostSearch represents the model behind the search form of `app\modules\postal\models\ShipmentContent`.
@@ -14,7 +14,7 @@ class ShipmentContentPostSearch extends ShipmentContent
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'is_active'], 'integer'],
@@ -25,7 +25,7 @@ class ShipmentContentPostSearch extends ShipmentContent
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,7 +39,7 @@ class ShipmentContentPostSearch extends ShipmentContent
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search(array $params, string $formName = null): ActiveDataProvider
     {
         $query = ShipmentContent::find();
 

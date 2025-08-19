@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\postal\models\search;
 
+use app\modules\postal\models\Shipment;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\postal\models\Shipment;
 
 /**
  * ShipmentPostSearch represents the model behind the search form of `app\modules\postal\models\Shipment`.
@@ -17,8 +17,8 @@ class ShipmentPostSearch extends Shipment
     public function rules(): array
     {
         return [
-            [['id', 'content_id', 'creator_id'], 'integer'],
-            [['direction', 'number', 'provider', 'created_at', 'updated_at', 'guid', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
+            [['id', 'content_id', 'creator_id', 'buffer_id'], 'integer'],
+            [['direction', 'number', 'provider', 'created_at', 'updated_at', 'guid', 'buffer_id', 'finished_at', 'shipment_at', 'api_data'], 'safe'],
         ];
     }
 
@@ -39,7 +39,7 @@ class ShipmentPostSearch extends Shipment
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search(array $params, string $formName = null): ActiveDataProvider
     {
         $query = Shipment::find();
 
@@ -62,6 +62,7 @@ class ShipmentPostSearch extends Shipment
             'id' => $this->id,
             'content_id' => $this->content_id,
             'creator_id' => $this->creator_id,
+            'buffer_id' => $this->buffer_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'finished_at' => $this->finished_at,

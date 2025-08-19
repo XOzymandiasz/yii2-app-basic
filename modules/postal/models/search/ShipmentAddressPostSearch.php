@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\postal\models\search;
 
+use app\modules\postal\models\ShipmentAddress;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\postal\models\ShipmentAddress;
 
 /**
  * ShipmentAddressPostSearch represents the model behind the search form of `app\modules\postal\models\ShipmentAddress`.
