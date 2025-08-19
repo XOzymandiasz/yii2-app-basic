@@ -59,6 +59,23 @@ class BufferController extends Controller
     }
 
     /**
+     * @throws RangeNotSatisfiableHttpException
+     */
+    public function actionSenderBook(int $id): Response
+    {
+        $fileContent = $this->envelopeRepository->getSenderBook($id);
+
+        $filename = 'senderBook_' . $id . '.pdf';
+
+        return Yii::$app->response->sendContentAsFile($fileContent, $filename, [
+            'mimeType' => 'application/pdf',
+            'inline' => true,
+        ]);
+
+    }
+
+
+    /**
      * @throws InvalidConfigException
      */
     public function actionCreate(): string|Response
