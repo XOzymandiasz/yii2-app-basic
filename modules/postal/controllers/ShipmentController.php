@@ -86,7 +86,7 @@ class ShipmentController extends Controller
     /**
      * @throws Exception
      */
-    public function actionCreateOut(): Response|string
+    public function actionCreateOut(?string $refTo = null, array $refColumns = []): Response|string
     {
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_OUT);
@@ -95,13 +95,17 @@ class ShipmentController extends Controller
         if ($model->load($this->request->post())) {
             if ($model->save()) {
                 $this->module->afterCreateOutShipment($model->getModel());
-                return $this->redirect(['view', 'id' => $model->getModel()->id]);
+                $url = $this->module->getAfterCreateURL($model->getModel()->id, $model->getModel()->provider);
+                if ($url) {
+                    return $this->redirect($url);
+                }
+                return $this->redirect(['index']);
             }
         }
 
         Yii::debug([
             'model' => $model->getAttributes(),
-        ],__METHOD__);
+        ], __METHOD__);
         return $this->render('create', [
             'model' => $model,
             'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
@@ -119,16 +123,19 @@ class ShipmentController extends Controller
         $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
         $model->creator_id = Yii::$app->user->id;
         $model->finished_at = date(DATE_ATOM);
-        if ($model->load($this->request->post())) {
-            if ($model->save())
-                return $this->redirect(['view', 'id' => $model->getModel()->id]);
+        if ($model->load($this->request->post()) && $model->save()) {
+            $this->module->afterCreateInShipment($model->getModel());
+            $url = $this->module->getAfterCreateURL($model->getModel()->id, $model->getModel()->provider);
+            if ($url) {
+                return $this->redirect($url);
+            }
+            return $this->redirect(['view', 'id' => $model->getModel()->id]);
         }
         return $this->render('create', [
             'model' => $model,
             'direction' => ShipmentDirectionInterface::DIRECTION_IN,
         ]);
     }
-
 
 
     /**
@@ -141,7 +148,24 @@ class ShipmentController extends Controller
         $model->setModel($this->findModel($id));
 
         if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $id]);
+            if($model->direction == ShipmentDirectionInterface::DIRECTION_IN) {
+                $url = $this->module->getAfterUpdateURL($model->getModel()->buffer_id, $model->getModel()->guid, $model->getModel()->provider);
+                if ($url) {
+                    return $this->redirect($url);
+                }
+                return $this->redirect(['view', 'id' => $id]);
+            }
+            elseif ($model->direction == ShipmentDirectionInterface::DIRECTION_OUT) {
+                $url = $this->module->getAfterUpdateURL($model->getModel()->buffer_id, $model->getModel()->guid, $model->getModel()->provider);
+                if ($url) {
+                    return $this->redirect($url);
+                }
+                return $this->redirect(['view', 'id' => $id]);
+
+            }
+            else{
+                throw new NotFoundHttpException();
+            }
         }
 
         return $this->render('update', [
