@@ -197,7 +197,7 @@ class EnvelopeRepositoryTest extends Unit
         $addResponse = $this->getShipmentRepository()->add($shipment, $bufferId);
         $buffer = $this->repository->getBuffer($bufferId);
         $sendResponse = $this->repository->send($bufferId, $buffer->getUrzadNadania());
-        $book = $this->repository->getBook($sendResponse);
+        $book = $this->repository->getSenderBook($sendResponse);
 
 
         $this->tester->assertNotFalse($addResponse);
