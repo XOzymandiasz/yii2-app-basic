@@ -92,7 +92,7 @@ class ProfileRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function getById(int $id): ProfilType|null
+    public function getOne(int $id): ProfilType|null
     {
         foreach ($this->getList() as $profile) {
             if ($profile->getIdProfil() == $id) {
