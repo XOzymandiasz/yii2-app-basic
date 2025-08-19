@@ -160,7 +160,7 @@ class ShipmentController extends Controller
             $model->delete();
         }
 
-        return $this->redirect(['index', 'idBuffer' => $bufferId]);
+        return $this->redirect(['index', 'bufferId' => $bufferId]);
     }
 
     /**
