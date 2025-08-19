@@ -25,6 +25,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public ?int $content_id = null;
     public ?int $creator_id = null;
     public ?string $guid = null;
+    public ?int $buffer_id = null;
     public ?string $finished_at = null;
     public ?string $shipment_at = null;
     public ?string $api_data = null;
@@ -47,6 +48,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
             [['!direction'], 'in', 'range' => array_keys(static::getDirectionsNames())],
             [['provider'], 'in', 'range' => array_keys(static::getProvidersNames())],
             [['finished_at', 'number'], 'required', 'on' => self::SCENARIO_DIRECTION_IN],
+            [['buffer_id'], 'integer'],
             [['number'], 'string', 'max' => 40],
             [['guid'], 'string', 'max' => 32],
             [['content_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShipmentContent::class, 'targetAttribute' => ['content_id' => 'id']],
@@ -63,6 +65,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
             'content_id' => Module::t('postal', 'Content ID'),
             'creator_id' => Module::t('postal', 'Creator ID'),
             'guid' => Module::t('postal', 'Guid'),
+            'buffer_id' => Module::t('postal', 'Buffer ID'),
             'finished_at' => Module::t('postal', 'Finished At'),
             'shipment_at' => Module::t('postal', 'Shipment At'),
             'api_data' => Module::t('postal', 'Api Data'),
@@ -91,6 +94,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
         $model->number = $this->number;
         $model->guid = $this->guid;
+        $model->buffer_id = $this->buffer_id;
         $model->finished_at = $this->finished_at;
         $model->provider = $this->provider;
         $model->direction = $this->direction;
@@ -146,6 +150,7 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
 
         $this->number = $model->number;
         $this->guid = $model->guid;
+        $this->buffer_id = $model->buffer_id;
         $this->finished_at = $model->finished_at;
         $this->provider = $model->provider;
         $this->direction = $model->direction;
