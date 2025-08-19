@@ -24,6 +24,7 @@ use yii\web\IdentityInterface;
  * @property string $updated_at
  * @property string|null $number
  * @property string|null $guid
+ * @property int|null $buffer_id
  * @property string|null $finished_at
  * @property string|null $shipment_at
  * @property string|null $api_data
