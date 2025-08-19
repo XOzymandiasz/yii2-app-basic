@@ -119,6 +119,33 @@ class ShipmentController extends Controller
         ]);
     }
 
+    /**
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdate(int $bufferId, string $guid): Response|string
+    {
+        $shipmentModel = $this->findModelByGuid($guid);
+        $shipmentAPI = $this->shipmentRepository->getOne($bufferId, $guid);
+        if ($shipmentModel->isSent()) {
+            throw new NotFoundHttpException();
+        }
+
+        $model = new ShipmentForm();
+        $model->buffers = $this->bufferRepository->getBuffersList();
+        $model->bufferId = $bufferId;
+        $model->setModel($shipmentModel);
+        $model->setShipment($shipmentAPI);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->update($this->shipmentRepository, $bufferId);
+            return $this->redirect(['index', 'bufferId' => $model->bufferId]);
+        }
+        return $this->render('update', [
+            'model' => $model
+        ]);
+    }
+
 
     /**
      * @throws RangeNotSatisfiableHttpException
@@ -171,6 +198,7 @@ class ShipmentController extends Controller
         $model = Shipment::find()
             ->andWhere([
                 'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+                //'direction' => ShipmentDirectionInterface::DIRECTION_IN,
                 'id' => $id
             ])->one();
         if (!$model) {
@@ -187,6 +215,7 @@ class ShipmentController extends Controller
         $model = Shipment::find()
             ->andWhere([
                 'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+                //'direction' => ShipmentDirectionInterface::DIRECTION_IN,
                 'guid' => $guid
             ])->one();
         if (!$model) {
