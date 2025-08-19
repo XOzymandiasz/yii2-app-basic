@@ -127,7 +127,7 @@ class ShipmentController extends Controller
     {
         $label = $this->shipmentRepository->getLabel($guid);
 
-        $filename = 'label' . $guid . '.pdf';
+        $filename = 'label_' . $guid . '.pdf';
 
         return Yii::$app->response->sendContentAsFile($label, $filename, [
             'mimeType' => 'application/pdf',

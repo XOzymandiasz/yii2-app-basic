@@ -3,17 +3,17 @@
 namespace app\modules\postal\controllers;
 
 use app\modules\postal\forms\ContentTypeForm;
+use app\modules\postal\models\search\ShipmentContentPostSearch;
 use app\modules\postal\models\ShipmentContent;
-use app\models\ShipmentContentPostSearch;
 use app\modules\postal\Module;
 use Throwable;
 use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 class ShipmentContentController extends Controller

@@ -3,15 +3,15 @@
 namespace app\modules\postal\controllers;
 
 use app\modules\postal\forms\AddressTypeForm;
+use app\modules\postal\models\search\ShipmentAddressPostSearch;
 use app\modules\postal\models\ShipmentAddress;
-use app\models\ShipmentAddressPostSearch;
 use app\modules\postal\Module;
 use Throwable;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
