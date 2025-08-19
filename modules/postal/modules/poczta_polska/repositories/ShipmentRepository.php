@@ -110,9 +110,9 @@ class ShipmentRepository extends BaseRepository
     /**
      * @throws InvalidConfigException
      */
-    public function getOne(int $bufferId, string $guid): ?PrzesylkaType
+    public function getOne(int $bufferId, string $guid, bool $refresh = false): ?PrzesylkaType
     {
-        foreach ($this->getList($bufferId) as $shipment) {
+        foreach ($this->getList($bufferId, $refresh) as $shipment) {
             if ($shipment->getGuid() === $guid) {
                 return $shipment;
             }
