@@ -79,9 +79,11 @@ class ShipmentRepository extends BaseRepository
      */
     public function getList(int $bufferId, bool $refresh = false, ?int $duration = null): array
     {
-        if (!$refresh){
-            $cachedResponse = $this->getCacheValue(self::KEY_SHIPMENT_LIST, null, ['buffer'=>$idBuffer]);
-
+        if (!$refresh) {
+            $key = $this->buildCacheKey(self::KEY_SHIPMENT_LIST, [
+                'buffer' => $bufferId
+            ]);
+            $cachedResponse = $this->getCacheValue($key);
             if ($cachedResponse) {
                 return $cachedResponse;
             }
