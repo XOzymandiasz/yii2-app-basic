@@ -33,6 +33,9 @@ class ProfileFormTest extends Unit
         $this->model->house_number = "1";
         $this->model->postal_code = "12345";
         $this->model->city = "Miasto";
+        $this->model->profileName = "ProfileName";
+        $this->model->street = "TestStreet";
+        $this->model->country = "Polska";
 
         $this->tester->assertTrue($this->model->validate());
         $this->tester->assertEmpty($this->model->getErrors());
@@ -42,6 +45,8 @@ class ProfileFormTest extends Unit
     {
         $this->thenUnsuccessValidate();
 
+        $this->thenSeeError('Street cannot be blank.', 'street');
+        $this->thenSeeError('Profile name cannot be blank.', 'profileName');
         $this->thenSeeError('Name cannot be blank.', 'name');
         $this->thenSeeError('House Number cannot be blank.', 'house_number');
         $this->thenSeeError('City cannot be blank.', 'city');
@@ -71,6 +76,9 @@ class ProfileFormTest extends Unit
         $this->model->house_number = "1";
         $this->model->postal_code = "11111";
         $this->model->city = "Miasto";
+        $this->model->profileName = "ProfileName";
+        $this->model->street = "TestStreet";
+        $this->model->country = "Polska";
         $this->model->email = "x@x";
 
         $this->thenUnsuccessValidate();
@@ -84,10 +92,48 @@ class ProfileFormTest extends Unit
         $this->model->house_number = "1";
         $this->model->postal_code = "11111";
         $this->model->city = "TestCity";
+        $this->model->profileName = "ProfileName";
+        $this->model->street = "TestStreet";
+        $this->model->country = "Polska";
 
         $this->thenSuccessValidate();
 
         $this->tester->assertTrue($this->model->create($this->repository));
+    }
+
+    public function testUpdate(): void
+    {
+        $name = "TestUpdateName";
+        $this->model->name = $name;
+        $this->model->house_number = "1";
+        $this->model->postal_code = "11111";
+        $this->model->city = "TestCity";
+        $this->model->profileName = "ProfileName";
+        $this->model->street = "TestStreet";
+        $this->model->country = "Polska";
+
+        $createResponse = $this->model->create($this->repository);
+
+        $createdProfileId = 0;
+        foreach ($this->repository->getList() as $profile) {
+            if ($profile->getNazwa() === $name) {
+                $createdProfileId = $profile->getIdProfil();
+                break;
+            }
+        }
+
+        if($createdProfileId == 0){
+            $this->markTestSkipped('Profile ID not found');
+        }
+
+        $this->model->idProfil = $createdProfileId;
+        $this->model->name = "newName";
+        $updateResponse = $this->model->update($this->repository);
+
+        $this->thenSuccessValidate();
+        $this->tester->assertTrue($createResponse);
+        $this->tester->assertTrue($updateResponse);
+        $this->tester->assertNotSame($this->repository->getOne($createdProfileId)->getNazwa(), $name);
     }
 
     public function getModel(): Model
