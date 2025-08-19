@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\postal\forms\ShipmentForm;
+use app\modules\postal\models\search\ShipmentPostSearch;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
@@ -11,7 +12,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\PostSearch $searchModel */
+/** @var ShipmentPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Module::t('common', 'Postal Shipments');

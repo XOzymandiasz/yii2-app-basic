@@ -1,16 +1,15 @@
 <?php
 
-use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
-/** @var app\models\ShipmentAddressPostSearch $searchModel */
+/** @var \app\modules\postal\models\search\ShipmentAddressPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Module::t('common', 'Shipment Addresses');

@@ -2,13 +2,13 @@
 
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
-/** @var app\models\ShipmentContentPostSearch $searchModel */
+/** @var \app\modules\postal\models\search\ShipmentContentPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Module::t('common', 'Shipment Contents');
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'is_active',
             [
                 'class' => ActionColumn::class,
-                'urlCreator' => function ($action, ShipmentContent $model, $key, $index, $column) {
+                'urlCreator' => function ($action, ShipmentContent $model) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],
