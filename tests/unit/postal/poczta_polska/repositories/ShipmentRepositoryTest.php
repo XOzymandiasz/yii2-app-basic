@@ -43,7 +43,7 @@ class ShipmentRepositoryTest extends Unit
          * @var BuforType[] $buffers
          */
 
-        $buffers = $this->getBufferRepository()->getBufferList();
+        $buffers = $this->getBufferRepository()->getBuffersList();
         $buffer = reset($buffers);
 
         $address = $this->getAddress();
@@ -79,11 +79,13 @@ class ShipmentRepositoryTest extends Unit
         $shipment->setFormat(FormatType::VALUE_M);
         $shipment->setNumerNadania();
 
+        $clearResponse = $this->repository->clear($buffer->getIdBufor(), $addResponse->getGuid());
         $updateResponse = $this->repository->add($shipment, $buffer->getIdBufor());
         $updatedShipment = $this->repository->getOne($buffer->getIdBufor(), $updateResponse->getGuid());
 
 
         $this->tester->assertNotNull($addResponse);
+        $this->tester->assertNotNull($clearResponse);
         $this->tester->assertNotNull($updateResponse);
         $this->tester->assertSame($addResponse->getGuid(), $updateResponse->getGuid());
         $this->tester->assertSame($otherMass, $updatedShipment->getMasa());

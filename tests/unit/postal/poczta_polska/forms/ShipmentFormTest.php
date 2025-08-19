@@ -3,7 +3,6 @@
 namespace tests\unit\postal\poczta_polska\forms;
 
 use _support\UnitModelTrait;
-use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
