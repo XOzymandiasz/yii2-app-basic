@@ -135,11 +135,14 @@ class ShipmentForm extends PostalShipmentForm
 
     public function setShipment(PrzesylkaType $model): void
     {
-        $this->format = $model->getFormat();
-        $this->mass = $model->getMasa();
-        $this->category = $model->getKategoria();
-        $this->isRegistered = $model instanceof PrzesylkaPoleconaKrajowaType;
         $this->description = $model->getOpis();
+
+        if ($model instanceof PrzesylkaPoleconaKrajowaType){
+            $this->format = $model->getFormat();
+            $this->mass = $model->getMasa();
+            $this->category = $model->getKategoria();
+            $this->isRegistered = true;
+        }
     }
 
     public function createShipment(): PrzesylkaType
