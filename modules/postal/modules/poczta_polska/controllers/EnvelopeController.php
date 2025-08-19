@@ -3,22 +3,23 @@
 namespace app\modules\postal\modules\poczta_polska\controllers;
 
 use app\modules\postal\modules\poczta_polska\forms\BufferForm;
+use app\modules\postal\modules\poczta_polska\models\search\EnvelopeSearch;
 use app\modules\postal\modules\poczta_polska\Module;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
 
 /**
  * @property Module $module
  */
-class BufferController extends Controller
+class EnvelopeController extends Controller
 {
-    public ?BufferRepository $bufferRepository = null;
+    public ?EnvelopeRepository $envelopeRepository = null;
     public ?ProfileRepository $profileRepository = null;
 
     public function init(): void
@@ -37,24 +38,35 @@ class BufferController extends Controller
     }
 
     /**
-     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
      */
-    public function actionIndex(): string
+    public function actionIndex(string $status = EnvelopeSearch::STATUS_BUFFER): string
     {
-        $buffers = $this->bufferRepository->getList();
 
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $buffers,
-            'key' => static function($model) {
-                return $model->getIdBufor();
-            },
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
+        if (!isset(EnvelopeSearch::getStatusNames()[$status])) {
+            throw new NotFoundHttpException();
+        }
+        $searchModel = new EnvelopeSearch(
+            $this->envelopeRepository,
+            $status
+        );
+        $searchModel->startDate = date('Y-m-d', strtotime('-1 month'));
+        $searchModel->endDate = date('Y-m-d');
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        if ($searchModel->isBuffer()) {
+            return $this->render('buffer', [
+                'dataProvider' => $dataProvider,
+                'searchModel' => $searchModel,
+                'statusNavItems' => static::getStatusNavItems($status)
+            ]);
+        }
+
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'statusNavItems' => static::getStatusNavItems($status)
         ]);
     }
 
@@ -84,8 +96,8 @@ class BufferController extends Controller
         $profiles = $model->getProfilesNames($this->profileRepository);
 
         if ($model->load(Yii::$app->request->post())
-            && $model->create($this->bufferRepository, $this->profileRepository)) {
-                return $this->redirect(['index']);
+            && $model->create($this->envelopeRepository, $this->profileRepository)) {
+            return $this->redirect(['index']);
         }
 
 
@@ -101,11 +113,11 @@ class BufferController extends Controller
     public function actionUpdate($id): string|Response
     {
         $model = new BufferForm();
-        $model->setBuforType($this->bufferRepository->getById($id));
+        $model->setBuforType($this->envelopeRepository->getBuffer($id));
         $profiles = $model->getProfilesNames($this->profileRepository);
 
         if ($model->load(Yii::$app->request->post())
-            && $model->update($this->bufferRepository, $this->profileRepository)){
+            && $model->update($this->envelopeRepository, $this->profileRepository)) {
             return $this->redirect(['index']);
         }
 
@@ -145,7 +157,7 @@ class BufferController extends Controller
      */
     public function actionView(int $id): string
     {
-        $model = $this->bufferRepository->getById($id);
+        $model = $this->envelopeRepository->getBuffer($id);
 
         if (!$model) {
             throw new NotFoundHttpException();
@@ -161,7 +173,5 @@ class BufferController extends Controller
 
         return $this->redirect(['index']);
     }
-
-
 
 }
