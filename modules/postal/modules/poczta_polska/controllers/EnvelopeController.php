@@ -25,8 +25,8 @@ class EnvelopeController extends Controller
     public function init(): void
     {
         parent::init();
-        if ($this->bufferRepository === null) {
-            $this->bufferRepository = $this->module
+        if ($this->envelopeRepository === null) {
+            $this->envelopeRepository = $this->module
                 ->getRepositoryFactory()
                 ->getBufferRepository();
         }
@@ -138,7 +138,7 @@ class EnvelopeController extends Controller
         }
         $regionId = reset($params);
 
-        $models = $this->bufferRepository->getDispatchOffices($regionId);
+        $models = $this->envelopeRepository->getDispatchOffices($regionId);
 
         $output = [];
         foreach ($models as $model) {
@@ -169,7 +169,7 @@ class EnvelopeController extends Controller
     public function actionDelete(int $id): Response
     {
 
-        $this->bufferRepository->clear($id);
+        $this->envelopeRepository->clear($id);
 
         return $this->redirect(['index']);
     }
