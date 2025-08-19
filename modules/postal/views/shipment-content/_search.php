@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\ShipmentContentPostSearch $model */
+/** @var \app\modules\postal\models\search\ShipmentContentPostSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
