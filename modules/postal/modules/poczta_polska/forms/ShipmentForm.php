@@ -39,6 +39,12 @@ class ShipmentForm extends BaseShipmentForm
      */
     public array $buffers = [];
 
+    private const MASS_LIMITS = [
+        FormatType::VALUE_S => 500,
+        FormatType::VALUE_M => 1000,
+        FormatType::VALUE_L => 2000,
+    ];
+
 
     public function rules(): array
     {
@@ -51,6 +57,7 @@ class ShipmentForm extends BaseShipmentForm
             [['category'], 'in', 'range' => array_keys(self::getCategoriesNames())],
             [['format'], 'in', 'range' => array_keys(self::getFormatTypes())],
             [['description'], 'string', 'max' => 500],
+            [['mass'], 'validateMassByFormat']
         ];
     }
 
@@ -129,7 +136,6 @@ class ShipmentForm extends BaseShipmentForm
 
         $model->update(false);
 
-
         return true;
     }
 
@@ -159,6 +165,19 @@ class ShipmentForm extends BaseShipmentForm
     {
         parent::setModel($model);
         $this->description = $model->content->name;
+    }
+
+    public function validateMassByFormat(): void
+    {
+        $mass = (int)$this->mass;
+        $format = $this->format;
+
+        if (isset(self::MASS_LIMITS[$format])) {
+            $max = self::MASS_LIMITS[$format];
+            if ($mass > $max) {
+                $this->addError('mass', "Mass cannot exceed {$max} g for the selected format.");
+            }
+        }
     }
 
     public function getBufforsNames(): array
