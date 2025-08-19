@@ -59,7 +59,7 @@ class ProfileController extends Controller
      */
     public function actionView(int $id):string|Response
     {
-        $model = $this->profileRepository->getById($id);
+        $model = $this->profileRepository->getOne($id);
 
         if (!$model) {
             throw new NotFoundHttpException();
@@ -93,7 +93,7 @@ class ProfileController extends Controller
     public function actionUpdate(int $id):string|Response
     {
         $model = new ProfileForm();
-        $model->setProfilType($this->profileRepository->getById($id));
+        $model->setProfilType($this->profileRepository->getOne($id));
 
         if ($model->load(Yii::$app->request->post()) && $model->update($this->profileRepository)) {
 
