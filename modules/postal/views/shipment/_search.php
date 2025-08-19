@@ -1,10 +1,12 @@
 <?php
 
+use app\modules\postal\models\search\ShipmentPostSearch;
+use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\ShipmentPostSearch $model */
+/** @var ShipmentPostSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -25,6 +27,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content_id') ?>
 
+    <?= $form->field($model, 'buffer_id') ?>
+
     <?php // echo $form->field($model, 'creator_id') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
@@ -40,8 +44,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'api_data') ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('common', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('common', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton(Module::t('common', 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Module::t('common', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
