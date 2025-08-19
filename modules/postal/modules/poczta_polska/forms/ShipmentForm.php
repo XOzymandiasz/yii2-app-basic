@@ -2,11 +2,11 @@
 
 namespace app\modules\postal\modules\poczta_polska\forms;
 
-use app\modules\postal\forms\ShipmentForm as PostalShipmentForm;
+use app\modules\postal\forms\ShipmentForm as BaseShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\Module as BaseModule;
 use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
@@ -18,7 +18,7 @@ use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 
-class ShipmentForm extends PostalShipmentForm
+class ShipmentForm extends BaseShipmentForm
 {
 
     protected const CATEGORY_DEFAULT = KategoriaType::VALUE_PRIORYTETOWA;
@@ -150,7 +150,7 @@ class ShipmentForm extends PostalShipmentForm
         return PocztaPolskaCreateShipmentFactory::create($this);
     }
 
-    public function send(int $idBuffer, BufferRepository $repository): bool
+    public function send(int $idBuffer, EnvelopeRepository $repository): bool
     {
         return $repository->send($idBuffer);
     }
