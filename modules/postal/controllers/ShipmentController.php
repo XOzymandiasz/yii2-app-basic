@@ -3,8 +3,8 @@
 namespace app\modules\postal\controllers;
 
 use app\modules\postal\forms\ShipmentForm;
+use app\modules\postal\models\search\ShipmentPostSearch;
 use app\modules\postal\models\Shipment;
-use app\models\PostSearch;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
 use Throwable;
@@ -62,7 +62,7 @@ class ShipmentController extends Controller
 
     public function actionIndex(): string
     {
-        $searchModel = new PostSearch();
+        $searchModel = new ShipmentPostSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
