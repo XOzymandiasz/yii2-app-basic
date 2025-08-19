@@ -113,7 +113,7 @@ class EnvelopeService extends BaseService
 
     }
 
-    public function getBook(int $idEnvelope, bool $includeUnregistered): ?GetOutboxBookResponse
+    public function getSenderBook(int $idEnvelope, bool $includeUnregistered): ?GetOutboxBookResponse
     {
         try {
             $this->setResult($resultGetOutboxBook = $this->getSoapClient()->__soapCall('getOutboxBook', [
