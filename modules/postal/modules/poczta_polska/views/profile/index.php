@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use yii\data\DataProviderInterface;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -29,50 +30,50 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'label' => Module::t('poczta-polska', 'Profile Name'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getNazwaSkrocona();
+                'value' => function(ProfilType $model) {
+                    return $model->getNazwaSkrocona();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'Name'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getNazwa();
+                'value' => function(ProfilType $model) {
+                    return $model->getNazwa();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'Postal Code'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getKodPocztowy();
+                'value' => function(ProfilType $model) {
+                    return $model->getKodPocztowy();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'City'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getMiejscowosc();
+                'value' => function(ProfilType $model) {
+                    return $model->getMiejscowosc();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'Street'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getUlica();
+                'value' => function(ProfilType $model) {
+                    return $model->getUlica();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'House Number'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getNumerDomu();
+                'value' => function(ProfilType $model) {
+                    return $model->getNumerDomu();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'Apartment Number'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getNumerLokalu();
+                'value' => function(ProfilType $model) {
+                    return $model->getNumerLokalu();
                 }
             ],
             [
                 'label' => Module::t('poczta-polska', 'Country'),
-                'value' => function($dataProvider) {
-                    return $dataProvider->getKraj();
+                'value' => function(ProfilType $model) {
+                    return $model->getKraj();
                 }
             ],
             [
