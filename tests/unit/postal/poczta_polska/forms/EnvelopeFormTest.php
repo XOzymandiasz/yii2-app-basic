@@ -4,7 +4,7 @@ namespace tests\unit\postal\poczta_polska\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\modules\poczta_polska\forms\BufferForm;
-use app\modules\postal\modules\poczta_polska\repositories\BufferRepository;
+use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use Codeception\Test\Unit;
@@ -16,18 +16,18 @@ use yii\base\Model;
  * @property UnitTester $tester
  */
 
-class BufferFormTest extends Unit
+class EnvelopeFormTest extends Unit
 {
     use UnitModelTrait;
     protected BufferForm $model;
 
-    private BufferRepository $repository;
+    private EnvelopeRepository $repository;
     private ?ProfileRepository $profileRepository = null;
 
     public function _before(): void
     {
         parent::_before();
-        $this->repository = new BufferRepository(PocztaPolskaSenderOptions::testInstance());
+        $this->repository = new EnvelopeRepository(PocztaPolskaSenderOptions::testInstance());
         $this->model = new BufferForm();
     }
 
