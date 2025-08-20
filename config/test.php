@@ -2,8 +2,11 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
+use app\models\User;
 use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
+use yii\caching\DummyCache;
+use yii\caching\FileCache;
 
 /**
  * Application configuration shared by all test types
@@ -24,6 +27,9 @@ return [
             // send all mails to a file by default.
             'useFileTransport' => true,
             'messageClass' => 'yii\symfonymailer\Message'
+        ],
+        'cache' => [
+            'class' => FileCache::class,
         ],
         'assetManager' => [
             'basePath' => __DIR__ . '/../web/assets',
@@ -58,11 +64,15 @@ return [
     'modules' => [
         'postal' => [
             'class' => PostalModule::class,
+            'userClass' => User::class,
             'modules' => [
                 'poczta_polska' => [
                     'class' => PocztaPolskaModule::class,
                 ],
-            ]
+            ],
+            'refTables' => [
+                '{{%user}}' => 'id'
+            ],
         ]
 
     ],
