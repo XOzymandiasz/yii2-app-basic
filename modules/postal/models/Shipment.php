@@ -128,6 +128,27 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
         return $this->direction;
     }
 
+    public function isFinished(): bool
+    {
+        return !empty($this->finished_at);
+    }
+
+    public function isSent(): bool
+    {
+        return !empty($this->shipment_at);
+    }
+
+    public function getIsOutDirection(): bool
+    {
+        return $this->getDirection() === ShipmentDirectionInterface::DIRECTION_OUT;
+
+    }
+
+    public function getIsInDirection(): bool
+    {
+        return $this->getDirection() === ShipmentDirectionInterface::DIRECTION_IN;
+    }
+
     public function getDirectionName(): string
     {
         return static::getDirectionsNames()[$this->direction];
