@@ -174,4 +174,21 @@ class EnvelopeController extends Controller
         return $this->redirect(['index']);
     }
 
+
+    protected static function getStatusNavItems(string $activeStatus): array
+    {
+
+        $items = [];
+        foreach (EnvelopeSearch::getStatusNames() as $status => $name) {
+            $items[] = [
+                'label' => $name,
+                'url' => ['index', 'status' => $status],
+                'active' => $status === $activeStatus,
+            ];
+        }
+
+        return $items;
+    }
+
+
 }
