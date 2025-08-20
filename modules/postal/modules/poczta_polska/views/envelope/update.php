@@ -8,11 +8,11 @@ use yii\helpers\Html;
 /** @var BufferForm $model */
 /** @var array $profiles */
 
-$this->title = Module::t('poczta-polska', 'Update Poczta Polska Buffor');
+$this->title = Module::t('poczta-polska', 'Update Poczta Polska Buffer');
 $this->params['breadcrumbs'][] = ['label' => Module::t('poczta-polska', 'Poczta Polska Buffer'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="postal-poczta-polska-buffor-update">
+<div class="postal-poczta-polska-buffer-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
