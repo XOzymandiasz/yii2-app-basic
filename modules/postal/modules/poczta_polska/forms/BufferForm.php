@@ -27,6 +27,7 @@ class BufferForm extends Model
             [['dispatchOfficeId', 'profilId'], 'required'],
             [['!bufferId', 'dispatchOfficeId', 'profilId'], 'integer'],
             [['sendAt', 'name'], 'string'],
+            [['name'], 'string', 'max' => 100],
             [['isActive'], 'boolean'],
         ];
     }
