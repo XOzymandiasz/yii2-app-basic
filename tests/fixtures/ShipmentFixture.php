@@ -10,5 +10,5 @@ class ShipmentFixture extends ActiveFixture
 {
     public $modelClass = Shipment::class;
 
-    public $depends = [ShipmentContentFixture::class];
+    public $depends = [ShipmentContentFixture::class, UserFixture::class];
 }
