@@ -33,18 +33,16 @@ class AddressTypeForm extends Model
         return [
             [['name', 'city', 'postal_code', 'house_number', 'option'], 'required'],
             ['!direction', 'string'],
-            [['name', 'name_2'], 'string', 'max' => 60],
-            [['street'], 'string', 'max' => 255],
+            [['name', 'name_2'], 'string', 'max' => 100],
             [['option'], 'in', 'range' => array_keys(ShipmentForm::getDirectionsNames())],
-            [['house_number', 'apartment_number'], 'string', 'max' => 11],
-            [['city'], 'string', 'max' => 63],
-            [['postal_code'], 'string', 'max' => 10],
-            [['postal_code'], 'match', 'pattern' => '/^\d+$/', 'message' =>
-                Module::t('poczta-polska', 'Postal code must contain only digits.')],
-            [['country'], 'string', 'max' => 40],
-            [['phone'], 'string', 'max' => 20],
-            [['email'], 'string', 'max' => 50, 'min' => 6],
-            [['mobile', 'contact_person', 'taxID'], 'string'],
+            [['phone', 'mobile', 'contact_person'], 'string', 'max' => 15],
+            [['email'], 'string', 'min' => 5, 'max' => 320],
+            [['taxID'], 'string', 'max' => 15],
+            [['house_number'], 'string', 'max' => 20],
+            [['street', 'city'], 'string', 'max' => 60],
+            [['country'], 'string', 'max' => 2],
+            [['apartment_number', 'postal_code'], 'string', 'max' => 10],
+            ['email', 'email'],
         ];
     }
 
