@@ -6,7 +6,7 @@ use _support\UnitModelTrait;
 use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\models\ShipmentAddress;
-use app\modules\postal\models\ShipmentContent;
+use app\modules\postal\models\ShipmentAddressLink;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use Codeception\Test\Unit;
@@ -14,8 +14,10 @@ use tests\fixtures\ShipmentAddressFixture;
 use tests\fixtures\ShipmentAddressLinkFixture;
 use tests\fixtures\ShipmentContentFixture;
 use tests\fixtures\ShipmentFixture;
+use tests\fixtures\UserFixture;
 use UnitTester;
 use yii\base\Model;
+use yii\test\FixtureTrait;
 
 /**
  * @property UnitTester $tester
@@ -23,6 +25,7 @@ use yii\base\Model;
 class ShipmentFormTest extends Unit
 {
     use UnitModelTrait;
+    use FixtureTrait;
 
     private ShipmentForm $model;
 
@@ -42,13 +45,17 @@ class ShipmentFormTest extends Unit
                 'class' => ShipmentContentFixture::class,
                 'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
-            'shipment_address' => [
+            'address' => [
                 'class' => ShipmentAddressFixture::class,
                 'dataFile' => codecept_data_dir() . 'shipment_address.php',
             ],
-            'shipment_address_link' => [
+            'address_link' => [
                 'class' => ShipmentAddressLinkFixture::class,
                 'dataFile' => codecept_data_dir() . 'shipment_address_link.php',
+            ],
+            'user' => [
+                'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
@@ -96,16 +103,22 @@ class ShipmentFormTest extends Unit
 
     public function testSave(): void
     {
+        $user = $this->tester->grabFixture('user', 'user');
+        $content = $this->tester->grabFixture('content', 'content_active');
+        $sender = $this->tester->grabFixture('address', 'sender');
+        $receiver = $this->tester->grabFixture('address', 'receiver');
+
+
         $this->model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
         $this->model->number = 'TEST123456789';
         $this->model->provider = ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA;
         $this->model->guid = 'abcdefabcdefabcdefabcdefabcd';
-        $this->model->content_id = 1;
-        $this->model->creator_id = 1;
-        $this->model->sender_id = 1;
-        $this->model->receiver_id = 2;
+        $this->model->content_id = $content->id;
+        $this->model->creator_id = $user->id;
+        $this->model->sender_id = $sender->id;
+        $this->model->receiver_id = $receiver->id;
         $this->model->setSenderAddress(ShipmentAddress::findOne($this->model->sender_id));
-        $this->model->setSenderAddress(ShipmentAddress::findOne($this->model->receiver_id));
+        $this->model->setReceiverAddress(ShipmentAddress::findOne($this->model->receiver_id));
 
         $this->tester->assertNotNull($this->getModel());
         $this->thenSuccessValidate();
@@ -116,11 +129,77 @@ class ShipmentFormTest extends Unit
             'provider' => $this->model->provider,
             'content_id' => $this->model->content_id,
         ]);
+
+        $shipment = Shipment::find()->where(['guid' => $this->model->guid])->one();
+        $this->assertNotNull($shipment);
+
+        $this->tester->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $shipment->id,
+            'type'        => ShipmentDirectionInterface::DIRECTION_IN,
+            'address_id'  => $this->model->sender_id,
+        ]);
+        $this->tester->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $shipment->id,
+            'type'        => ShipmentDirectionInterface::DIRECTION_OUT,
+            'address_id'  => $this->model->receiver_id,
+        ]);
+    }
+
+    public function testSaveRelations(): void
+    {
+        $user = $this->tester->grabFixture('user', 'user');
+        $content = $this->tester->grabFixture('content', 'content_active');
+        $sender = $this->tester->grabFixture('address', 'sender');
+        $receiver = $this->tester->grabFixture('address', 'receiver');
+
+
+        $this->model->refTable = $user::class;
+        $this->model->refId = $user->id;
+        $this->model->direction = ShipmentDirectionInterface::DIRECTION_OUT;
+        $this->model->number = 'TEST123456789';
+        $this->model->provider = ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA;
+        $this->model->guid = 'abcdefabcdefabcdefabcdefabcd';
+        $this->model->content_id = $content->id;
+        $this->model->creator_id = $user->id;
+        $this->model->sender_id = $sender->id;
+        $this->model->receiver_id = $receiver->id;
+        $this->model->setSenderAddress(ShipmentAddress::findOne($this->model->sender_id));
+        $this->model->setReceiverAddress(ShipmentAddress::findOne($this->model->receiver_id));
+
+
+        $this->tester->assertSame(0, $user->getShipments()->count());
+        $this->tester->assertNotNull($this->getModel());
+        $this->thenSuccessValidate();
+        $this->thenSuccessSave();
+
+        $this->tester->seeRecord(Shipment::class, [
+            'number' => $this->model->number,
+            'provider' => $this->model->provider,
+            'content_id' => $this->model->content_id,
+        ]);
+
+        $shipment = Shipment::find()->where(['guid' => $this->model->guid])->one();
+        $this->assertNotNull($shipment);
+
+        $this->tester->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $shipment->id,
+            'type'        => ShipmentDirectionInterface::DIRECTION_IN,
+            'address_id'  => $this->model->sender_id,
+        ]);
+        $this->tester->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $shipment->id,
+            'type'        => ShipmentDirectionInterface::DIRECTION_OUT,
+            'address_id'  => $this->model->receiver_id,
+        ]);
+
+        $this->tester->assertSame(1, $user->getShipments()->count());
+        $this->tester->assertSame(1, $user->getShipmentsOut()->count());
+        $this->tester->assertSame(0, $user->getShipmentsIn()->count());
     }
 
     public function testSetModel()
     {
-        $model = $this->tester->grabFixture('shipment', 'shipment_1');
+        $model = $this->tester->grabFixture('shipment', 'shipment_in_PP');
 
         $this->model->setModel($model);
 
@@ -137,7 +216,7 @@ class ShipmentFormTest extends Unit
 
     public function testGetModel(): void
     {
-        $model = $this->tester->grabFixture('shipment', 'shipment_1');
+        $model = $this->tester->grabFixture('shipment', 'shipment_in_PP');
 
         $this->model->setModel($model);
 
@@ -177,20 +256,13 @@ class ShipmentFormTest extends Unit
 
     public function testDelete(): void
     {
-        $id = $this->tester->haveRecord(Shipment::class, [
-            'direction' => ShipmentDirectionInterface::DIRECTION_OUT,
-            'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
-            'content_id' => ShipmentContent::findOne(['id' => 1])->id,
-            'creator_id' => 1,
-            'number' => 'RR123456789PL'
-        ]);
-        $this->tester->seeRecord(Shipment::class, ['id' => $id]);
-
-        $model = Shipment::findOne($id);
+        $shipment = $this->tester->grabFixture('shipment', 'shipment_in_PP');
+        $this->tester->seeRecord(Shipment::class, ['id' => $shipment->id]);
+        $model = Shipment::findOne($shipment->id);
         $this->assertNotNull($model);
 
         $this->tester->assertNotFalse($model->delete());
-        $this->tester->dontSeeRecord(Shipment::class, ['id' => $id]);
+        $this->tester->dontSeeRecord(Shipment::class, ['id' => $shipment->id]);
     }
 
     public function getModel(): Model
