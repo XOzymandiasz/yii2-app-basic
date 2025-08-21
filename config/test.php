@@ -3,9 +3,10 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
 use app\models\User;
+use app\modules\postal\components\ShipmentRelationComponent;
+use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module as PostalModule;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
-use yii\caching\DummyCache;
 use yii\caching\FileCache;
 
 /**
@@ -64,15 +65,21 @@ return [
     'modules' => [
         'postal' => [
             'class' => PostalModule::class,
-            'userClass' => User::class,
             'modules' => [
                 'poczta_polska' => [
                     'class' => PocztaPolskaModule::class,
                 ],
             ],
-            'refTables' => [
-                '{{%user}}' => 'id'
+            'shipmentRelation' => [
+                'class' => ShipmentRelationComponent::class,
+                'userClass' => User::class,
+                'allowRelated' => [
+                    User::class
+                ],
             ],
+            'shipmentUrl' => [
+                'class' => ShipmentUrlComponent::class
+            ]
         ]
 
     ],

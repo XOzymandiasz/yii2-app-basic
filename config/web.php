@@ -4,6 +4,8 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 use app\models\User;
+use app\modules\postal\components\ShipmentRelationComponent;
+use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
 use edzima\teryt\Module as TerytModule;
@@ -78,11 +80,20 @@ $config = [
         ],
         'postal' => [
             'class' => Module::class,
-            'userClass' => User::class,
             'modules' => [
                 'poczta_polska' => [
                     'class' => PocztaPolskaModule::class,
                 ],
+            ],
+            'shipmentRelation' => [
+                'class' => ShipmentRelationComponent::class,
+                'userClass' => User::class,
+                'allowRelated' => [
+                    User::class
+                ],
+            ],
+            'shipmentUrl' => [
+                'class' => ShipmentUrlComponent::class
             ]
         ]
 
