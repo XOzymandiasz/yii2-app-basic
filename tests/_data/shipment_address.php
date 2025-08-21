@@ -3,7 +3,7 @@
 use app\modules\postal\models\ShipmentDirectionInterface;
 
 return [
-    'address_1' => [
+    'sender' => [
         'id' => 1,
         'name' => 'Jan Kowalski',
         'postal_code' => '00123',
@@ -21,22 +21,40 @@ return [
         'email' => 'jan@example.com',
         'taxID' => '1234567890',
     ],
-    'address_2' => [
+    'receiver' => [
         'id' => 2,
+        'name' => 'Kowal Janowski',
+        'postal_code' => '33210',
+        'city' => 'Kraków',
+        'country' => 'PL',
+        'option' => ShipmentDirectionInterface::DIRECTION_OUT,
+        'city_id' => 101,
+        'street' => 'Piastowska',
+        'apartment_number' => '1',
+        'house_number' => '1',
+        'name_2' => 'Kowal',
+        'phone' => '123456789',
+        'mobile' => '987654321',
+        'contact_person' => '123456789',
+        'email' => 'kowal@example.com',
+        'taxID' => '1234567890',
+    ],
+    'address_only_required' => [
+        'id' => 3,
         'name' => 'Firma ABC',
         'house_number' => '8',
         'postal_code' => '54321',
         'city' => 'Kraków',
         'country' => 'PL',
         'option' => ShipmentDirectionInterface::DIRECTION_OUT,
-        'city_id' => 202,
-        'street' => 'Floriańska',
-        'apartment_number' => '10',
+        'city_id' => null,
+        'street' => null,
+        'apartment_number' => null,
         'name_2' => null,
         'phone' => null,
         'mobile' => null,
-        'contact_person' => '011222333',
-        'email' => 'kontakt@firmaabc.pl',
-        'taxID' => '9876543210',
+        'contact_person' => null,
+        'email' => null,
+        'taxID' => null,
     ],
 ];

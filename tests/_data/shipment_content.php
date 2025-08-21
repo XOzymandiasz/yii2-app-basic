@@ -1,16 +1,11 @@
 <?php
 return [
-    'content_1' => [
+    'content_active' => [
         'id' => 1,
         'name' => 'Documents',
         'is_active' => 1,
     ],
-    'content_2' => [
-        'id' => 2,
-        'name' => 'Electronics',
-        'is_active' => 1,
-    ],
-    'content_3' => [
+    'content_unactive' => [
         'id' => 3,
         'name' => 'Clothing',
         'is_active' => 0,
