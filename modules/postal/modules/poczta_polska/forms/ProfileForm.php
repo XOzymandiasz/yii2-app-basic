@@ -21,7 +21,7 @@ class ProfileForm extends AddressTypeForm
         return array_merge(parent::rules(), [
             [['country', 'street', 'profileName'], 'required'],
             [['!idProfil'], 'integer'],
-            [['fax', 'profileName'], 'string', 'max' => 30],
+            [['fax', 'profileName'], 'string', 'max' => 100],
             [['mpk'], 'string', 'max' => 50],
         ]);
     }
