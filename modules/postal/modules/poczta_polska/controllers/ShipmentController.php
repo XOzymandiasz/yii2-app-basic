@@ -129,7 +129,8 @@ class ShipmentController extends Controller
 
         if (empty($model->buffers)) {
             Yii::$app->session->setFlash(
-                'danger', PostalModule::t('poczta-polska', 'Not found buffor. Create before Add Shipment attemp'));
+                'danger', PostalModule::t('poczta-polska',
+                'Not found buffor. Create before Add Shipment attemp'));
             return $this->redirect(['buffer/create']);
         }
 
