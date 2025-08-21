@@ -14,6 +14,8 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\RangeNotSatisfiableHttpException;
@@ -27,6 +29,34 @@ class ShipmentController extends Controller
 
     public ?ShipmentRepository $shipmentRepository = null;
     public ?EnvelopeRepository $bufferRepository = null;
+
+    public function behaviors(): array
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                        'get-dispatch-offices-names' => ['POST'],
+                        'download-label' => ['GET']
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create-from-shipment', 'update', 'delete', 'download-label'],
+                    'rules' => [
+                        [
+                            'actions' => ['create-from-shipment', 'update', 'delete', 'download-label'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]
+                    ],
+                ]
+            ]
+        );
+    }
 
     public function init(): void
     {

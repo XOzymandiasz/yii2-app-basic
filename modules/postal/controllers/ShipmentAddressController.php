@@ -9,6 +9,7 @@ use app\modules\postal\Module;
 use Throwable;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -19,9 +20,6 @@ use yii\web\Response;
  */
 class ShipmentAddressController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
     public function behaviors(): array
     {
         return array_merge(
@@ -33,6 +31,17 @@ class ShipmentAddressController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]
+                    ],
+                ]
             ]
         );
     }

@@ -22,9 +22,6 @@ use yii\web\Response;
  */
 class ShipmentController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
     public function behaviors(): array
     {
         return array_merge(
@@ -46,10 +43,6 @@ class ShipmentController extends Controller
                             'roles' => ['@'],
                         ]
                     ],
-                    'denyCallback' => function () {
-                        Yii::$app->session->setFlash('warning', Module::t('postal', 'You must be logged in to view this page.'));
-                        return Yii::$app->response->redirect(['/postal/poczta-polska-shipment-check/shipment/index']);
-                    }
                 ]
             ]
         );

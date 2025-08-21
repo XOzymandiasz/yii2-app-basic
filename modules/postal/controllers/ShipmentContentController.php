@@ -5,9 +5,7 @@ namespace app\modules\postal\controllers;
 use app\modules\postal\forms\ContentTypeForm;
 use app\modules\postal\models\search\ShipmentContentPostSearch;
 use app\modules\postal\models\ShipmentContent;
-use app\modules\postal\Module;
 use Throwable;
-use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -39,10 +37,6 @@ class ShipmentContentController extends Controller
                             'roles' => ['@'],
                         ]
                     ],
-                    'denyCallback' => function () {
-                        Yii::$app->session->setFlash('warning', Module::t('common', 'You must be logged in to view this page.'));
-                        return Yii::$app->response->redirect(['/postal/shipment-content/index']);
-                    }
                 ]
             ]
         );

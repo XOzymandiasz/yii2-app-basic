@@ -22,6 +22,34 @@ class EnvelopeController extends Controller
     public ?EnvelopeRepository $envelopeRepository = null;
     public ?ProfileRepository $profileRepository = null;
 
+    public function behaviors(): array
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                        'get-dispatch-offices-names' => ['POST'],
+                        'sender-book' => ['GET']
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create', 'update', 'delete', 'sender-book'],
+                    'rules' => [
+                        [
+                            'actions' => ['create', 'update', 'delete', 'sender-book'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]
+                    ],
+                ]
+            ]
+        );
+    }
+
     public function init(): void
     {
         parent::init();

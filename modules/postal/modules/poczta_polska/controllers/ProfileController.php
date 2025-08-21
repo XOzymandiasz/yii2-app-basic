@@ -8,6 +8,8 @@ use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -20,6 +22,32 @@ class ProfileController extends Controller
 {
 
     public ?ProfileRepository $profileRepository = null;
+
+    public function behaviors(): array
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create', 'update'],
+                    'rules' => [
+                        [
+                            'actions' => ['create', 'update'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]
+                    ],
+                ]
+            ]
+        );
+    }
 
     public function init(): void
     {
