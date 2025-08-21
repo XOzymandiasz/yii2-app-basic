@@ -38,7 +38,7 @@ class AddressFormTest extends Unit
         ];
     }
 
-    public function testValidationRequiredFields(): void
+    public function testRequiredFields(): void
     {
         $this->model->name = "Jan Kowalski";
         $this->model->house_number = "1";
@@ -58,23 +58,53 @@ class AddressFormTest extends Unit
         $this->thenSeeError('Postal Code cannot be blank.', 'postal_code');
     }
 
-    public function testValidationTooLong(): void
+    public function testTooLong(): void
     {
-        $this->model->name = str_repeat('a', 61);
-        $this->model->house_number = str_repeat('b', 13);
-        $this->model->city = str_repeat('c', 64);
-        $this->model->postal_code = str_repeat('1',20);
-
+        $this->model->name = str_repeat('a', 101);
+        $this->model->name_2 = str_repeat('a', 101);
+        $this->model->house_number = str_repeat('b', 21);
+        $this->model->phone = str_repeat('b', 16);
+        $this->model->mobile = str_repeat('f', 16);
+        $this->model->contact_person = str_repeat('g', 16);
+        $this->model->email = str_repeat('g', 321);
+        $this->model->taxID = str_repeat('g', 16);
+        $this->model->street = str_repeat('g', 61);
+        $this->model->city = str_repeat('g', 61);
+        $this->model->country = str_repeat('g', 3);
+        $this->model->apartment_number = str_repeat('a', 11);
+        $this->model->postal_code = str_repeat('a', 11);
 
         $this->thenUnsuccessValidate();
 
-        $this->thenSeeError('Name should contain at most 60 characters.', 'name');
-        $this->thenSeeError('House Number should contain at most 11 characters.', 'house_number');
-        $this->thenSeeError('City should contain at most 63 characters.', 'city');
+        $this->thenSeeError('Name should contain at most 100 characters.', 'name');
+        $this->thenSeeError('Secondary Name should contain at most 100 characters.', 'name_2');
+        $this->thenSeeError('Phone should contain at most 15 characters.', 'phone');
+        $this->thenSeeError('Mobile should contain at most 15 characters.', 'mobile');
+        $this->thenSeeError('Contact Person should contain at most 15 characters.', 'contact_person');
+        $this->thenSeeError('Email should contain at most 320 characters.', 'email');
+        $this->thenSeeError('Tax ID should contain at most 15 characters.', 'taxID');
+        $this->thenSeeError('House Number should contain at most 20 characters.', 'house_number');
+        $this->thenSeeError('City should contain at most 60 characters.', 'city');
+        $this->thenSeeError('Street should contain at most 60 characters.', 'street');
+        $this->thenSeeError('Country should contain at most 2 characters.', 'country');
         $this->thenSeeError('Postal Code should contain at most 10 characters.', 'postal_code');
+        $this->thenSeeError('Apartment Number should contain at most 10 characters.', 'apartment_number');
     }
 
-    public function testValidationEmailTooShort(): void
+    public function testOptionOutOfRange(): void
+    {
+        $this->model->name = "Firma";
+        $this->model->house_number = "1";
+        $this->model->postal_code = "11111";
+        $this->model->city = "Miasto";
+        $this->model->option = "OUTOFRANGE";
+
+        $this->thenUnsuccessValidate();
+
+        $this->thenSeeError('Option is invalid.', 'option');
+    }
+
+    public function testEmailTooShort(): void
     {
         $this->model->name = "Firma";
         $this->model->house_number = "1";
@@ -84,19 +114,20 @@ class AddressFormTest extends Unit
 
         $this->thenUnsuccessValidate();
 
-        $this->thenSeeError('Email should contain at least 6 characters.', 'email');
+        $this->thenSeeError('Email should contain at least 5 characters.', 'email');
      }
 
-    public function testValidationInvalidPostalCode(): void
+    public function testIncorrectEmail(): void
     {
         $this->model->name = "Firma";
         $this->model->house_number = "1";
-        $this->model->postal_code = "11-111";
+        $this->model->postal_code = "11111";
         $this->model->city = "Miasto";
+        $this->model->email = "@@@@@";
 
         $this->thenUnsuccessValidate();
 
-        $this->thenSeeError('Postal code must contain only digits.', 'postal_code');
+        $this->thenSeeError('Email is not a valid email address.', 'email');
     }
 
     public function testSave(): void
@@ -136,7 +167,7 @@ class AddressFormTest extends Unit
 
     public function testSetModel(): void
     {
-        $model = $this->tester->grabFixture('address', 'address_1');
+        $model = $this->tester->grabFixture('address', 'sender');
 
         $this->model->setModel($model);
 
@@ -157,7 +188,7 @@ class AddressFormTest extends Unit
 
     public function testGetModel(): void
     {
-        $model = $this->tester->grabFixture('address', 'address_1');
+        $model = $this->tester->grabFixture('address', 'sender');
 
         $this->model->setModel($model);
 
