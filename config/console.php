@@ -1,5 +1,7 @@
 <?php
 
+use app\models\User;
+use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\Module as PostalModule;
 
 $params = require __DIR__ . '/params.php';
@@ -41,6 +43,12 @@ $config = [
     'modules' => [
         'postal' => [
             'class' => PostalModule::class,
+
+            'shipmentRelation' => [
+                'class' => ShipmentRelationComponent::class,
+                'userClass' => User::class,
+            ],
+
         ],
     ]
 ];

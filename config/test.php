@@ -70,16 +70,16 @@ return [
                     'class' => PocztaPolskaModule::class,
                 ],
             ],
+
+
             'shipmentRelation' => [
                 'class' => ShipmentRelationComponent::class,
                 'userClass' => User::class,
-                'allowRelated' => [
-                    User::class
-                ],
             ],
             'shipmentUrl' => [
-                'class' => ShipmentUrlComponent::class
-            ]
+                'class' => ShipmentUrlComponent::class,
+            ],
+
         ]
 
     ],
