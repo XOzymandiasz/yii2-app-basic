@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\LoginForm;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -63,6 +65,11 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    public function actionCreateUserShipmentIn(): Response
+    {
+        return $this->redirect(['/postal/shipment/create-in', 'refTable' => User::tableName(), 'refId' => Yii::$app->request->get('id')]);
+    }
+
     /**
      * Login action.
      *
@@ -122,4 +129,5 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
 }
