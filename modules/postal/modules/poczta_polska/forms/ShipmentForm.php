@@ -5,7 +5,7 @@ namespace app\modules\postal\modules\poczta_polska\forms;
 use app\modules\postal\forms\ShipmentForm as BaseShipmentForm;
 use app\modules\postal\models\Shipment;
 use app\modules\postal\Module as BaseModule;
-use app\modules\postal\modules\poczta_polska\builders\PocztaPolskaCreateShipmentFactory;
+use app\modules\postal\modules\poczta_polska\builders\CreateShipmentFactory;
 use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\FormatType;
@@ -153,7 +153,7 @@ class ShipmentForm extends BaseShipmentForm
 
     public function createShipment(): PrzesylkaType
     {
-        return PocztaPolskaCreateShipmentFactory::create($this);
+        return CreateShipmentFactory::create($this);
     }
 
     public function send(int $idBuffer, EnvelopeRepository $repository): bool
