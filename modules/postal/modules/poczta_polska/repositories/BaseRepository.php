@@ -10,6 +10,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
+use yii\di\Instance;
 
 abstract class BaseRepository extends Component
 {
@@ -72,32 +73,16 @@ abstract class BaseRepository extends Component
      */
     protected function getCache(): CacheInterface
     {
-        if(is_string($this->cache)){
-            /**
-             * @var CacheInterface $cache
-             */
-            $cache = Yii::$app->get($this->cache);
-            return $this->cache = $cache;
-        }
-
-        if(is_array($this->cache)){
-            /**
-             * @var CacheInterface $cache
-             */
-            $cache = Yii::createObject($this->cache);
-            return $this->cache = $cache;
-        }
-
+        $this->cache = Instance::ensure($this->cache, CacheInterface::class);
         return $this->cache;
     }
 
     /**
      * @throws InvalidConfigException
      */
-    protected function getCacheValue(string $key, $default = null, array $params = [])
+    protected function getCacheValue(array $key, $default = null)
     {
-        $cacheKey = $this->buildCacheKey($key, $params);
-        $value = $this->cache()->get($cacheKey);
+        $value = $this->getCache()->get($key);
 
         return $value === false ? $default : $value;
     }
@@ -116,9 +101,9 @@ abstract class BaseRepository extends Component
     /**
      * @throws InvalidConfigException
      */
-    protected function deleteCacheValue(string $key, array $params = []): bool
+    protected function deleteCacheValue(array $key): bool
     {
-        return $this->cache()->delete($this->buildCacheKey($key, $params));
+        return $this->getCache()->delete($key);
     }
 
     protected function buildCacheKey(string $key, array $params = []): array
