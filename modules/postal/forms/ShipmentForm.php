@@ -9,6 +9,7 @@ use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
 use app\modules\postal\Module;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -29,6 +30,8 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public ?string $finished_at = null;
     public ?string $shipment_at = null;
     public ?string $api_data = null;
+    public ?string $refTable = null;
+    public ?string $refId = null;
 
     private ?Shipment $model = null;
 
@@ -82,9 +85,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         return $load;
     }
 
-    /**
-     * @throws Exception
-     */
     public function save(bool $validate = true): bool
     {
         if ($validate && !$this->validate()) {
