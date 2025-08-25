@@ -1,10 +1,10 @@
 <?php
 
-namespace tests\_support\models;
+namespace tests\_support\stubs;
 
 use yii\db\ActiveRecord;
 
-class WeirdTable extends ActiveRecord
+class WeirdTableStub extends ActiveRecord
 {
     public static function tableName(): string
     {

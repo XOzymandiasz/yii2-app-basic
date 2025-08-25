@@ -6,9 +6,9 @@ use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\ModuleEnsureTrait;
 use Codeception\Test\Unit;
 use stdClass;
-use tests\_support\models\WeirdTable;
 use tests\fixtures\ShipmentFixture;
 use tests\fixtures\UserFixture;
+use tests\_support\stubs\WeirdTableStub;
 use UnitTester;
 use yii\base\InvalidArgumentException;
 
@@ -116,8 +116,8 @@ class ShipmentRelationTest extends Unit
 
     public function testGetRelatedTableNameWithWeirdTable(): void
     {
-        $this->component->allowRelated[] = WeirdTable::class;
-        $result = $this->component->getRelatedTableName(WeirdTable::class);
+        $this->component->allowRelated[] = WeirdTableStub::class;
+        $result = $this->component->getRelatedTableName(WeirdTableStub::class);
 
         $this->tester->assertSame('{{%shipment_userlog}}', $result);
     }
