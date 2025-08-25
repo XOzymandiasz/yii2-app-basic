@@ -6,7 +6,10 @@ use app\models\User;
 use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module as PostalModule;
+use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
+use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use yii\caching\FileCache;
 
 /**
@@ -68,10 +71,24 @@ return [
             'modules' => [
                 'poczta_polska' => [
                     'class' => PocztaPolskaModule::class,
+                    'components' => [
+                        'repositoryFactory' => [
+                            'class' => RepositoryFactory::class,
+                            'repositoryConfig' => [
+                                'cache' => [
+                                    'class' => FileCache::class
+                                ]
+                            ]
+                        ],
+                    ],
+                    'tracker' => [
+                        'class' => PocztaPolskaTracker::class,
+                    ],
+                    'senderOptions' => [
+                        'class' => PocztaPolskaSenderOptions::class,
+                    ]
                 ],
             ],
-
-
             'shipmentRelation' => [
                 'class' => ShipmentRelationComponent::class,
                 'userClass' => User::class,

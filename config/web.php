@@ -7,8 +7,10 @@ use app\models\User;
 use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module;
+use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
 use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
+use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use edzima\teryt\Module as TerytModule;
 use yii\bootstrap5\BootstrapAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
@@ -94,9 +96,13 @@ $config = [
                                 ]
                             ]
                         ],
-
+                    ],
+                    'tracker' => [
+                        'class' => PocztaPolskaTracker::class,
+                    ],
+                    'senderOptions' => [
+                        'class' => PocztaPolskaSenderOptions::class,
                     ]
-
                 ],
             ],
             'shipmentRelation' => [
