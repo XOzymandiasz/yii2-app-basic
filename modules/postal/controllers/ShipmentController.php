@@ -75,10 +75,6 @@ class ShipmentController extends Controller
         ]);
     }
 
-
-    /**
-     * @throws Exception
-     */
     public function actionCreateOut(?string $refTo = null, array $refColumns = []): Response|string
     {
         $model = new ShipmentForm();
@@ -88,10 +84,6 @@ class ShipmentController extends Controller
         if ($model->load($this->request->post())) {
             if ($model->save()) {
                 $this->module->afterCreateOutShipment($model->getModel());
-                $url = $this->module->getAfterCreateURL($model->getModel()->id, $model->getModel()->provider);
-                if ($url) {
-                    return $this->redirect($url);
-                }
                 return $this->redirect(['index']);
             }
         }
@@ -105,20 +97,20 @@ class ShipmentController extends Controller
         ]);
     }
 
-
-    /**
-     * @throws Exception
-     */
     public function actionCreateIn(): Response|string
     {
         $model = new ShipmentForm();
         $model->setScenario(ShipmentForm::SCENARIO_DIRECTION_IN);
         $model->direction = ShipmentDirectionInterface::DIRECTION_IN;
         $model->creator_id = Yii::$app->user->id;
-        $model->finished_at = date(DATE_ATOM);
+        //$model->finished_at = date(DATE_ATOM);
+        $model->finished_at = date('Y-m-d H-i-s');
         if ($model->load($this->request->post()) && $model->save()) {
             $this->module->afterCreateInShipment($model->getModel());
-            $url = $this->module->getAfterCreateURL($model->getModel()->id, $model->getModel()->provider);
+            $url = $this->module->shipmentUrl->getAfterCreateURL(
+                $model->getModel()->id,
+                $model->getModel()->provider
+            );
             if ($url) {
                 return $this->redirect($url);
             }
@@ -132,7 +124,6 @@ class ShipmentController extends Controller
 
 
     /**
-     * @throws Exception
      * @throws NotFoundHttpException
      */
     public function actionUpdate(int $id): Response|string
@@ -141,22 +132,24 @@ class ShipmentController extends Controller
         $model->setModel($this->findModel($id));
 
         if ($model->load($this->request->post()) && $model->save()) {
-            if($model->direction == ShipmentDirectionInterface::DIRECTION_IN) {
-                $url = $this->module->getAfterUpdateURL($model->getModel()->buffer_id, $model->getModel()->guid, $model->getModel()->provider);
+            if ($model->direction == ShipmentDirectionInterface::DIRECTION_IN) {
+                $url = $this->module->shipmentUrl->getAfterUpdateURL(
+                    $model->getModel()->buffer_id,
+                    $model->getModel()->guid,
+                    $model->getModel()->provider
+                );
                 if ($url) {
                     return $this->redirect($url);
                 }
                 return $this->redirect(['view', 'id' => $id]);
-            }
-            elseif ($model->direction == ShipmentDirectionInterface::DIRECTION_OUT) {
+            } elseif ($model->direction == ShipmentDirectionInterface::DIRECTION_OUT) {
                 $url = $this->module->getAfterUpdateURL($model->getModel()->buffer_id, $model->getModel()->guid, $model->getModel()->provider);
                 if ($url) {
                     return $this->redirect($url);
                 }
                 return $this->redirect(['view', 'id' => $id]);
 
-            }
-            else{
+            } else{
                 throw new NotFoundHttpException();
             }
         }
