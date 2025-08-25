@@ -2,43 +2,46 @@
 
 namespace tests\unit\models;
 
-use app\models\User;
+use Codeception\Test\Unit;
+use tests\fixtures\UserFixture;
+use tests\fixtures\ShipmentFixture;
+use UnitTester;
 
-class UserTest extends \Codeception\Test\Unit
+/**
+ * @property UnitTester $tester
+ */
+class UserTest extends Unit
 {
-    public function testFindUserById()
+    public function _fixtures(): array
     {
-        verify($user = User::findIdentity(100))->notEmpty();
-        verify($user->username)->equals('admin');
-
-        verify(User::findIdentity(999))->empty();
+        return [
+            'user' => [
+                'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
+            'shipment' => [
+                'class' => ShipmentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment.php'
+            ],
+        ];
     }
 
-    public function testFindUserByAccessToken()
+
+    public function testGetShipments()
     {
-        verify($user = User::findIdentityByAccessToken('100-token'))->notEmpty();
-        verify($user->username)->equals('admin');
+        $user = $this->tester->grabFixture('user', 'user');
 
-        verify(User::findIdentityByAccessToken('non-existing'))->empty();        
-    }
 
-    public function testFindUserByUsername()
-    {
-        verify($user = User::findByUsername('admin'))->notEmpty();
-        verify(User::findByUsername('not-admin'))->empty();
-    }
+        $this->tester->assertSame(0, $user->getShipments()->count());
 
-    /**
-     * @depends testFindUserByUsername
-     */
-    public function testValidateUser()
-    {
-        $user = User::findByUsername('admin');
-        verify($user->validateAuthKey('test100key'))->notEmpty();
-        verify($user->validateAuthKey('test102key'))->empty();
 
-        verify($user->validatePassword('admin'))->notEmpty();
-        verify($user->validatePassword('123456'))->empty();        
+        $shipment = $this->tester->grabFixture('shipment', 'shipment_in_PP');
+        $shipment->saveAllowedRelated($user::class, $user->id);
+
+
+        $this->tester->assertSame(1, $user->getShipments()->count());
+        $this->tester->assertSame(1, $user->getShipmentsIn()->count());
+        $this->tester->assertSame(0, $user->getShipmentsOut()->count());
     }
 
 }
