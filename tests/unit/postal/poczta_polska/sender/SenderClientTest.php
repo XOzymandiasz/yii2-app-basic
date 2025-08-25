@@ -3,14 +3,13 @@
 namespace unit\postal\poczta_polska\sender;
 
 
-use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\GabarytType;
 use app\modules\postal\modules\poczta_polska\sender\EnumType\KategoriaType;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderClassMap;
-use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Add;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Clear;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Create;
+use app\modules\postal\modules\poczta_polska\sender\ServiceType\Delete;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Get;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Hello;
 use app\modules\postal\modules\poczta_polska\sender\ServiceType\Send;
@@ -40,6 +39,7 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPolecona
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelopeResponseType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor;
 use Codeception\Test\Unit;
 use Dotenv\Dotenv;
 use InvalidArgumentException;
@@ -159,8 +159,6 @@ class SenderClientTest extends Unit
                 ->setAdres($this->customerAddressType)
                 ->setGuid('SHORT GUID');
         });
-
-
     }
 
     public function testAddShipmentWithInvalidGuid(): void
@@ -180,22 +178,23 @@ class SenderClientTest extends Unit
         $this->tester->assertSame('Guid jest nieprawidłowy', $error[0]->getErrorDesc());
     }
 
-
-
-    public function testCorrectAddShipment(): void
+    public function testCorrectAddShipmentAndClear(): void
     {
         $this->giveGuids(1);
-        codecept_debug($this->guids);
         $this->giveAddressType();
         $this->giveProfilType();
         $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
+        $add = new Add($this->getDefaultOptions());
+        $clear = new Clear($this->getDefaultOptions());
 
-        $repo = new ShipmentRepository(PocztaPolskaSenderOptions::testInstance());
-        $response = $repo->addShipment($this->shipmentType, null);
+        $addResponse = $add->addShipment(new AddShipment([$this->shipmentType], null));
+        $clearResponse = $clear->clearEnvelopeByGuids($this->guids, null);
 
-        codecept_debug($response);
+        $this->tester->assertNotNull($addResponse);
+        $this->tester->assertEmpty($addResponse->getRetval()[0]->getError());
+        $this->tester->assertNotNull($clearResponse);
+        $this->tester->assertEmpty($clearResponse->getError());
 
-        $this->tester->assertNotNull($response);
     }
 
     public function testAddMultipleShipments(): void
@@ -210,11 +209,53 @@ class SenderClientTest extends Unit
             $shipments[] = $this->shipmentType;
         }
 
-
         $response = $this->addShipment($shipments, null);
 
-
         $this->tester->assertNotNull($response);
+    }
+
+    public function testCreateProfileAndDelete(): void
+    {
+        $this->giveProfilType();
+        $create = new Create($this->getDefaultOptions());
+        $get = new Get($this->getDefaultOptions());
+        $update = new Update($this->getDefaultOptions());
+        $delete = new Delete($this->getDefaultOptions());
+
+        $accounts = $get->getAccountList(new GetAccountList())->getAccount();
+        /**
+         * @var AccountType $account
+         */
+        $account = reset($accounts);
+
+        $createResponse = $create->createProfil($this->profileType);
+        $profiles = $get->getProfilList(new GetProfilList())->getProfil();
+
+        $account->setProfil($profiles);
+        $updateResponse = $update->updateAccount($account);
+
+
+        $profileId = 0;
+        foreach ($profiles as $profile) {
+            if ($profile->getNazwa() == 'CodeceptTest')
+            {
+                $profileId = $profile->getIdProfil();
+                break;
+            }
+        }
+
+        $deleteResponse = $delete->deleteReturnDocumentsProfile($profileId); //@todo: brak uprawnien
+
+        codecept_debug($deleteResponse);
+
+        $this->tester->assertNotNull($accounts);
+        $this->tester->assertNotNull($createResponse);
+        $this->tester->assertEmpty($createResponse->getError());
+        $this->tester->assertNotNull($updateResponse);
+        $this->tester->assertEmpty($updateResponse->getError());
+        $this->tester->assertNotNull($deleteResponse);
+        $this->tester->assertEmpty($deleteResponse->getError());
+        $this->tester->assertEmpty(array_diff($profiles, $account->getProfil()));
     }
 
     public function testPrintParcel(): void
@@ -273,14 +314,8 @@ class SenderClientTest extends Unit
     public function testGetBufforsList(): void
     {
         $getService = new Get($this->getDefaultOptions());
-        $buforsResponse = $getService
-            ->getEnvelopeBuforList();
-        codecept_debug($buforsResponse);
 
-        codecept_debug($getService->getEnvelopeList(
-            new GetEnvelopeList('2025-01-01', '2025-12-31')
-        ));
-
+        codecept_debug($getService->getEnvelopeList('2024-01-01','2026-01-01'));
     }
 
     public function testClearAllBuffors(): void
@@ -342,13 +377,35 @@ class SenderClientTest extends Unit
         $this->tester->assertSame('Test Buffor One', $createdBufforOne->getOpis());
     }
 
+    public function testUpdateEnvelopeBufor(): void
+    {
+        $get = new Get($this->getDefaultOptions());
+        $update = new Update($this->getDefaultOptions());
+
+        /**
+         * @var BuforType[] $buffers
+         */
+        $buffers = $get->getEnvelopeBuforList()->getBufor();
+        $buffer = reset($buffers);
+
+        $buffer->setOpis('Test Update Buffer One');
+
+        codecept_debug($buffer->getIdBufor());
+
+        $response = $update->updateEnvelopeBufor([$buffer]);
+
+        //codecept_debug($response);
+        codecept_debug($response->getError());
+
+
+    }
 
     public function testSendEnvelope()
     {
         $this->giveGuids(1);
         $this->giveAddressType();
         $this->giveProfilType();
-        $this->givePrzesylkaPoleconaKrajowaType($this->guids[0], '00259007730771664228');
+        $this->givePrzesylkaPoleconaKrajowaType($this->guids[0]);
 
         $bufforOne = new BuforType();
         $bufforOne->setIdBufor(1)
@@ -365,11 +422,11 @@ class SenderClientTest extends Unit
         $urzadNadania = $get->getUrzedyNadania(new GetUrzedyNadania())->getUrzedyNadania()[0]->getUrzadNadania();
 
         $addResponse = $this->addShipment([$this->shipmentType], $bufforResponse[0]->getIdBufor());
-        $sendEnvelopeResponse = $this->sendEnvelope($bufforResponse[0]->getIdBufor(), $urzadNadania);
+        $sendEnvelopeResponse = $this->docker-sendEnvelope($bufforResponse[0]->getIdBufor(), $urzadNadania);
         $envelopeId = $sendEnvelopeResponse->getIdEnvelope();
 
-        $outboxBookResponse = $get->getOutboxBook(new GetOutboxBook($envelopeId));
-        file_put_contents('outboxBookResponse.pdf', $outboxBookResponse->getPdfContent());
+        //$outboxBookResponse = $get->getOutboxBook($envelopeId, false);
+        //file_put_contents('outboxBookResponse.pdf', $outboxBookResponse->getPdfContent());
 
         $this->tester->assertNotFalse($addResponse);
         $this->tester->assertNotFalse($sendEnvelopeResponse);
@@ -424,32 +481,6 @@ class SenderClientTest extends Unit
         $this->tester->assertNotFalse($sendEnvelopeResponse);
         $this->tester->assertNotNull($envelopeId);
 
-    }
-
-    public function testCreateProfile(): void
-    {
-        $this->giveProfilType();
-        $create = new Create($this->getDefaultOptions());
-        $get = new Get($this->getDefaultOptions());
-        $update = new Update($this->getDefaultOptions());
-
-        $accounts = $get->getAccountList(new GetAccountList())->getAccount();
-        /**
-         * @var AccountType $account
-         */
-        $account = reset($accounts);
-
-        $this->tester->assertNotNull($accounts);
-        $this->tester->assertNotFalse($create->createProfil($this->profileType));
-
-        $profiles = $get->getProfilList(new GetProfilList())->getProfil();
-
-        $account->setProfil($profiles);
-        $updateResponse = $update->updateAccount($account);
-
-        $this->tester->assertNotNull($updateResponse);
-        $this->tester->assertEmpty($updateResponse->getError());
-        $this->tester->assertEmpty(array_diff($profiles, $account->getProfil()));
     }
 
     public function testGetShipments():void
@@ -712,7 +743,7 @@ class SenderClientTest extends Unit
     protected function sendEnvelope(?int $idBufor, ?int $urzadNadania, ?ProfilType $shipperAdresType = null): SendEnvelopeResponseType|bool
     {
         $send = new Send($this->getDefaultOptions());
-        return $send->sendEnvelope(new SendEnvelope($urzadNadania, null, $idBufor, $shipperAdresType));
+        return $send->sendEnvelope($idBufor, $urzadNadania, $shipperAdresType);
     }
 
     protected function getDefaultOptions(bool $useLocalWSDL = true, array $config = []): array
