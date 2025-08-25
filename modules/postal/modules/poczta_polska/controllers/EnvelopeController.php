@@ -9,6 +9,8 @@ use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\RangeNotSatisfiableHttpException;
@@ -66,7 +68,7 @@ class EnvelopeController extends Controller
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|InvalidConfigException
      */
     public function actionIndex(string $status = EnvelopeSearch::STATUS_BUFFER): string
     {
@@ -99,21 +101,18 @@ class EnvelopeController extends Controller
     }
 
     /**
-     * @throws RangeNotSatisfiableHttpException
+     * @throws NotFoundHttpException|InvalidConfigException
      */
-    public function actionSenderBook(int $id): Response
+    public function actionView(int $id): string
     {
-        $fileContent = $this->envelopeRepository->getSenderBook($id);
+        $model = $this->envelopeRepository->getBuffer($id);
 
-        $filename = 'senderBook_' . $id . '.pdf';
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
 
-        return Yii::$app->response->sendContentAsFile($fileContent, $filename, [
-            'mimeType' => 'application/pdf',
-            'inline' => true,
-        ]);
-
+        return $this->render('view', ['model' => $model]);
     }
-
 
     /**
      * @throws InvalidConfigException
@@ -138,7 +137,7 @@ class EnvelopeController extends Controller
     /**
      * @throws InvalidConfigException
      */
-    public function actionUpdate($id): string|Response
+    public function actionUpdate(int $id): string|Response
     {
         $model = new BufferForm();
         $model->setBuforType($this->envelopeRepository->getBuffer($id));
@@ -153,6 +152,29 @@ class EnvelopeController extends Controller
             'model' => $model,
             'profiles' => $profiles
         ]);
+    }
+
+    /**
+     * @throws RangeNotSatisfiableHttpException
+     */
+    public function actionSenderBook(int $id): Response
+    {
+        $fileContent = $this->envelopeRepository->getSenderBook($id);
+
+        $filename = 'senderBook_' . $id . '.pdf';
+
+        return Yii::$app->response->sendContentAsFile($fileContent, $filename, [
+            'mimeType' => 'application/pdf',
+            'inline' => true,
+        ]);
+    }
+
+    public function actionDelete(int $id): Response
+    {
+
+        $this->envelopeRepository->clear($id);
+
+        return $this->redirect(['index']);
     }
 
     /**
@@ -179,29 +201,6 @@ class EnvelopeController extends Controller
             'output' => $output,
         ]);
     }
-
-    /**
-     * @throws NotFoundHttpException|InvalidConfigException
-     */
-    public function actionView(int $id): string
-    {
-        $model = $this->envelopeRepository->getBuffer($id);
-
-        if (!$model) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->render('view', ['model' => $model]);
-    }
-
-    public function actionDelete(int $id): Response
-    {
-
-        $this->envelopeRepository->clear($id);
-
-        return $this->redirect(['index']);
-    }
-
 
     protected static function getStatusNavItems(string $activeStatus): array
     {
