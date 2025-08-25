@@ -3,6 +3,8 @@
 namespace app\models;
 
 
+use app\modules\postal\integrations\PostalLinkTrait;
+use app\modules\postal\models\Shipment;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -11,7 +13,9 @@ use yii\web\IdentityInterface;
  *
  * @property int $id
  * @property string $name
- * @property $auth_key
+ * @property string $auth_key
+ *
+ * @property-read Shipment[] $shipments
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -21,12 +25,14 @@ class User extends ActiveRecord implements IdentityInterface
 //    public $authKey;
 //    public $accessToken;
 
+    use PostalLinkTrait;
+
     public static function tableName(): string
     {
         return '{{%user}}';
     }
 
-    private static $users = [
+    private static array $users = [
         '100' => [
             'id' => '100',
             'username' => 'admin',
@@ -85,7 +91,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
@@ -93,7 +99,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
         return $this->auth_key;
     }
@@ -101,11 +107,10 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): ?bool
     {
         return $this->auth_key === $authKey;
     }
-
 
     /**
      * Validates password
@@ -117,5 +122,4 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->password === $password;
     }
-
 }
