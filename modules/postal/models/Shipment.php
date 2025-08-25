@@ -5,6 +5,7 @@ namespace app\modules\postal\models;
 use app\modules\postal\models\query\ShipmentQuery;
 use app\modules\postal\Module;
 use app\modules\postal\ModuleEnsureTrait;
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -58,6 +59,31 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
     {
         return '{{%shipment}}';
     }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getRelated(string $class): ActiveQuery
+    {
+        /**
+         * @var ActiveRecord $class
+         */
+        $primaryKey = $class::primaryKey()[0];
+        return $this->hasMany($class, [$primaryKey => 'entity_id'])
+            ->viaTable(static::ensureModule()->shipmentRelation->getRelatedTableName($class), ['shipment_id' => $primaryKey]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function saveAllowedRelated(string $class, string $refId): void
+    {
+        if ($this->getIsNewRecord()) {
+            throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
+        }
+        static::ensureModule()->shipmentRelation->saveShipmentRelation($this->id, $class, $refId);
+    }
+
 
     public function getSenderAddress(): ActiveQuery
     {
