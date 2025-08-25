@@ -58,7 +58,7 @@ class EnvelopeController extends Controller
         if ($this->envelopeRepository === null) {
             $this->envelopeRepository = $this->module
                 ->getRepositoryFactory()
-                ->getBufferRepository();
+                ->getEnvelopeRepository();
         }
         if ($this->profileRepository === null) {
             $this->profileRepository = $this->module

@@ -39,7 +39,7 @@ class RepositoryFactory extends Component
     }
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
-    public function getBufferRepository(array $config = []): EnvelopeRepository
+    public function getEnvelopeRepository(array $config = []): EnvelopeRepository
     {
         return $this->createRepository(self::REPOSITORY_BUFFER, $config);
 

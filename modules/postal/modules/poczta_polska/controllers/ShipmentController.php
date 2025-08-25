@@ -70,7 +70,7 @@ class ShipmentController extends Controller
         if ($this->bufferRepository === null) {
             $this->bufferRepository = $this->module
                 ->getRepositoryFactory()
-                ->getBufferRepository();
+                ->getEnvelopeRepository();
         }
     }
 
