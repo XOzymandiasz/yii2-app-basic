@@ -3,51 +3,46 @@
 namespace app\modules\postal\modules\poczta_polska;
 
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use app\modules\postal\modules\poczta_polska\sender\repositories\RepositoriesFactory;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\Module as BaseModule;
+use yii\di\Instance;
 
 /**
- *
- * @property-read PocztaPolskaTracker $pocztaPolskaTracker
+ * @property-read PocztaPolskaTracker $tracker
+ * @property-read PocztaPolskaSenderOptions $senderOptions
  */
 class Module extends BaseModule
 {
-    #@todo: move to bootsrtap
-    public $shipmentModelClass;
+
+    /**
+     * @var string|array|PocztaPolskaTracker
+     */
+    public string|array|PocztaPolskaTracker $tracker = [
+        'class' => PocztaPolskaTracker::class,
+    ];
 
     /**
      * @var string|array|PocztaPolskaSenderOptions
      */
-    public string|array|PocztaPolskaSenderOptions $senderOptions;
+    public string|array|PocztaPolskaSenderOptions $senderOptions = [
+        'class' => PocztaPolskaSenderOptions::class,
+    ];
 
     public function init(): void
     {
         parent::init();
         Yii::configure($this, require(__DIR__ . '/config.php'));
+
+        $this->tracker = Instance::ensure($this->tracker,PocztaPolskaTracker::class, $this);
+        $this->senderOptions = Instance::ensure($this->senderOptions,PocztaPolskaSenderOptions::class, $this);
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function getPocztaPolskaTracker(): PocztaPolskaTracker
+    public function getRepositoryFactory(): RepositoryFactory
     {
-        return $this->get('pocztaPolskaTracker');
-    }
-
-    public function getPocztaPolskaSenderOptions(): PocztaPolskaSenderOptions
-    {
-        return $this->get('pocztaPolskaSenderOptions');
-    }
-
-    public function getRepositoriesFactory(): RepositoriesFactory
-    {
-        //@todo fix with config from module without component
-        return new RepositoriesFactory(
+        return new RepositoryFactory(
             PocztaPolskaSenderOptions::testInstance()
         );
-        return $this->get('repositoriesFactory');
     }
 }
