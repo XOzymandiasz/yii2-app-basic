@@ -33,6 +33,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['/site/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -88,9 +89,6 @@ $config = [
             'shipmentRelation' => [
                 'class' => ShipmentRelationComponent::class,
                 'userClass' => User::class,
-                'allowRelated' => [
-                    User::class
-                ],
             ],
             'shipmentUrl' => [
                 'class' => ShipmentUrlComponent::class
