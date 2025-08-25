@@ -7,7 +7,7 @@ use app\modules\postal\Module;
 use Codeception\Util\HttpCode;
 use FunctionalTester;
 use tests\fixtures\ShipmentContentFixture;
-use Yii;
+use tests\fixtures\UserFixture;
 
 class ShipmentContentUpdateCest
 {
@@ -22,16 +22,20 @@ class ShipmentContentUpdateCest
                 'class' => ShipmentContentFixture::class,
                 'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
+            'user' => [
+                'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
         ];
     }
 
     public function checkRender(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
 
-        $model = $I->grabFixture('content', 'content_1');
+        $I->amLoggedInAs($user->id);
+
+        $model = $I->grabFixture('content', 'content_active');
 
         $I->amOnRoute(static::ROUTE_UPDATE, ['id' => $model->id]);
 
@@ -57,9 +61,8 @@ class ShipmentContentUpdateCest
 
     public function checkUpdateNotFound(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user   = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
 
         $I->amOnRoute(static::ROUTE_UPDATE, ['id' => 999999]);
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
@@ -67,11 +70,10 @@ class ShipmentContentUpdateCest
 
     public function checkUpdatePostValid(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
 
-        $model = $I->grabFixture('content', 'content_1');
+        $model = $I->grabFixture('content', 'content_active');
         $I->amOnRoute(static::ROUTE_UPDATE, ['id' => $model->id]);
 
         $I->submitForm('#shipment-content-form', [
@@ -93,11 +95,10 @@ class ShipmentContentUpdateCest
 
     public function checkUpdatePostInvalid(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
 
-        $model = $I->grabFixture('content', 'content_1');
+        $model = $I->grabFixture('content', 'content_active');
         $I->amOnRoute(static::ROUTE_UPDATE, ['id' => $model->id]);
 
         $I->submitForm('#shipment-content-form', [

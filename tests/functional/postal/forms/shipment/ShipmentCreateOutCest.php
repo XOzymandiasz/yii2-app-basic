@@ -1,6 +1,6 @@
 <?php
 
-namespace functional\postal\forms;
+namespace functional\postal\forms\shipment;
 
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;

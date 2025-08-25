@@ -6,7 +6,7 @@ use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use Codeception\Util\HttpCode;
 use FunctionalTester;
-use Yii;
+use tests\fixtures\UserFixture;
 
 class ShipmentContentCreateCest
 {
@@ -17,12 +17,20 @@ class ShipmentContentCreateCest
     public const ROUTE_VIEW = 'postal/shipment-content/view';
     public const ROUTE_INDEX = 'postal/shipment-content/index';
 
+    public function _fixtures(): array
+    {
+        return [
+            'user' => [
+                'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
+        ];
+    }
 
     public function checkRender(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
         $I->amOnRoute(static::ROUTE_CREATE);
 
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -45,9 +53,8 @@ class ShipmentContentCreateCest
 
     public function checkCreatePostValid(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
         $I->amOnRoute(static::ROUTE_CREATE);
 
         $I->submitForm('#shipment-content-form', [
@@ -70,9 +77,8 @@ class ShipmentContentCreateCest
 
     public function checkCreatePostInvalid(FunctionalTester $I): void
     {
-        $module = Yii::$app->getModule('postal');
-        $user = $module->userClass::findOne(['name' => 'admin']);
-        $I->amLoggedInAs($user);
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
         $I->amOnRoute(static::ROUTE_CREATE);
 
         $I->submitForm('#shipment-content-form', [
