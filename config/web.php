@@ -8,9 +8,11 @@ use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module;
 use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
+use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use edzima\teryt\Module as TerytModule;
 use yii\bootstrap5\BootstrapAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
+use yii\caching\FileCache;
 use yii\symfonymailer\Mailer;
 
 $config = [
@@ -54,7 +56,6 @@ $config = [
             ],
         ],
         'db' => $db,
-
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -84,6 +85,18 @@ $config = [
             'modules' => [
                 'poczta_polska' => [
                     'class' => PocztaPolskaModule::class,
+                    'components' => [
+                        'repositoriesFactory' => [
+                            'class' => RepositoryFactory::class,
+                            'repositoryConfig' => [
+                                'cache' => [
+                                    'class' => FileCache::class
+                                ]
+                            ]
+                        ],
+
+                    ]
+
                 ],
             ],
             'shipmentRelation' => [
