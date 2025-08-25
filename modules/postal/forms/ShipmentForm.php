@@ -105,12 +105,27 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         if (!$model->save(false)) {
             return false;
         }
+        $this->saveRef();
         $this->saveAddresses();
 
 
         return true;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    protected function saveRef(): bool
+    {
+        if (!empty($this->refTable) && !empty($this->refId)) {
+            $this->getModel()->saveAllowedRelated($this->refTable, $this->refId);
+        }
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
     protected function saveAddresses(): void
     {
         $model = $this->getModel();
@@ -159,9 +174,9 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         $this->shipment_at = $model->shipment_at;
         $this->api_data = $model->api_data;
 
-        $senderAddressLink = $model->getSenderAddress()->one();
-        $this->senderAddress = $senderAddressLink;
-        $this->sender_id = $senderAddressLink->id;
+        $senderAddress = $model->senderAddress;
+        $this->senderAddress = $senderAddress;
+        $this->sender_id = $senderAddress->id ?? null;
 
         $receiverAddress = $model->receiverAddress;
         $this->receiverAddress = $receiverAddress;
