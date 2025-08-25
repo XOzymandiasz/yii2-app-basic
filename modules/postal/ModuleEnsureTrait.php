@@ -13,7 +13,7 @@ trait ModuleEnsureTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getModule(): Module
+    public static function ensureModule(): Module
     {
         $module = Module::getInstance();
         if ($module === null) {

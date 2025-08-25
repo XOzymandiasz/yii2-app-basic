@@ -98,12 +98,12 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
 
     public function getCreator(): ActiveQuery
     {
-        $module = static::getModule();
+        $module = static::ensureModule();
         /**
          * @var ActiveRecord $userClass
          */
-        $userClass = $module->userClass;
-        return $this->hasOne($module->userClass, [
+        $userClass = $module->shipmentRelation->userClass;
+        return $this->hasOne($module->shipmentRelation->userClass, [
             'creator_id' => $userClass::primaryKey()[0]
         ]);
     }
