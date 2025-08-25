@@ -12,7 +12,7 @@ class UserFixture extends ActiveFixture
     public function init(): void
     {
         if (empty($this->modelClass)) {
-            $this->modelClass = static::getModule()->shipmentRelation->userClass;
+            $this->modelClass = static::ensureModule()->shipmentRelation->userClass;
         }
         parent::init();
     }
