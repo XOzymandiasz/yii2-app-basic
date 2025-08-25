@@ -7,7 +7,7 @@ use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
 use InvalidArgumentException;
 
-class PocztaPolskaCreateShipmentFactory
+class CreateShipmentFactory
 {
     public static function create(ShipmentForm $form): PrzesylkaType
     {
