@@ -2,6 +2,7 @@
 
 namespace app\modules\postal\models;
 
+use app\modules\postal\models\query\ShipmentQuery;
 use app\modules\postal\Module;
 use app\modules\postal\ModuleEnsureTrait;
 use yii\base\InvalidConfigException;
@@ -182,5 +183,10 @@ class Shipment extends ActiveRecord implements ShipmentDirectionInterface, Shipm
             static::PROVIDER_GLS => Module::t('postal', 'GLS'),
             static::PROVIDER_INPOST => Module::t('postal', 'Inpost'),
         ];
+    }
+
+    public static function find(): ShipmentQuery
+    {
+        return new ShipmentQuery(static::class);
     }
 }
