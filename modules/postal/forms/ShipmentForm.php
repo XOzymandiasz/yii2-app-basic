@@ -291,7 +291,6 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
     public function isOutScenario(): bool
     {
         return $this->getScenario() === static::SCENARIO_DIRECTION_OUT;
-
     }
 
 
