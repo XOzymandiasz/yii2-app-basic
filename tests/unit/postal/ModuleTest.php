@@ -2,9 +2,10 @@
 
 namespace unit\postal;
 
+use app\modules\postal\components\ShipmentRelationComponent;
+use app\modules\postal\components\ShipmentUrlComponent;
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
-use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use app\modules\postal\ModuleEnsureTrait;
 use Codeception\Test\Unit;
 use UnitTester;
 use Yii;
@@ -14,32 +15,54 @@ use Yii;
  */
 class ModuleTest extends Unit
 {
-
+    use ModuleEnsureTrait;
     private Module $module;
 
-    public function testGetModuleFromApp(): void
+    public function testInitEnsuresInstances(): void
     {
-        $this->module = Yii::$app->getModule('postal');
-        $repositories = $this->module->getRepositoryFactory();
-        $add = $repositories->getAddRepository();
-        $this->tester->assertInstanceOf(ShipmentRepository::class, $add);
+        $this->module = static::ensureModule();
 
+        $this->tester->assertInstanceOf(ShipmentUrlComponent::class, $this->module->shipmentUrl);
+        $this->tester->assertInstanceOf(ShipmentRelationComponent::class, $this->module->shipmentRelation);
     }
 
-
-    public function testCreateModuleFromConfig(): void
+    public function testModuleIdPropagatesToShipmentUrl(): void
     {
-        $this->module = new Module('postal', null, [
-            'senderOptions' => [
-                'class' => PocztaPolskaSenderOptions::class,
-                'login' => 'test-login',
-            ],
-        ]);
-      //  $this->tester->assertSame($this->module->senderOptions->login, 'test-login');
+        $this->module = static::ensureModule();
 
-
-        $this->module->getRepositoriesFactory()->getAddRepository();
+        $this->tester->assertSame($this->module->uniqueId, $this->module->shipmentUrl->moduleId);
     }
 
+    public function testAliasIsRegistered(): void
+    {
+        $this->module = static::ensureModule();
+
+        $alias = Yii::getAlias('@edzima/postal', false);
+        $this->assertNotFalse($alias);
+        $this->assertDirectoryExists($alias);
+    }
+
+    public function testTranslationsAreRegistered(): void
+    {
+        $this->module = static::ensureModule();
+
+        $this->assertArrayHasKey('edzima/postal/*', Yii::$app->i18n->translations);
+        $translated = Module::t('common', 'Save');
+        $this->assertIsString($translated);
+        $this->assertNotEmpty($translated);
+    }
+
+    public function testArrayConfigIsAppliedToComponents(): void
+    {
+        $this->module = static::ensureModule();
+        $this->module->shipmentUrl = [
+            'class' => ShipmentUrlComponent::class,
+            'moduleId' => 'override-id',
+        ];
+
+        $this->module->init();
+
+        $this->tester->assertSame($this->module->uniqueId, $this->module->shipmentUrl->moduleId);
+    }
 
 }
