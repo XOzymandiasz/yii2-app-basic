@@ -19,11 +19,13 @@ use Yii;
  */
 class ModuleTest extends Unit
 {
+    private const MODULE_ID = 'postal/poczta_polska';
+
     public Module $module;
 
     public function testInitEnsuresInstances(): void
     {
-        $this->module = Yii::$app->getModule('postal/poczta_polska');
+        $this->module = Yii::$app->getModule(self::MODULE_ID);
 
         $this->assertInstanceOf(PocztaPolskaTracker::class, $this->module->tracker);
         $this->assertInstanceOf(PocztaPolskaSenderOptions::class, $this->module->senderOptions);
@@ -31,7 +33,7 @@ class ModuleTest extends Unit
 
     public function testCustomDefinitionAreEnsured(): void
     {
-        $this->module = new Module('postal/poczta_polska');
+        $this->module = new Module(self::MODULE_ID);
 
         $this->module->tracker = [
             'class' => PocztaPolskaTrackerStub::class,
@@ -43,7 +45,7 @@ class ModuleTest extends Unit
 
     public function testRepositoryFactory(): void
     {
-        $this->module = Yii::$app->getModule('postal/poczta_polska');
+        $this->module = Yii::$app->getModule(self::MODULE_ID);
 
         $factory = $this->module->getRepositoryFactory();
 
