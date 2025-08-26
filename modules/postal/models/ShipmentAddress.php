@@ -3,7 +3,7 @@
 namespace app\modules\postal\models;
 
 use app\modules\postal\Module;
-use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType;
+use app\modules\postal\modules\poczta_polska\sender\StructType\AdresType; #@todo:
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -37,22 +37,6 @@ class ShipmentAddress extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%shipment_address}}';
-    }
-
-    public function getFullInfo():string
-    {
-        $content = [$this->name, $this->getFormatedPostalCode(), $this->city, $this->street, $this->house_number];
-
-        return implode(' ', $content);
-    }
-
-    public function getFullName(): string
-    {
-        $name = $this->name;
-        if (!empty($this->name_2)) {
-            $name .= ' ' . $this->name_2;
-        }
-        return $name;
     }
 
     public function rules(): array
@@ -132,7 +116,6 @@ class ShipmentAddress extends ActiveRecord
         return $this->hasMany(ShipmentAddressLink::class, ['address_id' => 'id']);
     }
 
-
     /**
      * @throws InvalidConfigException
      */
@@ -144,5 +127,21 @@ class ShipmentAddress extends ActiveRecord
     protected function getFormatedPostalCode(): string
     {
         return substr($this->postal_code, 0, 2) . '-' . substr($this->postal_code, 2);
+    }
+
+    public function getFullInfo(array $params = []):string
+    {
+        $content = [$this->getFormatedPostalCode(), $this->city, $this->street, $this->house_number];
+
+        return implode(' ', $content);
+    }
+
+    public function getFullName(): string
+    {
+        $name = $this->name;
+        if (!empty($this->name_2)) {
+            $name .= ' ' . $this->name_2;
+        }
+        return $name;
     }
 }

@@ -3,7 +3,7 @@
 namespace app\modules\postal\modules\poczta_polska\forms;
 
 use app\modules\postal\forms\ShipmentForm as BaseShipmentForm;
-use app\modules\postal\models\Shipment;
+use app\modules\postal\models\Shipment; #todo:
 use app\modules\postal\Module as BaseModule;
 use app\modules\postal\modules\poczta_polska\builders\CreateShipmentFactory;
 use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
