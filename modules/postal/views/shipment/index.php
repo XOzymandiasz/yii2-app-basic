@@ -1,11 +1,8 @@
 <?php
 
-use app\modules\postal\forms\ShipmentForm;
 use app\modules\postal\models\search\ShipmentPostSearch;
 use app\modules\postal\models\Shipment;
-use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -41,66 +38,72 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             [
                 'attribute' => 'direction',
-                'filter' => Html::activeDropDownList(
-                    $searchModel,
-                    'direction',
-                    ShipmentForm::getDirectionsNames(),
-                    ['class' => 'form-control', 'prompt' => Module::t('common','-- choose --')]
-                ),
-                'value' => function ($model) {
-                    return ShipmentForm::getDirectionsNames()[$model->direction] ?? $model->direction;
-                },
-                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'headerOptions' => ['style' => 'text-align: center;'],
+                'filter' => $searchModel::getDirectionsNames(),
+                'value' => 'directionName',
             ],
             'number',
             [
                 'attribute' => 'provider',
-                'filter' => Html::activeDropDownList(
-                    $searchModel,
-                    'provider',
-                    ShipmentForm::getProvidersNames(),
-                    ['class' => 'form-control', 'prompt' => Module::t('common','-- choose --')]
-                ),
-                'value' => function ($model) {
-                    return ShipmentForm::getProvidersNames()[$model->provider] ?? $model->provider;
-                },
-                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'headerOptions' => ['style' => 'text-align: center;'],
+                'value' => 'providerName',
+                'filter' => $searchModel::getProvidersNames(),
             ],
             [
                 'attribute' => 'content_id',
                 'label' => 'Content',
-                'value' => function ($model) {
+                'value' => function (Shipment $model) {
                     return $model->content->name ?? Module::t('common', '(empty)');
                 },
-                'filter' => Html::activeDropDownList(
-                    $searchModel,
-                    'content_id',
-                    ArrayHelper::map(
-                        ShipmentContent::find()->where(['is_active' => 1])->all(),
-                        'id',
-                        'name'
-                    ),
-                    ['class' => 'form-control', 'prompt' => Module::t('common', '-- choose --')]
-                ),
-                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filter' => $searchModel::getContentsNames(),
+            ],
+            [
+                'attribute' => 'creator_id',
+                'value' => 'creator.name',
+                'filter' => $searchModel::getCreatorsNames(),
+                'visible' => !$searchModel->isCreatorScenario(),
             ],
             //'creator_id',
             //'created_at',
             //'updated_at',
-            'guid',
-            'buffer_id',
+            //'guid',
+            //'buffer_id',
             //'finished_at',
             //'shipment_at',
             //'api_data',
+            [
+                'attribute' => 'senderName',
+                'label' => Module::t('postal', 'Sender Name'),
+                'value' => function (Shipment $model) {
+                    return $model->senderAddress->getFullName();
+                }
+            ],
+            [
+                'attribute' => 'senderAddress',
+                'label' => Module::t('postal', 'Sender Address'),
+                'value' => function (Shipment $model) {
+                    return $model->senderAddress->getFullInfo();
+                }
+            ],
+            [
+                'attribute' => 'receiverName',
+                'label' => Module::t('postal', 'Receiver Name'),
+                'value' => function (Shipment $model) {
+                    return $model->receiverAddress->getFullName();
+                }
+            ],
+            [
+                'attribute' => 'receiverAddress',
+                'label' => Module::t('postal', 'Receiver Address'),
+                'value' => function (Shipment $model) {
+                    return $model->receiverAddress->getFullInfo();
+                }
+            ],
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Shipment $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],
+
         ],
     ]); ?>
 
