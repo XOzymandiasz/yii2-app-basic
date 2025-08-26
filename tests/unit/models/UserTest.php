@@ -2,9 +2,9 @@
 
 namespace tests\unit\models;
 
+use app\modules\postal\tests\fixtures\ShipmentFixture;
+use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Test\Unit;
-use tests\fixtures\UserFixture;
-use tests\fixtures\ShipmentFixture;
 use UnitTester;
 
 /**

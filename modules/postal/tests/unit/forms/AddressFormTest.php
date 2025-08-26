@@ -1,13 +1,14 @@
 <?php
 
-namespace tests\unit\postal\forms;
+namespace app\modules\postal\tests\unit\forms;
+
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\AddressTypeForm;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentDirectionInterface;
+use app\modules\postal\tests\fixtures\ShipmentAddressFixture;
 use Codeception\Test\Unit;
-use tests\fixtures\ShipmentAddressFixture;
 use Throwable;
 use UnitTester;
 use yii\base\Model;

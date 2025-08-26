@@ -90,7 +90,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "tests\\": "tests/"
+            "tests\\": "tests/",
+            "app\\modules\\postal\\tests\\": "modules/postal/tests"
         }
     }
 

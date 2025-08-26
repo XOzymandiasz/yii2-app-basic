@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\_support\stubs;
+namespace app\modules\postal\tests\stubs;
 
 use yii\db\ActiveRecord;
 

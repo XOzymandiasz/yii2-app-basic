@@ -1,12 +1,12 @@
 <?php
 
-namespace tests\unit\postal\forms;
+namespace app\modules\postal\tests\unit\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\ContentTypeForm;
 use app\modules\postal\models\ShipmentContent;
+use app\modules\postal\tests\fixtures\ShipmentContentFixture;
 use Codeception\Test\Unit;
-use tests\fixtures\ShipmentContentFixture;
 use Throwable;
 use UnitTester;
 use yii\base\Model;
@@ -30,7 +30,6 @@ class ContentTypeFormTest extends Unit
         return [
             'content' => [
                 'class' => ShipmentContentFixture::class,
-                'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
         ];
     }
@@ -75,7 +74,7 @@ class ContentTypeFormTest extends Unit
 
     public function testSetModel(): void
     {
-        $model = $this->tester->grabFixture('content', 'content_1');
+        $model = $this->tester->grabFixture('content', 'content_active');
 
         $this->model->setModel($model);
 
@@ -85,7 +84,7 @@ class ContentTypeFormTest extends Unit
 
     public function testGetModel(): void
     {
-        $model = $this->tester->grabFixture('content', 'content_1');
+        $model = $this->tester->grabFixture('content', 'content_active');
 
         $this->model->setModel($model);
         $gottenModel = $this->model->getModel();

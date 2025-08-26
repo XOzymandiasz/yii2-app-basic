@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\postal\forms;
+namespace app\modules\postal\tests\unit\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\forms\ShipmentForm;
@@ -9,12 +9,12 @@ use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentAddressLink;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\models\ShipmentProviderInterface;
+use app\modules\postal\tests\fixtures\ShipmentAddressFixture;
+use app\modules\postal\tests\fixtures\ShipmentAddressLinkFixture;
+use app\modules\postal\tests\fixtures\ShipmentContentFixture;
+use app\modules\postal\tests\fixtures\ShipmentFixture;
+use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Test\Unit;
-use tests\fixtures\ShipmentAddressFixture;
-use tests\fixtures\ShipmentAddressLinkFixture;
-use tests\fixtures\ShipmentContentFixture;
-use tests\fixtures\ShipmentFixture;
-use tests\fixtures\UserFixture;
 use UnitTester;
 use yii\base\Model;
 use yii\test\FixtureTrait;

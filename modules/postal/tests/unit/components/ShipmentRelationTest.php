@@ -1,14 +1,14 @@
 <?php
 
-namespace tests\unit\postal\components;
+namespace app\modules\postal\tests\unit\components;
 
 use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\ModuleEnsureTrait;
+use app\modules\postal\tests\fixtures\ShipmentFixture;
+use app\modules\postal\tests\fixtures\UserFixture;
+use app\modules\postal\tests\stubs\WeirdTableStub;
 use Codeception\Test\Unit;
 use stdClass;
-use tests\fixtures\ShipmentFixture;
-use tests\fixtures\UserFixture;
-use tests\_support\stubs\WeirdTableStub;
 use UnitTester;
 use yii\base\InvalidArgumentException;
 

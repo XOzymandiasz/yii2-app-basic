@@ -1,15 +1,15 @@
 <?php
 
-namespace app\tests\unit\postal\search;
+namespace app\modules\postal\tests\unit\search;
 
 use app\modules\postal\models\search\ShipmentPostSearch;
 use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\tests\fixtures\ShipmentAddressFixture;
+use app\modules\postal\tests\fixtures\ShipmentAddressLinkFixture;
+use app\modules\postal\tests\fixtures\ShipmentContentFixture;
+use app\modules\postal\tests\fixtures\ShipmentFixture;
+use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Test\Unit;
-use tests\fixtures\ShipmentAddressFixture;
-use tests\fixtures\ShipmentAddressLinkFixture;
-use tests\fixtures\ShipmentContentFixture;
-use tests\fixtures\ShipmentFixture;
-use tests\fixtures\UserFixture;
 use UnitTester;
 
 /**

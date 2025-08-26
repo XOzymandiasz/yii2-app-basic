@@ -1,12 +1,12 @@
 <?php
 
-namespace functional\postal\forms\content;
+namespace app\modules\postal\tests\functional\forms\content;
 
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
+use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Util\HttpCode;
 use FunctionalTester;
-use tests\fixtures\UserFixture;
 
 class ShipmentContentCreateCest
 {

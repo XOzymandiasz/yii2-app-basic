@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal;
+namespace app\modules\postal\tests\unit;
 
 use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\components\ShipmentUrlComponent;
