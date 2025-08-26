@@ -34,6 +34,8 @@ class Module extends BaseModule
         'class' => ShipmentUrlComponent::class,
     ];
 
+    public bool $isOnlyCreator = true;
+
     public function init(): void
     {
         parent::init();
@@ -69,7 +71,6 @@ class Module extends BaseModule
 
     public function afterCreateInShipment(Shipment $model): void
     {
-        Yii::$app->session->addFlash('success', "AFTER_CREATE_OUT fired dla #{$model->id}");
         if ($model->getIsInDirection()) {
             $event = new ShipmentEvent([
                 'model' => $model
@@ -80,7 +81,6 @@ class Module extends BaseModule
 
     public function afterCreateOutShipment(Shipment $model): void
     {
-        Yii::$app->session->addFlash('success', "AFTER_CREATE_OUT fired dla #{$model->id}");
         if ($model->getIsOutDirection()) {
             $event = new ShipmentEvent([
                 'model' => $model

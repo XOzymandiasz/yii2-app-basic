@@ -9,7 +9,6 @@ use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
 use Throwable;
 use Yii;
-use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -48,14 +47,14 @@ class ShipmentController extends Controller
         );
     }
 
-    public function actionAddShipment(): void
-    {
-        $model = new Shipment();
-    }
-
     public function actionIndex(): string
     {
+
         $searchModel = new ShipmentPostSearch();
+        if ($this->module->isOnlyCreator) {
+            $searchModel->setScenario(ShipmentPostSearch::SCENARIO_CREATOR);
+            $searchModel->creator_id = Yii::$app->user->getId();
+        }
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -149,7 +148,7 @@ class ShipmentController extends Controller
                 }
                 return $this->redirect(['view', 'id' => $id]);
 
-            } else{
+            } else {
                 throw new NotFoundHttpException();
             }
         }
