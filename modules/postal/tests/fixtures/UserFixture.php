@@ -9,8 +9,6 @@ class UserFixture extends ActiveFixture
 {
     use ModuleEnsureTrait;
 
-    public $dataFile = __DIR__ . '/data/user.php';
-
     public function init(): void
     {
         if (empty($this->modelClass)) {
