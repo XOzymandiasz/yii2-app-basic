@@ -30,6 +30,7 @@ class ContentTypeFormTest extends Unit
         return [
             'content' => [
                 'class' => ShipmentContentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
         ];
     }
