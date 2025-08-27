@@ -18,11 +18,22 @@ class ProfileForm extends AddressTypeForm
 
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        $rules = parent::rules();
+
+        foreach ($rules as $index => $rule) {
+            $attributes = (array)$rule[0] ?? [];
+
+            if (in_array('country', $attributes, true)) {
+                unset($rules[$index]);
+            }
+        }
+
+        return array_merge($rules, [
             [['country', 'street', 'profileName'], 'required'],
             [['!idProfil'], 'integer'],
             [['fax', 'profileName'], 'string', 'max' => 100],
             [['mpk'], 'string', 'max' => 50],
+            [['country'], 'string', 'max' => 70]
         ]);
     }
 
