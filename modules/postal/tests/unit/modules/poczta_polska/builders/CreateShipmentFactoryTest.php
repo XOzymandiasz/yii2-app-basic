@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests\unit\postal\poczta_polska\builders;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\builders;
 
 use app\modules\postal\modules\poczta_polska\builders\CreateShipmentFactory;
 use app\modules\postal\modules\poczta_polska\forms\ShipmentForm;

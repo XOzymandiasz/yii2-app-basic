@@ -1,7 +1,7 @@
 <?php
 
 
-namespace tracker;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\components;
 
 use app\modules\postal\modules\poczta_polska\components\exceptions\BaseException;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;

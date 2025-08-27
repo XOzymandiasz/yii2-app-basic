@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\postal\poczta_polska\repositories;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\repositories\EnvelopeRepository;
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
@@ -26,7 +26,7 @@ class EnvelopeRepositoryTest extends Unit
 
     private ?ShipmentRepository $shipmentRepository = null;
 
-    private string $sendAt = '2025-08-18';
+    private string $sendAt = '2025-08-27';
 
     public function _before(): void
     {
@@ -89,7 +89,6 @@ class EnvelopeRepositoryTest extends Unit
             profileId: $firstProfile->getIdProfil(),
             name:$name
         );
-
 
         $createResponse = $this->repository->create($buffer);
 

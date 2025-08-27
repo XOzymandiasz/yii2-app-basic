@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\postal\poczta_polska\sender;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\sender;
 
 
 use app\modules\postal\modules\poczta_polska\sender\EnumType\GabarytType;
@@ -37,14 +37,13 @@ use app\modules\postal\modules\poczta_polska\sender\StructType\PrintType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaPoleconaKrajowaType;
 use app\modules\postal\modules\poczta_polska\sender\StructType\PrzesylkaType;
-use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelope;
 use app\modules\postal\modules\poczta_polska\sender\StructType\SendEnvelopeResponseType;
-use app\modules\postal\modules\poczta_polska\sender\StructType\UpdateEnvelopeBufor;
 use Codeception\Test\Unit;
 use Dotenv\Dotenv;
 use InvalidArgumentException;
 use UnitTester;
 use WsdlToPhp\PackageBase\SoapClientInterface;
+use function unit\postal\poczta_polska\sender\sendEnvelope;
 
 /**
  * @property UnitTester $tester

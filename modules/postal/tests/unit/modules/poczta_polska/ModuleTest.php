@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\postal\poczta_polska;
+namespace app\modules\postal\tests\unit\modules\poczta_polska;
 
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\Module;
@@ -9,8 +9,8 @@ use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use app\modules\postal\modules\poczta_polska\repositories\ShipmentRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
-use tests\_support\stubs\PocztaPolskaTrackerStub;
 use Codeception\Test\Unit;
+use tests\_support\stubs\PocztaPolskaTrackerStub;
 use UnitTester;
 use Yii;
 

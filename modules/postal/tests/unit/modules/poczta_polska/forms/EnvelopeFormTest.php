@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\postal\poczta_polska\forms;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\forms;
 
 use _support\UnitModelTrait;
 use app\modules\postal\modules\poczta_polska\forms\BufferForm;

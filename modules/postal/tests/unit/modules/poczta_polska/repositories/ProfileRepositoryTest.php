@@ -1,13 +1,12 @@
 <?php
 
-namespace tests\unit\postal\poczta_polska\repositories;
+namespace app\modules\postal\tests\unit\modules\poczta_polska\repositories;
 
 use app\modules\postal\modules\poczta_polska\repositories\ProfileRepository;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use app\modules\postal\modules\poczta_polska\sender\StructType\ProfilType;
 use Codeception\Test\Unit;
 use UnitTester;
-use yii\base\InvalidConfigException;
 
 /**
  * @property UnitTester $tester
