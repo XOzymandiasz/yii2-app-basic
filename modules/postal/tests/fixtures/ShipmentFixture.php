@@ -12,5 +12,4 @@ class ShipmentFixture extends ActiveFixture
 
     public $depends = [ShipmentContentFixture::class, UserFixture::class];
 
-    public $dataFile = __DIR__ . '/data/shipment.php';
 }

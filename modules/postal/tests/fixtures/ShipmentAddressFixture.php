@@ -8,5 +8,4 @@ use yii\test\ActiveFixture;
 class ShipmentAddressFixture extends ActiveFixture
 {
     public $modelClass = ShipmentAddress::class;
-    public $dataFile = __DIR__ . '/data/shipment_address.php';
 }

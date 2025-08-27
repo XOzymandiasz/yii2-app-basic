@@ -9,5 +9,4 @@ class ShipmentContentFixture extends ActiveFixture
 {
     public $modelClass = ShipmentContent::class;
 
-    public $dataFile = __DIR__ . '/data/shipment_content.php';
 }
