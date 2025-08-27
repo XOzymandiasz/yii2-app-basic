@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests\functional\postal\forms\content;
+namespace app\modules\postal\tests\functional\forms\content;
 
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
@@ -20,11 +20,9 @@ class ShipmentContentUpdateCest
         return [
             'content' => [
                 'class' => ShipmentContentFixture::class,
-                'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
             'user' => [
                 'class' => UserFixture::class,
-                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }

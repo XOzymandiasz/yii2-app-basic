@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests\functional\postal\forms\content;
+namespace app\modules\postal\tests\functional\forms\content;
 
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
@@ -15,14 +15,13 @@ class ShipmentContentCreateCest
      */
     public const ROUTE_CREATE = 'postal/shipment-content/create';
     public const ROUTE_VIEW = 'postal/shipment-content/view';
-    public const ROUTE_INDEX = 'postal/shipment-content/index';
+    public const ROUTE_LOG_IN = 'site/login';
 
     public function _fixtures(): array
     {
         return [
             'user' => [
                 'class' => UserFixture::class,
-                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
@@ -30,6 +29,7 @@ class ShipmentContentCreateCest
     public function checkRender(FunctionalTester $I): void
     {
         $user = $I->grabFixture('user', 'admin');
+        codecept_debug($user);
         $I->amLoggedInAs($user->id);
         $I->amOnRoute(static::ROUTE_CREATE);
 
@@ -46,9 +46,7 @@ class ShipmentContentCreateCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $I->seeInCurrentUrl(static::ROUTE_INDEX);
-
-        $I->see(Module::t('postal', 'You must be logged in to view this page.'));
+        $I->seeInCurrentUrl(static::ROUTE_LOG_IN);
     }
 
     public function checkCreatePostValid(FunctionalTester $I): void

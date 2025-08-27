@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests\functional\postal\forms\content;
+namespace app\modules\postal\tests\functional\forms\content;
 
 use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Util\HttpCode;
@@ -18,7 +18,6 @@ class ShipmentContentIndexCest
         return [
             'user' => [
                 'class' => UserFixture::class,
-                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }

@@ -4,9 +4,9 @@ namespace app\modules\postal\tests\unit\components;
 
 use app\modules\postal\components\ShipmentRelationComponent;
 use app\modules\postal\ModuleEnsureTrait;
+use app\modules\postal\tests\_support\stubs\WeirdTableStub;
 use app\modules\postal\tests\fixtures\ShipmentFixture;
 use app\modules\postal\tests\fixtures\UserFixture;
-use app\modules\postal\tests\stubs\WeirdTableStub;
 use Codeception\Test\Unit;
 use stdClass;
 use UnitTester;

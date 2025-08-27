@@ -5,6 +5,7 @@ namespace app\modules\postal\controllers;
 use app\modules\postal\forms\ContentTypeForm;
 use app\modules\postal\models\search\ShipmentContentPostSearch;
 use app\modules\postal\models\ShipmentContent;
+use app\modules\postal\Module;
 use Throwable;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
@@ -52,7 +53,6 @@ class ShipmentContentController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
 
     /**
      * @throws NotFoundHttpException
@@ -119,6 +119,6 @@ class ShipmentContentController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Module::t('common', 'The requested page does not exist.'));
     }
 }

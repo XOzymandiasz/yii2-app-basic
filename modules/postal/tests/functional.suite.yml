@@ -10,8 +10,6 @@ actor: FunctionalTester
 modules:
     enabled:
       - Filesystem
-      - PhpBrowser:
-            url: 'http://localhost:8080/index-test.php'
       - Yii2:
           configFile: '../config/test.php'
           entryUrl: 'http://localhost:8080/index-test.php'
