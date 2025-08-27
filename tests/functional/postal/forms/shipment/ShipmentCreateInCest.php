@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\postal\tests\functional\forms\shipment;
+namespace app\tests\functional\postal\forms\shipment;
 
 use app\modules\postal\models\ShipmentDirectionInterface;
 use Codeception\Util\HttpCode;

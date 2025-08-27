@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\postal\tests\functional\forms\content;
+namespace app\tests\functional\postal\forms\content;
 
 use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Util\HttpCode;
