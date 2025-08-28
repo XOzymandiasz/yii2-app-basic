@@ -293,5 +293,10 @@ class ShipmentForm extends Model implements ShipmentDirectionInterface, Shipment
         return $this->getScenario() === static::SCENARIO_DIRECTION_OUT;
     }
 
+    public function isUpdateIn(): bool
+    {
+        return $this->direction === ShipmentDirectionInterface::DIRECTION_IN;
+    }
+
 
 }
