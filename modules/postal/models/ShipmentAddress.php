@@ -32,7 +32,7 @@ use yii\db\ActiveRecord;
  * @property ShipmentAddressLink[] $addressLinks
  * @property Shipment[] $shipments
  */
-class ShipmentAddress extends ActiveRecord
+class ShipmentAddress extends ActiveRecord implements ShipmentDirectionInterface
 {
     public static function tableName(): string
     {
@@ -144,4 +144,23 @@ class ShipmentAddress extends ActiveRecord
         }
         return $name;
     }
+
+    public function getDirectionName(): string
+    {
+        return static::getDirectionsNames()[$this->option];
+    }
+
+    public static function getDirectionsNames(): array
+    {
+        return [
+            static::DIRECTION_OUT => Module::t('postal', 'Out'),
+            static::DIRECTION_IN => Module::t('postal', 'In'),
+        ];
+    }
+
+    public function getDirection(): string
+    {
+        return $this->option;
+    }
+
 }
