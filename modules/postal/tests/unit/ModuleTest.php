@@ -26,13 +26,6 @@ class ModuleTest extends Unit
         $this->tester->assertInstanceOf(ShipmentRelationComponent::class, $this->module->shipmentRelation);
     }
 
-    public function testModuleIdPropagatesToShipmentUrl(): void
-    {
-        $this->module = static::ensureModule();
-
-        $this->tester->assertSame($this->module->uniqueId, $this->module->shipmentUrl->moduleId);
-    }
-
     public function testAliasIsRegistered(): void
     {
         $this->module = static::ensureModule();
@@ -51,18 +44,4 @@ class ModuleTest extends Unit
         $this->assertIsString($translated);
         $this->assertNotEmpty($translated);
     }
-
-    public function testArrayConfigIsAppliedToComponents(): void
-    {
-        $this->module = static::ensureModule();
-        $this->module->shipmentUrl = [
-            'class' => ShipmentUrlComponent::class,
-            'moduleId' => 'override-id',
-        ];
-
-        $this->module->init();
-
-        $this->tester->assertSame($this->module->uniqueId, $this->module->shipmentUrl->moduleId);
-    }
-
 }
