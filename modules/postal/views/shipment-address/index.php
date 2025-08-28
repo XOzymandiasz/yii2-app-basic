@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\postal\models\search\ShipmentAddressPostSearch;
 use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
@@ -9,7 +10,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /** @var yii\web\View $this */
-/** @var \app\modules\postal\models\search\ShipmentAddressPostSearch $searchModel */
+/** @var ShipmentAddressPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Module::t('common', 'Shipment Addresses');
@@ -42,7 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'postal_code',
             'city',
             'country',
-            'option',
+            [
+                'attribute' => 'option',
+                'filter' => $searchModel::optionList(),
+                'value' => function (ShipmentAddress $model) use ($searchModel) {
+                    return $searchModel::optionList()[$model->option];
+                }
+            ],
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, ShipmentAddress $model, $key, $index, $column) {
