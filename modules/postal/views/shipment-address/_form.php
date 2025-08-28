@@ -11,7 +11,9 @@ use yii\widgets\ActiveForm;
 
 <div class="shipment-address-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'shipment-address-form',
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
