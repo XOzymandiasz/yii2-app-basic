@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -32,7 +33,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'is_active',
+            [
+                'attribute' => 'is_active',
+                'value' => function (ShipmentContent $model) {
+                    return $model->is_active
+                        ? Module::t('common', 'Yes')
+                        : Module::t('common', 'No');
+                },
+            ],
         ],
     ]) ?>
 
