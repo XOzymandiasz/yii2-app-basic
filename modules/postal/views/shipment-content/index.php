@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\postal\models\search\ShipmentContentPostSearch;
 use app\modules\postal\models\ShipmentContent;
 use app\modules\postal\Module;
 use yii\grid\ActionColumn;
@@ -8,7 +9,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /** @var yii\web\View $this */
-/** @var \app\modules\postal\models\search\ShipmentContentPostSearch $searchModel */
+/** @var ShipmentContentPostSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Module::t('common', 'Shipment Contents');
@@ -32,7 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'is_active',
+            [
+                'attribute' => 'is_active',
+                'format' => 'boolean',
+                'filter' => $searchModel::activeOptions(),
+                'value' => function (ShipmentContent $model) {
+                    return $model->is_active
+                        ? Module::t('common', 'Yes')
+                        : Module::t('common', 'No');
+                },
+            ],
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, ShipmentContent $model) {
