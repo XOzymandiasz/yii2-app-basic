@@ -58,7 +58,7 @@ use kartik\select2\Select2;
     )) ?>
 
 
-    <?= $model->isInScenario()
+    <?= ($model->isInScenario() || $model->isUpdateIn())
         ? $form->field($model, 'finished_at')->textInput()
         : ''
     ?>
