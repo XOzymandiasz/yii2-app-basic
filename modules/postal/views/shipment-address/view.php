@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\postal\models\ShipmentAddress;
 use app\modules\postal\Module;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -38,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'postal_code',
             'city',
             'country',
+            [
+                    'attribute' => 'option',
+                'value' => function (ShipmentAddress $model) {
+                    return ShipmentAddress::getDirectionsNames()[$model->option];
+                }
+            ]
         ],
     ]) ?>
 
