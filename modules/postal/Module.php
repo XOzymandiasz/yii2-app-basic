@@ -45,7 +45,6 @@ class Module extends BaseModule
 
         $this->shipmentRelation = Instance::ensure($this->shipmentRelation, ShipmentRelationComponent::class, $this);
         $this->shipmentUrl = Instance::ensure($this->shipmentUrl, ShipmentUrlComponent::class, $this);
-        $this->shipmentUrl->moduleId = $this->uniqueId;
 
         static::registerTranslations();
     }

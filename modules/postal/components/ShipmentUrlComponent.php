@@ -9,17 +9,15 @@ use yii\helpers\Url;
 class ShipmentUrlComponent extends Component
 {
     public array $providersCreateRoutes = [
-        Providers::PROVIDER_POCZTA_POLSKA => 'poczta_polska/shipment/create-from-shipment',
+        Providers::PROVIDER_POCZTA_POLSKA => '/postal/poczta_polska/shipment/create-from-shipment',
     ];
     public array $providersUpdateRoutes = [
-        Providers::PROVIDER_POCZTA_POLSKA => 'poczta_polska/shipment/update',
+        Providers::PROVIDER_POCZTA_POLSKA => '/postal/poczta_polska/shipment/update',
     ];
 
     public string $paramShipmentId = 'id';
     public string $paramBufferId = 'bufferId';
     public string $paramGuid = 'guid';
-
-    public ?string $moduleId = null;
 
     public function getAfterCreateURL(int $shipmentId, string $provider, array $params = []): ?string
     {
@@ -29,10 +27,6 @@ class ShipmentUrlComponent extends Component
         }
 
         $params[$this->paramShipmentId] = $shipmentId;
-
-        if ($route[0] !== '/') {
-            $route = '/' . $this->moduleId . '/' . ltrim($route, '/');
-        }
 
         return Url::to([$route] + $params);
     }
@@ -46,10 +40,6 @@ class ShipmentUrlComponent extends Component
 
         $params[$this->paramBufferId] = $bufferId;
         $params[$this->paramGuid] = $guid;
-
-        if ($route[0] !== '/') {
-            $route = '/' . $this->moduleId . '/' . ltrim($route, '/');
-        }
 
         return Url::to([$route] + $params);
     }
