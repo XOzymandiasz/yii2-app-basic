@@ -33,7 +33,7 @@ class ModuleTest extends Unit
 
     public function testCustomDefinitionAreEnsured(): void
     {
-        $this->module = new Module(self::MODULE_ID);
+        $this->module =  new Module(self::MODULE_ID);
 
         $this->module->tracker = [
             'class' => PocztaPolskaTrackerStub::class,
