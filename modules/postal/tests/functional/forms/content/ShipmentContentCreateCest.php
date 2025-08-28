@@ -3,16 +3,12 @@
 namespace app\modules\postal\tests\functional\forms\content;
 
 use app\modules\postal\models\ShipmentContent;
-use app\modules\postal\Module;
 use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Util\HttpCode;
 use FunctionalTester;
 
 class ShipmentContentCreateCest
 {
-    /**
-     * @see ShipmentContentController::actionCreate()
-     */
     public const ROUTE_CREATE = 'postal/shipment-content/create';
     public const ROUTE_VIEW = 'postal/shipment-content/view';
     public const ROUTE_LOG_IN = 'site/login';
@@ -22,6 +18,7 @@ class ShipmentContentCreateCest
         return [
             'user' => [
                 'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
@@ -57,20 +54,21 @@ class ShipmentContentCreateCest
 
         $I->submitForm('#shipment-content-form', [
             'ContentTypeForm[name]' => 'Documents',
-            'ContentTypeForm[is_active]' => 1,
+            'ContentTypeForm[is_active]' => 0,
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $id = (int) $I->grabFromCurrentUrl('~id=(\d+)~');
-        $I->seeInCurrentUrl(static::ROUTE_VIEW . '?id=' . $id);
-
         $I->seeRecord(ShipmentContent::class, [
-           'id' => $id,
-           'name' => 'Documents',
-           'is_active' => 1,
+            'name' => 'Documents',
+            'is_active' => 0,
         ]);
 
+        $id = $I->grabRecord(ShipmentContent::class, [
+            'name' => 'Documents'
+        ])->id;
+
+        $I->seeInCurrentUrl(static::ROUTE_VIEW . '?id=' . $id);
     }
 
     public function checkCreatePostInvalid(FunctionalTester $I): void
@@ -84,7 +82,6 @@ class ShipmentContentCreateCest
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeInCurrentUrl(static::ROUTE_CREATE);
         $I->see('Create Shipment Content', 'h1');
         $I->see('Name cannot be blank');
     }

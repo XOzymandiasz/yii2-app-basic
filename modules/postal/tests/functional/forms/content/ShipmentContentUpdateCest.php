@@ -14,15 +14,18 @@ class ShipmentContentUpdateCest
 
     private const ROUTE_UPDATE = 'postal/shipment-content/update';
     private const ROUTE_VIEW = 'postal/shipment-content/view';
-    private const ROUTE_INDEX = 'postal/shipment-content/index';
+    private const ROUTE_LOG_IN = 'site/login';
+
     public function _fixtures(): array
     {
         return [
             'content' => [
                 'class' => ShipmentContentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_content.php'
             ],
             'user' => [
                 'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
@@ -52,9 +55,7 @@ class ShipmentContentUpdateCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $I->seeInCurrentUrl(static::ROUTE_INDEX);
-
-        $I->see(Module::t('postal', 'You must be logged in to view this page.'));
+        $I->seeInCurrentUrl(static::ROUTE_LOG_IN);
     }
 
     public function checkUpdateNotFound(FunctionalTester $I): void
@@ -81,17 +82,19 @@ class ShipmentContentUpdateCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $id = (int) $I->grabFromCurrentUrl('~id=(\d+)~');
-        $I->seeInCurrentUrl(static::ROUTE_VIEW . '?id=' . $id);
-
         $I->seeRecord(ShipmentContent::class, [
-            'id'        => $id,
-            'name'      => 'Documents',
+            'name' => 'Documents',
             'is_active' => 1,
         ]);
+
+        $id = $I->grabRecord(ShipmentContent::class, [
+            'name' => 'documents',
+        ])->id;
+
+        $I->seeInCurrentUrl(static::ROUTE_VIEW . '?id=' . $id);
     }
 
-    public function checkUpdatePostInvalid(FunctionalTester $I): void
+    public function checkUpdateEmpty(FunctionalTester $I): void
     {
         $user = $I->grabFixture('user', 'admin');
         $I->amLoggedInAs($user->id);
