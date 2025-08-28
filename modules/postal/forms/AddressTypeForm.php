@@ -3,11 +3,12 @@
 namespace app\modules\postal\forms;
 
 use app\modules\postal\models\ShipmentAddress;
+use app\modules\postal\models\ShipmentDirectionInterface;
 use app\modules\postal\Module;
 use yii\base\Model;
 use yii\db\Exception;
 
-class AddressTypeForm extends Model
+class AddressTypeForm extends Model implements ShipmentDirectionInterface
 {
     public const DEFAULT_COUNTRY = 'PL';
 
@@ -122,5 +123,20 @@ class AddressTypeForm extends Model
             $this->model = new ShipmentAddress();
         }
         return $this->model;
+    }
+
+    public function getDirection(): string
+    {
+        return $this->model ? $this->model->getDirection() : '';
+    }
+
+    public function getDirectionName(): string
+    {
+        return $this->model ? $this->model->getDirectionName() : '';
+    }
+
+    public static function getDirectionsNames(): array
+    {
+        return ShipmentAddress::getDirectionsNames();
     }
 }
