@@ -142,12 +142,15 @@ class ShipmentController extends Controller
                 }
                 return $this->redirect(['view', 'id' => $id]);
             } elseif ($model->direction == ShipmentDirectionInterface::DIRECTION_OUT) {
-                $url = $this->module->getAfterUpdateURL($model->getModel()->buffer_id, $model->getModel()->guid, $model->getModel()->provider);
+                $url = $this->module->shipmentUrl->getAfterUpdateURL(
+                    $model->getModel()->buffer_id,
+                    $model->getModel()->guid,
+                    $model->getModel()->provider
+                );
                 if ($url) {
                     return $this->redirect($url);
                 }
                 return $this->redirect(['view', 'id' => $id]);
-
             } else {
                 throw new NotFoundHttpException();
             }
