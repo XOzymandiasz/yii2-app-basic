@@ -8,6 +8,7 @@ use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
 use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
 use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use yii\caching\DummyCache;
 use yii\caching\FileCache;
 
 $db = require __DIR__ . '/test_db.php';
@@ -72,7 +73,7 @@ return [
             'showScriptName' => false,
         ],
         'cache' => [
-            'class' => FileCache::class,
+            'class' => DummyCache::class,
         ],
         'user' => [
             'identityClass' => 'app\models\User',
