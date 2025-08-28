@@ -2,17 +2,32 @@
 
 namespace app\modules\postal\tests\functional\forms\shipment;
 
+use app\modules\postal\models\Shipment;
+use app\modules\postal\models\ShipmentAddressLink;
 use app\modules\postal\models\ShipmentDirectionInterface;
+use app\modules\postal\models\ShipmentProviderInterface;
+use app\modules\postal\tests\fixtures\ShipmentAddressFixture;
+use app\modules\postal\tests\fixtures\ShipmentContentFixture;
+use app\modules\postal\tests\fixtures\UserFixture;
 use Codeception\Util\HttpCode;
 use FunctionalTester;
-use tests\fixtures\UserFixture;
 
 class ShipmentCreateInCest
 {
-    public const ROUTE_CREATE_IN = 'postal/shipment/create-out';
+    public const ROUTE_CREATE_IN = 'postal/shipment/create-in';
+    public const ROUTE_AFTER_CREATE_IN = 'postal/poczta_polska/shipment/create-from-shipment';
+    public const ROUTE_LOG_IN = 'site/login';
     public function _fixtures(): array
     {
         return [
+            'content' => [
+                'class' => ShipmentContentFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_content.php'
+            ],
+            'address' => [
+                'class' => ShipmentAddressFixture::class,
+                'dataFile' => codecept_data_dir() . 'shipment_address.php'
+            ],
             'user' => [
                 'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php'
@@ -34,15 +49,89 @@ class ShipmentCreateInCest
         $I->seeElement('select', ['name' => 'ShipmentForm[content_id]']);
         $I->seeElement('select', ['name' => 'ShipmentForm[sender_id]']);
         $I->seeElement('select', ['name' => 'ShipmentForm[receiver_id]']);
+        $I->seeElement('input[name="ShipmentForm[finished_at]"]');
+
 
         $I->seeLink('Create Content', '/postal/shipment-content/create');
-        $I->seeLink('Create Address', '/postal/shipment-address/create?direction='
+        $I->seeLink('Create Receiver Address', '/postal/shipment-address/create?direction='
             . ShipmentDirectionInterface::DIRECTION_OUT);
-        $I->seeLink('Create Address', '/postal/shipment-address/create?direction='
+        $I->seeLink('Create Sender Address', '/postal/shipment-address/create?direction='
             . ShipmentDirectionInterface::DIRECTION_IN);
         $I->seeElement('button', ['type' => 'submit']);
     }
 
+    public function checkGuestCannotAccessCreate(FunctionalTester $I): void
+    {
+        $I->amOnRoute(static::ROUTE_CREATE_IN);
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $I->seeInCurrentUrl(static::ROUTE_LOG_IN);
+    }
+
+    public function checkCreate(FunctionalTester $I): void
+    {
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
+        $I->amOnRoute(static::ROUTE_CREATE_IN);
+
+        $content = $I->grabFixture('content', 'content_active');
+        $senderAddress = $I->grabFixture('address', 'sender');
+        $receiverAddress = $I->grabFixture('address', 'receiver');
+
+        $I->submitForm('#shipment-form', [
+            'ShipmentForm[number]' => '141324',
+            'ShipmentForm[provider]' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+            'ShipmentForm[content_id]'  => $content->id,
+            'ShipmentForm[sender_id]'   => $senderAddress->id,
+            'ShipmentForm[receiver_id]' => $receiverAddress->id,
+            'ShipmentForm[finished_at]' => '2025-08-27 13-14-15',
+        ]);
+
+        $I->seeRecord(Shipment::class, [
+            'number' => '141324',
+            'provider' => ShipmentProviderInterface::PROVIDER_POCZTA_POLSKA,
+            'content_id' => $content->id,
+        ]);
+
+        $id = $I->grabRecord(Shipment::class, [
+            'number' => '141324'
+        ])->id;
+
+        $I->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $id,
+            'address_id' => $senderAddress->id,
+        ]);
+
+        $I->seeRecord(ShipmentAddressLink::class, [
+            'shipment_id' => $id,
+            'address_id' => $receiverAddress->id,
+        ]);
+
+        $I->amOnRoute(static::ROUTE_AFTER_CREATE_IN . '?id=' . $id);
+    }
+
+    public function checkCreateEmpty(FunctionalTester $I): void
+    {
+        $user = $I->grabFixture('user', 'admin');
+        $I->amLoggedInAs($user->id);
+        $I->amOnRoute(static::ROUTE_CREATE_IN);
+
+        $content = $I->grabFixture('content', 'content_active');
+        $senderAddress = $I->grabFixture('address', 'sender');
+        $receiverAddress = $I->grabFixture('address', 'receiver');
 
 
+        $I->submitForm('#shipment-form', [
+            'ShipmentForm[content_id]'  => $content->id,
+            'ShipmentForm[sender_id]'   => $senderAddress->id,
+            'ShipmentForm[receiver_id]' => $receiverAddress->id,
+        ]);
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeInCurrentUrl(static::ROUTE_CREATE_IN);
+        $I->see('Create Postal Shipment', 'h1');
+        $I->see('Number cannot be blank');
+        $I->see('Provider cannot be blank');
+    }
 }
