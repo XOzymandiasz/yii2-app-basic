@@ -3,6 +3,7 @@
 namespace app\modules\postal\models\search;
 
 use app\modules\postal\models\ShipmentContent;
+use app\modules\postal\Module;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -67,4 +68,10 @@ class ShipmentContentPostSearch extends ShipmentContent
 
         return $dataProvider;
     }
+
+    public static function activeOptions(): array
+    {
+        return [1 => Module::t('common', 'Yes'), 0 => Module::t('common', 'No')];
+    }
+
 }
