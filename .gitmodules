@@ -1,0 +1,4 @@
+[submodule "modules/postal"]
+	path = modules/postal
+	url = https://github.com/XOzymandiasz/postal
+	branch = master
