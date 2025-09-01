@@ -3,7 +3,7 @@
 namespace app\models;
 
 
-use app\modules\postal\integrations\PostalLinkTrait;
+use XOzymandias\Yii2Postal\integrations\PostalLinkTrait;
 use app\modules\postal\models\Shipment;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;

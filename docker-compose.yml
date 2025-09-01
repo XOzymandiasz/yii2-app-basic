@@ -6,6 +6,7 @@ services:
       - ./:/app:delegated
       - .:/opt/project
       - ./vendor:/opt/project/vendor
+      - /home/adam/postal/postal:/postal/postal
     ports:
       - '8000:80'
   db:

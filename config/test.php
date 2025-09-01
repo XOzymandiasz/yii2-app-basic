@@ -3,13 +3,13 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
 use app\models\User;
-use app\modules\postal\components\ShipmentRelationComponent;
-use app\modules\postal\components\ShipmentUrlComponent;
-use app\modules\postal\Module as PostalModule;
-use app\modules\postal\modules\poczta_polska\components\PocztaPolskaTracker;
-use app\modules\postal\modules\poczta_polska\Module as PocztaPolskaModule;
-use app\modules\postal\modules\poczta_polska\repositories\RepositoryFactory;
-use app\modules\postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
+use XOzymandias\Yii2Postal\components\ShipmentRelationComponent;
+use XOzymandias\Yii2Postal\components\ShipmentUrlComponent;
+use XOzymandias\Yii2Postal\Module as PostalModule;
+use XOzymandias\Yii2Postal\modules\poczta_polska\components\PocztaPolskaTracker;
+use XOzymandias\Yii2Postal\modules\poczta_polska\Module as PocztaPolskaModule;
+use XOzymandias\Yii2Postal\modules\poczta_polska\repositories\RepositoryFactory;
+use XOzymandias\Yii2Postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use yii\caching\FileCache;
 
 /**
