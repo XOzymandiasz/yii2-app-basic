@@ -1,8 +1,11 @@
 <?php
 
+//namespace app\migrations;
+
+//use Yii;
 use yii\db\Migration;
 
-class m250728_095723_create_user_table extends Migration
+class m250722_095723_create_user_table extends Migration
 {
     public function safeUp(): void
     {

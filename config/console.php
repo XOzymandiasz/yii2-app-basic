@@ -1,9 +1,9 @@
 <?php
 
 use app\models\User;
-use app\modules\postal\components\ShipmentRelationComponent;
-use app\modules\postal\Module as PostalModule;
-
+use XOzymandias\Yii2Postal\components\ShipmentRelationComponent;
+use XOzymandias\Yii2Postal\Module as PostalModule;
+use XOzymandias\Yii2Postal\commands\WSDLController;
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -16,6 +16,7 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
+        '@XOzymandias/Yii2Postal' => '@vendor/xozymandias/postal/src',
     ],
     'components' => [
         'cache' => [
@@ -33,11 +34,16 @@ $config = [
     ],
     'params' => $params,
     'controllerMap' => [
-//        'fixture' => [ // Fixture generation command line.
-//            'class' => 'yii\faker\FixtureController',
-//        ],
+        'migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'XOzymandias\Yii2Postal\migrations',
+                'app\migrations',
+            ],
+        ],
         'poczta-wsdl' => [
-            'class' => \app\modules\postal\commands\WSDLController::class
+            'class' => XOzymandias\Yii2Postal\commands\WSDLController::class
         ]
     ],
     'modules' => [
