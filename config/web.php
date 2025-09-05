@@ -12,10 +12,7 @@ use XOzymandias\Yii2Postal\modules\poczta_polska\Module as PocztaPolskaModule;
 use XOzymandias\Yii2Postal\modules\poczta_polska\repositories\RepositoryFactory;
 use XOzymandias\Yii2Postal\modules\poczta_polska\sender\PocztaPolskaSenderOptions;
 use edzima\teryt\Module as TerytModule;
-use yii\bootstrap5\BootstrapAsset;
-use yii\bootstrap5\BootstrapPluginAsset;
 use yii\caching\FileCache;
-use yii\symfonymailer\Mailer;
 
 $config = [
     'id' => 'basic',
@@ -42,12 +39,6 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => true,
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -61,10 +52,6 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                'shipment-check-form' => 'postal/poczta-polska-shipment-check/shipment-check-form',
-                'create' => 'postal/poczta-polska-shipment/create',
-            ],
         ],
 
         'assetManager' => [
@@ -102,6 +89,9 @@ $config = [
                     ],
                     'senderOptions' => [
                         'class' => PocztaPolskaSenderOptions::class,
+                        'login' => 'majsterw@o2.pl',
+                        'password' => 'SdsSds123123',
+                        'isTest' => true
                     ]
                 ],
             ],
