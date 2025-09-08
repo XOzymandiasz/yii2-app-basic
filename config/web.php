@@ -6,6 +6,7 @@ $db = require __DIR__ . '/db.php';
 use app\models\User;
 use XOzymandias\Yii2Postal\components\ShipmentRelationComponent;
 use XOzymandias\Yii2Postal\components\ShipmentUrlComponent;
+use XOzymandias\Yii2Postal\modules\poczta_polska\components\PocztaPolskaShipmentUrlComponent;
 use XOzymandias\Yii2Postal\Module;
 use XOzymandias\Yii2Postal\modules\poczta_polska\components\PocztaPolskaTracker;
 use XOzymandias\Yii2Postal\modules\poczta_polska\Module as PocztaPolskaModule;
@@ -92,6 +93,9 @@ $config = [
                         'login' => 'majsterw@o2.pl',
                         'password' => 'SdsSds123123',
                         'isTest' => true
+                    ],
+                    'shipmentUrl' => [
+                        'class' => PocztaPolskaShipmentUrlComponent::class
                     ]
                 ],
             ],

@@ -84,7 +84,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "app\\tests\\": "tests"
+            "app\\tests\\": "tests",
+            "XOzymandias\\Yii2Postal\\tests\\": "/postal/postal/tests"
         }
     }
 }

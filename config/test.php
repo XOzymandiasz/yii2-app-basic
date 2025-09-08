@@ -35,9 +35,6 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
-        'user' => [
-            'identityClass' => app\models\User::class,
-        ],
         'request' => [
             'cookieValidationKey' => 'test',
             'enableCsrfValidation' => false,
